@@ -30,7 +30,7 @@ def display_page(pathname):
     if pathname == "/":
         return home_page(df)
     elif pathname == "/table-page":
-        return table_page()
+        return table_page(df)
     elif pathname == "/graph-page":
         return graph_page()
     else:
