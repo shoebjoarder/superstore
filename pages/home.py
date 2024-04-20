@@ -61,7 +61,8 @@ def home_page(df):
                             ),
                         ]
                     ),
-                ]
+                ],
+                style={"margin-top": "32px"},
             ),
             dbc.Row(
                 [
@@ -172,7 +173,7 @@ def home_page(df):
                                     dbc.CardBody(
                                         [
                                             html.H5(
-                                                "Superstore data table",
+                                                "Superstore Data Table",
                                                 className="card-title",
                                             ),
                                             html.P(

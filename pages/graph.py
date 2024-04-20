@@ -19,7 +19,8 @@ def graph_page():
                             ),
                         ]
                     ),
-                ]
+                ],
+                style={"margin-top": "32px", "margin-bottom": "16px"},
             ),
             dbc.Row(
                 [
