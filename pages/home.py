@@ -1,8 +1,7 @@
 import pandas as pd
 import dash_bootstrap_components as dbc
-import dash_html_components as html
 import plotly.express as px
-from dash import dcc
+from dash import dcc, html
 
 
 def home_page(df):
@@ -55,7 +54,7 @@ def home_page(df):
                 [
                     dbc.Col(
                         [
-                            html.H1("Superstore Dashboard"),
+                            html.H2("Superstore Dashboard"),
                             html.P(
                                 "An overview of the most recent data of the Superstore."
                             ),
@@ -75,7 +74,7 @@ def home_page(df):
                                             dbc.Row(
                                                 [
                                                     dbc.Col(
-                                                        html.H5(
+                                                        html.P(
                                                             "Accumulated Sales",
                                                             className="card-title",
                                                         ),
@@ -97,7 +96,7 @@ def home_page(df):
                                                     ),
                                                 ],
                                             ),
-                                            html.P(
+                                            html.H4(
                                                 f"${accumulated_sales:,.2f}",
                                                 className="card-text",
                                             ),
@@ -116,7 +115,7 @@ def home_page(df):
                                             dbc.Row(
                                                 [
                                                     dbc.Col(
-                                                        html.H5(
+                                                        html.P(
                                                             "Profit Ratio",
                                                             className="card-title",
                                                         ),
@@ -138,7 +137,7 @@ def home_page(df):
                                                     ),
                                                 ],
                                             ),
-                                            html.P(
+                                            html.H4(
                                                 f"{profit_ratio:.2%}",
                                                 className="card-text",
                                             ),

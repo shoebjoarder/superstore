@@ -1,10 +1,13 @@
 import dash_bootstrap_components as dbc
-import dash_html_components as html
 import plotly.express as px
-from dash import dcc, dash_table
+from dash import dcc, html, dash_table
+from datetime import date
+from .page_components import create_data_table_filters, create_data_table_entry
 
 
 def table_page(df):
+    [filters, string] = create_data_table_filters(df)
+    [add_new_data, string] = create_data_table_entry(df)
     return dbc.Container(
         [
             dbc.Row(
@@ -19,25 +22,26 @@ def table_page(df):
                             ),
                         ]
                     ),
-                ], style={"margin-top": "32px", "margin-bottom": "16px"}
+                ],
+                style={"margin-top": "32px", "margin-bottom": "16px"},
             ),
             dbc.Row(
                 [
-                    dbc.Col(
-                        [
-                            html.H1("Superstore Data Table"),
-                            html.P(
-                                "Preview and manipulate the Superstore data table below."
-                            ),
-                            dash_table.DataTable(
-                                data=df.to_dict("records"),
-                                page_size=10,
-                                style_table={"maxWidth": "100%", "overflowX": "auto"},
-                                fill_width=True,
-                            ),
-                        ]
+                    html.H2("Superstore Data Table"),
+                    html.P("Preview and manipulate the Superstore data table below."),
+                    # Filter from the filter component for the data table
+                    filters,
+                    dash_table.DataTable(
+                        data=df.to_dict("records"),
+                        page_size=10,
+                        style_table={"maxWidth": "100%", "overflowX": "auto"},
+                        fill_width=True,
                     ),
-                ]
+                ],
+                style={"padding-bottom": "16px"}
             ),
+            dbc.Row([
+                add_new_data,
+            ])
         ]
     )

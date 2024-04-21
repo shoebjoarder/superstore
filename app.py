@@ -5,11 +5,13 @@ from dash.dependencies import Input, Output
 import dash_bootstrap_components as dbc
 import plotly.express as px
 from datetime import datetime, timedelta
-from pages import home_page, table_page, graph_page
+from pages import home_page, table_page, graph_page, page_not_found
 
 # Load the data
 url = "https://raw.githubusercontent.com/shoebjoarder/superstore/main/Sample%20-%20Superstore%20-%20CSV.csv"
 df = pd.read_csv(url)
+df = df.drop('Row ID', axis=1)
+dff = df.copy(deep=True)
 
 
 # Initialize the app
@@ -28,13 +30,13 @@ app.layout = html.Div(
 @app.callback(Output("page-content", "children"), [Input("url", "pathname")])
 def display_page(pathname):
     if pathname == "/":
-        return home_page(df)
+        return home_page(dff)
     elif pathname == "/table-page":
         return table_page(df)
     elif pathname == "/graph-page":
         return graph_page()
     else:
-        return "404 Page Not Found"
+        return page_not_found()
 
 
 # Run the app

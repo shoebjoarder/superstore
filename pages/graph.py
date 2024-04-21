@@ -1,7 +1,6 @@
 import dash_bootstrap_components as dbc
-import dash_html_components as html
 import plotly.express as px
-from dash import dcc
+from dash import dcc, html
 
 
 def graph_page():
