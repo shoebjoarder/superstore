@@ -98,11 +98,11 @@ def create_data_table_entry(df):
                         fluid=True,
                     ),
                 ],
-                title="Do you want to add a new entry to the data table?",
+                title="Do you want to add a new entry to the data table? Click here.",
                 className="mb-3",
             ),
         ],
-        start_collapsed="True",
+        # start_collapsed="True",
     )
 
     return [accordion, "String"]
