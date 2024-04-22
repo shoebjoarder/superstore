@@ -1,35 +1,23 @@
 import dash_bootstrap_components as dbc
 import plotly.express as px
+import dash
 from dash import dcc, html
 
+dash.register_page(__name__, name="Insights", path="/graph-page")
 
-def graph_page():
-    return dbc.Container(
-        [
-            dbc.Row(
-                [
-                    dbc.Col(
-                        [
-                            dbc.Button(
-                                [html.I(className="bi bi-arrow-left"), " Back"],
-                                color="light",
-                                href="/",
-                                className="me-1",
-                            ),
-                        ]
-                    ),
-                ],
-                style={"margin-top": "32px", "margin-bottom": "16px"},
-            ),
-            dbc.Row(
-                [
-                    dbc.Col(
-                        [
-                            html.H1("Graph Page"),
-                            # dcc.Graph(id="graph-graph", figure=profit_fig),
-                        ]
-                    ),
-                ]
-            ),
-        ]
-    )
+
+layout = dbc.Container(
+    [
+        dbc.Row(
+            [
+                dbc.Col(
+                    [
+                        html.H2("Insights"),
+                        # dcc.Graph(id="graph-graph", figure=profit_fig),
+                    ]
+                ),
+            ],
+            className="mt-4 mb-3",
+        ),
+    ]
+)

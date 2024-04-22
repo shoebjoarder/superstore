@@ -28,6 +28,7 @@ def create_data_table_filters(df):
                                                         id="dropdown-segment",
                                                         className="mb-3",
                                                     ),
+                                                    html.Div(id="dd-output-container"),
                                                     html.Div(["Shop Mode"]),
                                                     dcc.Dropdown(
                                                         [
@@ -210,4 +211,4 @@ def create_data_table_filters(df):
         start_collapsed="True",
     )
 
-    return [accordion, "String"]
+    return accordion

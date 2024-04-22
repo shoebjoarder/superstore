@@ -105,4 +105,4 @@ def create_data_table_entry(df):
         # start_collapsed="True",
     )
 
-    return [accordion, "String"]
+    return accordion

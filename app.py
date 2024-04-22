@@ -1,44 +1,59 @@
 import pandas as pd
 import dash
-from dash import dcc, html
+from dash import dcc, html, Input, Output, callback
 from dash.dependencies import Input, Output
 import dash_bootstrap_components as dbc
 import plotly.express as px
 from datetime import datetime, timedelta
-from pages import home_page, table_page, graph_page, page_not_found
 
 # Load the data
 url = "https://raw.githubusercontent.com/shoebjoarder/superstore/main/Sample%20-%20Superstore%20-%20CSV.csv"
 df = pd.read_csv(url)
-df = df.drop('Row ID', axis=1)
+df = df.drop("Row ID", axis=1)
 dff = df.copy(deep=True)
-
 
 # Initialize the app
 app = dash.Dash(
-    __name__, external_stylesheets=[dbc.themes.BOOTSTRAP, dbc.icons.BOOTSTRAP]
+    __name__,
+    external_stylesheets=[dbc.themes.BOOTSTRAP, dbc.icons.BOOTSTRAP],
+    use_pages=True,
 )
 
-
-# App layout
-app.layout = html.Div(
-    [dcc.Location(id="url", refresh=False), html.Div(id="page-content")]
+sidebar = dbc.Nav(
+    [
+        dbc.NavLink(
+            [html.Div(page["name"], className="ms-2")],
+            href=page["path"],
+            active="exact",
+        )
+        for page in dash.page_registry.values()
+    ],
+    vertical=True,
+    pills=True,
+    className="bg-light mt-4",
 )
 
+navbar = dbc.NavbarSimple(
+    brand="Superstore",
+    brand_href="#",
+    color="dark",
+    dark=True,
+)
 
-# Callback for URL routing
-@app.callback(Output("page-content", "children"), [Input("url", "pathname")])
-def display_page(pathname):
-    if pathname == "/":
-        return home_page(dff)
-    elif pathname == "/table-page":
-        return table_page(df)
-    elif pathname == "/graph-page":
-        return graph_page()
-    else:
-        return page_not_found()
+app.layout = dbc.Container(
+    [
+        dbc.Row([navbar]),
+        dbc.Row(
+            [
+                dbc.Col([sidebar], xs=4, md=2),
+                dbc.Col([dash.page_container], xs=8, md=10),
+            ]
+        ),
+    ],
+    fluid=True,
+)
 
 
 # Run the app
 if __name__ == "__main__":
-    app.run_server(debug=True)
+    app.run(debug=True)
