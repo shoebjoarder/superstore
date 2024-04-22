@@ -174,7 +174,7 @@ def create_data_table_filters(df):
                     style={"margin-bottom": "16px"},
                 ),
             ],
-            # start_collapsed="True",
+            start_collapsed="True",
         ),
         "Allan",
     ]
