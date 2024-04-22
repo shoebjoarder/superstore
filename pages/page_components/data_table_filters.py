@@ -10,166 +10,211 @@ def create_data_table_filters(df):
             dbc.AccordionItem(
                 [
                     html.P("Apply filters to the Superstore data table below"),
-                    dbc.Row(
+                    dbc.Container(
                         [
-                            dbc.Col(
+                            dbc.Row(
                                 [
-                                    html.Div(
-                                        [
-                                            html.Div(["Segment"]),
-                                            dcc.Dropdown(
-                                                [
-                                                    "Item 1",
-                                                    "Item 2",
-                                                    "Item 3",
-                                                ],
-                                                "Item 1",
-                                                id="dropdown-segment",
-                                                style={"margin-bottom": "16px"},
-                                            ),
-                                            html.Div(["Shop Mode"]),
-                                            dcc.Dropdown(
-                                                [
-                                                    "Item 1",
-                                                    "Item 2",
-                                                    "Item 3",
-                                                ],
-                                                "Item 1",
-                                                id="dropdown-ship-mode",
-                                                style={"margin-bottom": "16px"},
-                                            ),
-                                        ]
-                                    ),
-                                    html.Div(
+                                    dbc.Col(
                                         [
                                             html.Div(
-                                                ["Ship Date"],
-                                                style={"margin-bottom": "4px"},
+                                                [
+                                                    html.Div(["Segment"]),
+                                                    dcc.Dropdown(
+                                                        [
+                                                            "Item 1",
+                                                            "Item 2",
+                                                            "Item 3",
+                                                        ],
+                                                        "Item 1",
+                                                        id="dropdown-segment",
+                                                        className="mb-3",
+                                                    ),
+                                                    html.Div(["Shop Mode"]),
+                                                    dcc.Dropdown(
+                                                        [
+                                                            "Item 1",
+                                                            "Item 2",
+                                                            "Item 3",
+                                                        ],
+                                                        "Item 1",
+                                                        id="dropdown-ship-mode",
+                                                        className="mb-3",
+                                                    ),
+                                                ]
                                             ),
-                                            dcc.DatePickerRange(
-                                                id="ship-date-range",
-                                                min_date_allowed=date(1995, 8, 5),
-                                                max_date_allowed=date(2017, 9, 19),
-                                                initial_visible_month=date(2017, 8, 5),
-                                                end_date=date(2017, 8, 25),
+                                            html.Div(
+                                                [
+                                                    dbc.Row(
+                                                        [
+                                                            dbc.Col(
+                                                                [
+                                                                    html.Div(
+                                                                        ["Ship Date"]
+                                                                    ),
+                                                                    dcc.DatePickerRange(
+                                                                        id="ship-date-range",
+                                                                        min_date_allowed=date(
+                                                                            1995,
+                                                                            8,
+                                                                            5,
+                                                                        ),
+                                                                        max_date_allowed=date(
+                                                                            2017,
+                                                                            9,
+                                                                            19,
+                                                                        ),
+                                                                        initial_visible_month=date(
+                                                                            2017,
+                                                                            8,
+                                                                            5,
+                                                                        ),
+                                                                        end_date=date(
+                                                                            2017,
+                                                                            8,
+                                                                            25,
+                                                                        ),
+                                                                    ),
+                                                                ],
+                                                                className="mb-2",
+                                                                xs=12,
+                                                                xl=6,
+                                                            ),
+                                                            dbc.Col(
+                                                                [
+                                                                    html.Div(
+                                                                        ["Order Date"]
+                                                                    ),
+                                                                    dcc.DatePickerRange(
+                                                                        id="order-date-range",
+                                                                        min_date_allowed=date(
+                                                                            1995,
+                                                                            8,
+                                                                            5,
+                                                                        ),
+                                                                        max_date_allowed=date(
+                                                                            2017,
+                                                                            9,
+                                                                            19,
+                                                                        ),
+                                                                        initial_visible_month=date(
+                                                                            2017,
+                                                                            8,
+                                                                            5,
+                                                                        ),
+                                                                        end_date=date(
+                                                                            2017,
+                                                                            8,
+                                                                            25,
+                                                                        ),
+                                                                        style={
+                                                                            "width": "100%"
+                                                                        },
+                                                                    ),
+                                                                ],
+                                                                className="mb-2",
+                                                                xs=12,
+                                                                xl=6,
+                                                            ),
+                                                        ]
+                                                    )
+                                                ],
+                                                className="mb-2",
                                             ),
                                         ],
-                                        style={
-                                            "margin-bottom": "8px",
-                                        },
+                                        xs=12,
+                                        md=6,
                                     ),
-                                    html.Div(
+                                    dbc.Col(
                                         [
                                             html.Div(
-                                                ["Order Date"],
-                                                style={"margin-bottom": "4px"},
+                                                [
+                                                    html.Div(["Category"]),
+                                                    dcc.Dropdown(
+                                                        [
+                                                            "Item 1",
+                                                            "Item 2",
+                                                            "Item 3",
+                                                        ],
+                                                        "Item 1",
+                                                        id="dropdown-category",
+                                                        className="mb-2",
+                                                    ),
+                                                    html.Div(["Sub-Category"]),
+                                                    dcc.Dropdown(
+                                                        [
+                                                            "Item 1",
+                                                            "Item 2",
+                                                            "Item 3",
+                                                        ],
+                                                        "Item 1",
+                                                        id="dropdown-sub-category",
+                                                        className="mb-2",
+                                                    ),
+                                                ],
+                                                style={
+                                                    "border": "solid 1px #CFCFCF",
+                                                    "border-radius": "8px",
+                                                    "padding": "8px",
+                                                    "margin-bottom": "16px",
+                                                },
                                             ),
-                                            dcc.DatePickerRange(
-                                                id="order-date-range",
-                                                min_date_allowed=date(1995, 8, 5),
-                                                max_date_allowed=date(2017, 9, 19),
-                                                initial_visible_month=date(2017, 8, 5),
-                                                end_date=date(2017, 8, 25),
-                                                style={"width": "100%"},
+                                            html.Div(
+                                                [
+                                                    html.Div(["Country"]),
+                                                    dcc.Dropdown(
+                                                        [
+                                                            "Item 1",
+                                                            "Item 2",
+                                                            "Item 3",
+                                                        ],
+                                                        "Item 1",
+                                                        id="dropdown-country",
+                                                        className="mb-2",
+                                                    ),
+                                                    html.Div(["State"]),
+                                                    dcc.Dropdown(
+                                                        [
+                                                            "Item 1",
+                                                            "Item 2",
+                                                            "Item 3",
+                                                        ],
+                                                        "Item 1",
+                                                        id="dropdown-state",
+                                                        className="mb-2",
+                                                    ),
+                                                    html.Div(["City"]),
+                                                    dcc.Dropdown(
+                                                        [
+                                                            "Item 1",
+                                                            "Item 2",
+                                                            "Item 3",
+                                                        ],
+                                                        "Item 1",
+                                                        id="dropdown-city",
+                                                        className="mb-2",
+                                                    ),
+                                                ],
+                                                style={
+                                                    "border": "solid 1px #CFCFCF",
+                                                    "border-radius": "8px",
+                                                    "padding": "8px",
+                                                },
                                             ),
                                         ],
-                                        style={
-                                            "margin-bottom": "8px",
-                                        },
+                                        xs=12,
+                                        md=6,
                                     ),
                                 ],
-                                xs=12,
-                                md=6,
+                                className="g-3",
                             ),
-                            dbc.Col(
-                                [
-                                    html.Div(
-                                        [
-                                            html.Div(["Category"]),
-                                            dcc.Dropdown(
-                                                [
-                                                    "Item 1",
-                                                    "Item 2",
-                                                    "Item 3",
-                                                ],
-                                                "Item 1",
-                                                id="dropdown-category",
-                                                style={"margin-bottom": "8px"},
-                                            ),
-                                            html.Div(["Sub-Category"]),
-                                            dcc.Dropdown(
-                                                [
-                                                    "Item 1",
-                                                    "Item 2",
-                                                    "Item 3",
-                                                ],
-                                                "Item 1",
-                                                id="dropdown-sub-category",
-                                                style={"margin-bottom": "8px"},
-                                            ),
-                                        ],
-                                        style={
-                                            "border": "solid 1px #CFCFCF",
-                                            "border-radius": "8px",
-                                            "padding": "8px",
-                                            "margin-bottom": "16px",
-                                        },
-                                    ),
-                                    html.Div(
-                                        [
-                                            html.Div(["Country"]),
-                                            dcc.Dropdown(
-                                                [
-                                                    "Item 1",
-                                                    "Item 2",
-                                                    "Item 3",
-                                                ],
-                                                "Item 1",
-                                                id="dropdown-country",
-                                                style={"margin-bottom": "8px"},
-                                            ),
-                                            html.Div(["State"]),
-                                            dcc.Dropdown(
-                                                [
-                                                    "Item 1",
-                                                    "Item 2",
-                                                    "Item 3",
-                                                ],
-                                                "Item 1",
-                                                id="dropdown-state",
-                                                style={"margin-bottom": "8px"},
-                                            ),
-                                            html.Div(["City"]),
-                                            dcc.Dropdown(
-                                                [
-                                                    "Item 1",
-                                                    "Item 2",
-                                                    "Item 3",
-                                                ],
-                                                "Item 1",
-                                                id="dropdown-city",
-                                                style={"margin-bottom": "8px"},
-                                            ),
-                                        ],
-                                        style={
-                                            "border": "solid 1px #CFCFCF",
-                                            "border-radius": "8px",
-                                            "padding": "8px",
-                                        },
-                                    ),
-                                ],
-                                xs=12,
-                                md=6,
-                            ),
-                        ],
-                        className="g-3",
+                        ]
                     ),
                 ],
                 title="Filters",
-                style={"margin-bottom": "16px"},
+                className="mb-3",
             ),
         ],
-        start_collapsed="True",
+        # start_collapsed="True",
     )
 
     return [accordion, "String"]
