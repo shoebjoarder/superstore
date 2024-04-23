@@ -15,29 +15,45 @@ def create_data_table_entry(df):
                                 html.P("Fill out the form below to add a new data"),
                                 dbc.Col(
                                     [
-                                        html.Div(["Order ID"]),
-                                        dbc.Input(
-                                            id="order-id",
-                                            placeholder="Enter order ID",
-                                            type="text",
+                                        dbc.Row(
+                                            [
+                                                dbc.Col(
+                                                    [
+                                                        html.Div(["Order ID"]),
+                                                        dbc.Input(
+                                                            id="order-id",
+                                                            placeholder="Enter order ID",
+                                                            type="text",
+                                                        ),
+                                                    ],
+                                                    className="mb-3",
+                                                    xs=12,
+                                                    md=9,
+                                                ),
+                                                dbc.Col(
+                                                    [
+                                                        html.Div(["Order date"]),
+                                                        dcc.DatePickerSingle(
+                                                            id="date-picker",
+                                                            min_date_allowed=date(
+                                                                1995, 8, 5
+                                                            ),
+                                                            max_date_allowed=date(
+                                                                2017, 9, 19
+                                                            ),
+                                                            initial_visible_month=date(
+                                                                2017, 8, 5
+                                                            ),
+                                                            date=date(2017, 8, 25),
+                                                        ),
+                                                    ],
+                                                    className="mb-3",
+                                                    xs=12,
+                                                    md=3,
+                                                ),
+                                            ],
                                         ),
                                     ],
-                                    width=12,
-                                    className="mb-3",
-                                ),
-                                dbc.Col(
-                                    [
-                                        html.Div(["Order date"]),
-                                        dcc.DatePickerSingle(
-                                            id="date-picker",
-                                            min_date_allowed=date(1995, 8, 5),
-                                            max_date_allowed=date(2017, 9, 19),
-                                            initial_visible_month=date(2017, 8, 5),
-                                            date=date(2017, 8, 25),
-                                        ),
-                                    ],
-                                    width=12,
-                                    className="mb-3",
                                 ),
                                 dbc.Col(
                                     [
@@ -48,29 +64,38 @@ def create_data_table_entry(df):
                                             type="text",
                                         ),
                                     ],
-                                    width=12,
                                     className="mb-3",
+                                    xs=12,
                                 ),
                                 dbc.Col(
                                     [
-                                        html.Div(["Product ID"]),
-                                        dbc.Input(
-                                            id="product-id",
-                                            placeholder="Enter product ID",
-                                            type="text",
-                                        ),
-                                    ],
-                                    width=12,
-                                    className="mb-3",
-                                ),
-                                dbc.Col(
-                                    [
-                                        html.Div(["Quantity"]),
-                                        dbc.Input(
-                                            id="quantity",
-                                            placeholder="Enter quantity",
-                                            type="number",
-                                        ),
+                                        dbc.Row(
+                                            [
+                                                dbc.Col(
+                                                    [
+                                                        html.Div(["Product ID"]),
+                                                        dbc.Input(
+                                                            id="product-id",
+                                                            placeholder="Enter product ID",
+                                                            type="text",
+                                                        ),
+                                                    ],
+                                                    xs=8,
+                                                ),
+                                                dbc.Col(
+                                                    [
+                                                        html.Div(["Quantity"]),
+                                                        dbc.Input(
+                                                            id="quantity",
+                                                            placeholder="Enter number",
+                                                            type="number",
+                                                        ),
+                                                    ],
+                                                    className="mb-3",
+                                                    xs=4,
+                                                ),
+                                            ]
+                                        )
                                     ],
                                     width=12,
                                     className="mb-4",
