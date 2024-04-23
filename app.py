@@ -13,23 +13,79 @@ dff = df.copy(deep=True)
 # Initialize the app
 app = dash.Dash(
     __name__,
-    external_stylesheets=[dbc.themes.BOOTSTRAP, dbc.icons.BOOTSTRAP],
+    external_stylesheets=[dbc.themes.MATERIA, dbc.icons.BOOTSTRAP],
     use_pages=True,
 )
 
 sidebar = dbc.Nav(
     [
-        dbc.NavLink(
-            [html.Div(page["name"], className="ms-2")],
-            href=page["path"],
-            active="exact",
+        (
+            dbc.NavLink(
+                [
+                    html.Div(
+                        [
+                            html.I(className="bi bi-house-door-fill"),
+                            html.Div(page["name"], className="ms-2"),
+                        ],
+                        style={"display": "flex", "align-items": "center"},
+                    )
+                ],
+                href=page["path"],
+                active="exact",
+            )
+            if page["name"] == "Dashboard"
+            else (
+                dbc.NavLink(
+                    [
+                        html.Div(
+                            [
+                                html.I(
+                                    className="bi bi-bar-chart-fill"
+                                ),  # Data Insights icon
+                                html.Div(page["name"], className="ms-2"),
+                            ],
+                            style={"display": "flex", "align-items": "center"},
+                        )
+                    ],
+                    href=page["path"],
+                    active="exact",
+                )
+                if page["name"] == "Insights"
+                else dbc.NavLink(
+                    [
+                        html.Div(
+                            [
+                                html.I(className="bi bi-table"),
+                                html.Div(page["name"], className="ms-2"),
+                            ],
+                            style={"display": "flex", "align-items": "center"},
+                        )
+                    ],
+                    href=page["path"],
+                    active="exact",
+                )
+            )
         )
         for page in dash.page_registry.values()
     ],
     vertical=True,
     pills=True,
-    className="bg-light mt-4",
+    className="mt-4",
 )
+
+# sidebar = dbc.Nav(
+#     [
+#         dbc.NavLink(
+#             [html.Div(page["name"], className="ms-2")],
+#             href=page["path"],
+#             active="exact",
+#         )
+#         for page in dash.page_registry.values()
+#     ],
+#     vertical=True,
+#     pills=True,
+#     className="mt-4",
+# )
 
 navbar = dbc.NavbarSimple(
     brand="Superstore",

@@ -156,6 +156,7 @@ layout = dbc.Container(
                     ]
                 ),
             ],
+            className="mb-1"
         ),
         dbc.Row(
             [
@@ -169,7 +170,8 @@ layout = dbc.Container(
                         dcc.Graph(id="profit-graph", figure=profit_fig),
                     ]
                 ),
-            ]
+            ],
+            className="mb-1"
         ),
         dbc.Row(
             [
