@@ -1,10 +1,8 @@
 import pandas as pd
 import dash
-from dash import dcc, html, Input, Output, callback
-from dash.dependencies import Input, Output
+from dash import dcc, html
 import dash_bootstrap_components as dbc
-import plotly.express as px
-from datetime import datetime, timedelta
+from callbacks import get_data_table_filters_callbacks, get_data_table_entry_callbacks
 
 # Load the data
 url = "https://raw.githubusercontent.com/shoebjoarder/superstore/main/Sample%20-%20Superstore%20-%20CSV.csv"
@@ -53,6 +51,9 @@ app.layout = dbc.Container(
     fluid=True,
 )
 
+# Callbacks
+get_data_table_filters_callbacks(app)
+get_data_table_entry_callbacks(app)
 
 # Run the app
 if __name__ == "__main__":

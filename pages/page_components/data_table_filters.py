@@ -28,7 +28,9 @@ def create_data_table_filters(df):
                                                         id="dropdown-segment",
                                                         className="mb-3",
                                                     ),
+                                                    # TODO: Testing callback, remove later
                                                     html.Div(id="dd-output-container"),
+                                                    # 
                                                     html.Div(["Shop Mode"]),
                                                     dcc.Dropdown(
                                                         [
