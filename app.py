@@ -1,6 +1,6 @@
 import pandas as pd
 import dash
-from dash import dcc, html
+from dash import dcc, html, Output, Input
 import dash_bootstrap_components as dbc
 from callbacks import get_data_table_filters_callbacks, get_data_table_entry_callbacks
 
@@ -16,6 +16,11 @@ app = dash.Dash(
     external_stylesheets=[dbc.themes.MATERIA, dbc.icons.BOOTSTRAP],
     use_pages=True,
 )
+
+
+def nav_links():
+    return
+
 
 sidebar = dbc.Nav(
     [
@@ -70,28 +75,68 @@ sidebar = dbc.Nav(
     ],
     vertical=True,
     pills=True,
-    className="mt-4",
+    className="mt-4 d-none d-lg-block",
 )
 
-# sidebar = dbc.Nav(
-#     [
-#         dbc.NavLink(
-#             [html.Div(page["name"], className="ms-2")],
-#             href=page["path"],
-#             active="exact",
-#         )
-#         for page in dash.page_registry.values()
-#     ],
-#     vertical=True,
-#     pills=True,
-#     className="mt-4",
-# )
-
 navbar = dbc.NavbarSimple(
+    children=[
+        (
+            dbc.NavLink(
+                [
+                    html.Div(
+                        [
+                            html.I(className="bi bi-house-door-fill"),
+                            html.Div(page["name"], className="ms-2"),
+                        ],
+                        style={"display": "flex", "align-items": "center"},
+                    )
+                ],
+                href=page["path"],
+                active="exact",
+                className="d-lg-none",
+            )
+            if page["name"] == "Dashboard"
+            else (
+                dbc.NavLink(
+                    [
+                        html.Div(
+                            [
+                                html.I(
+                                    className="bi bi-bar-chart-fill"
+                                ),  # Data Insights icon
+                                html.Div(page["name"], className="ms-2"),
+                            ],
+                            style={"display": "flex", "align-items": "center"},
+                        )
+                    ],
+                    href=page["path"],
+                    active="exact",
+                    className="d-lg-none",
+                )
+                if page["name"] == "Insights"
+                else dbc.NavLink(
+                    [
+                        html.Div(
+                            [
+                                html.I(className="bi bi-table"),
+                                html.Div(page["name"], className="ms-2"),
+                            ],
+                            style={"display": "flex", "align-items": "center"},
+                        )
+                    ],
+                    href=page["path"],
+                    active="exact",
+                    className="d-lg-none",
+                )
+            )
+        )
+        for page in dash.page_registry.values()
+    ],
     brand="Superstore",
     brand_href="#",
     color="dark",
     dark=True,
+    expand="lg"
 )
 
 app.layout = dbc.Container(
@@ -99,8 +144,8 @@ app.layout = dbc.Container(
         dbc.Row([navbar]),
         dbc.Row(
             [
-                dbc.Col([sidebar], xs=4, md=2),
-                dbc.Col([dash.page_container], xs=8, md=10),
+                dbc.Col([sidebar], lg=2),
+                dbc.Col([dash.page_container], lg=10),
             ]
         ),
     ],
