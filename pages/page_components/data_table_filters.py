@@ -30,7 +30,7 @@ def create_data_table_filters(df):
                                                     ),
                                                     # TODO: Testing callback, remove later
                                                     html.Div(id="dd-output-container"),
-                                                    # 
+                                                    #
                                                     html.Div(["Shop Mode"]),
                                                     dcc.Dropdown(
                                                         [
@@ -201,7 +201,26 @@ def create_data_table_filters(df):
                                         md=6,
                                     ),
                                 ],
-                                className="g-3",
+                                className="g-3 mb-3",
+                            ),
+                            dbc.Row(
+                                [
+                                    dbc.Col(
+                                        [
+                                            dbc.Button(
+                                                [
+                                                    html.I(className="bi bi-list-nested"),
+                                                    " Clear filters",
+                                                ],
+                                                color="primary",
+                                                size="sm",
+                                                outline=True
+                                            ),
+                                        ],
+                                        className="d-flex justify-content-end",
+                                    )
+                                ],
+                                
                             ),
                         ]
                     ),
