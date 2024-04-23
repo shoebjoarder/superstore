@@ -112,7 +112,10 @@ layout = dbc.Container(
                                 ),
                             ]
                         ),
-                    ]
+                    ],
+                    className="mb-3",
+                    xs=12,
+                    md=6,
                 ),
                 dbc.Col(
                     [
@@ -153,25 +156,32 @@ layout = dbc.Container(
                                 ),
                             ]
                         ),
-                    ]
+                    ],
+                    className="mb-3",
+                    xs=12,
+                    md=6,
                 ),
             ],
-            className="mb-1"
         ),
         dbc.Row(
             [
                 dbc.Col(
                     [
                         dcc.Graph(id="sales-graph", figure=sales_fig),
-                    ]
+                    ],
+                    className="mb-3",
+                    xs=12,
+                    lg=6,
                 ),
                 dbc.Col(
                     [
                         dcc.Graph(id="profit-graph", figure=profit_fig),
-                    ]
+                    ],
+                    className="mb-3",
+                    xs=12,
+                    lg=6,
                 ),
             ],
-            className="mb-1"
         ),
         dbc.Row(
             [
@@ -201,7 +211,10 @@ layout = dbc.Container(
                                 )
                             ]
                         )
-                    ]
+                    ],
+                    className="mb-3",
+                    xs=12,
+                    md=6,
                 ),
                 dbc.Col(
                     [
@@ -229,7 +242,10 @@ layout = dbc.Container(
                                 )
                             ]
                         )
-                    ]
+                    ],
+                    className="mb-3",
+                    xs=12,
+                    md=6,
                 ),
             ]
         ),
