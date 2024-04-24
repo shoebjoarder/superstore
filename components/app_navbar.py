@@ -30,7 +30,7 @@ def navbar_component():
                                     html.Div(
                                         [
                                             html.I(
-                                                className="bi bi-bar-chart-fill"
+                                                className="fa-solid fa-magnifying-glass-chart"
                                             ),  # Data Insights icon
                                             html.Div(page["name"], className="ms-2"),
                                         ],

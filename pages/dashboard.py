@@ -199,7 +199,7 @@ layout = dbc.Container(
                                         dbc.Button(
                                             [
                                                 "To data table ",
-                                                html.I(className="bi bi-arrow-right"),
+                                                html.I(className="fa-solid fa-arrow-right"),
                                             ],
                                             color="primary",
                                             href="/table-page",
@@ -230,7 +230,7 @@ layout = dbc.Container(
                                         dbc.Button(
                                             [
                                                 "To insights ",
-                                                html.I(className="bi bi-arrow-right"),
+                                                html.I(className="fa-solid fa-arrow-right"),
                                             ],
                                             color="primary",
                                             href="/graph-page",

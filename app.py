@@ -29,7 +29,11 @@ merged_df, df_original = load_dataset()
 # Initialize the app
 app = dash.Dash(
     __name__,
-    external_stylesheets=[dbc.themes.MATERIA, dbc.icons.BOOTSTRAP],
+    external_stylesheets=[
+        dbc.themes.MATERIA,
+        dbc.icons.BOOTSTRAP,
+        dbc.icons.FONT_AWESOME,
+    ],
     use_pages=True,
 )
 
