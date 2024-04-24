@@ -4,7 +4,7 @@ from dash import dcc, html
 from datetime import date
 
 
-def create_data_table_entry(df):
+def create_data_table_entry():
     accordion = dbc.Accordion(
         [
             dbc.AccordionItem(
@@ -21,7 +21,7 @@ def create_data_table_entry(df):
                                                     [
                                                         html.Div(["Order ID"]),
                                                         dbc.Input(
-                                                            id="order-id",
+                                                            id="input-order-id",
                                                             placeholder="Enter order ID",
                                                             type="text",
                                                         ),
@@ -34,17 +34,10 @@ def create_data_table_entry(df):
                                                     [
                                                         html.Div(["Order date"]),
                                                         dcc.DatePickerSingle(
-                                                            id="date-picker",
-                                                            min_date_allowed=date(
-                                                                1995, 8, 5
-                                                            ),
-                                                            max_date_allowed=date(
-                                                                2017, 9, 19
-                                                            ),
-                                                            initial_visible_month=date(
-                                                                2017, 8, 5
-                                                            ),
-                                                            date=date(2017, 8, 25),
+                                                            id="input-order-date",
+                                                            max_date_allowed=date.today(),
+                                                            initial_visible_month=date.today(),
+                                                            date=date.today(),
                                                         ),
                                                     ],
                                                     className="mb-3",
@@ -59,7 +52,7 @@ def create_data_table_entry(df):
                                     [
                                         html.Div(["Customer ID"]),
                                         dbc.Input(
-                                            id="customer-id",
+                                            id="input-customer-id",
                                             placeholder="Enter customer ID",
                                             type="text",
                                         ),
@@ -75,7 +68,7 @@ def create_data_table_entry(df):
                                                     [
                                                         html.Div(["Product ID"]),
                                                         dbc.Input(
-                                                            id="product-id",
+                                                            id="input-product-id",
                                                             placeholder="Enter product ID",
                                                             type="text",
                                                         ),
@@ -86,7 +79,7 @@ def create_data_table_entry(df):
                                                     [
                                                         html.Div(["Quantity"]),
                                                         dbc.Input(
-                                                            id="quantity",
+                                                            id="input-quantity",
                                                             placeholder="Enter number",
                                                             type="number",
                                                         ),
@@ -103,11 +96,11 @@ def create_data_table_entry(df):
                                 dbc.Col(
                                     [
                                         dbc.Button(
-                                            [
-                                                html.I(className="bi bi-floppy"),
-                                                " Add to data table",
-                                            ],
+                                            "Submit",
+                                            id="submit-val",
                                             color="primary",
+                                            n_clicks=0,
+                                            disabled=True,
                                         ),
                                     ],
                                     width=12,
@@ -125,6 +118,22 @@ def create_data_table_entry(df):
                 ],
                 title="Do you want to add a new entry to the data table? Click here.",
                 className="mb-3",
+            ),
+            dbc.Toast(
+                html.Div(
+                    id="container-button-basic",
+                ),
+                id="positioned-toast",
+                header="Data added successfully",
+                duration=4000,
+                is_open=False,
+                icon="success",
+                style={
+                    "position": "fixed",
+                    "bottom": "20px",
+                    "left": "24px",
+                    "width": 350,
+                },
             ),
         ],
         # start_collapsed="True",

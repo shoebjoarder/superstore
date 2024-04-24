@@ -15,7 +15,7 @@ dash.register_page(__name__, name="Data Table", path="/table-page")
 
 
 filters = create_data_table_filters(df)
-add_new_data = create_data_table_entry(df)
+add_new_data = create_data_table_entry()
 
 layout = dbc.Container(
     [
