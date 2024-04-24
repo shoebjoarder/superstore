@@ -28,7 +28,9 @@ def get_data_table_entry_callbacks(app):
         State("input-quantity", "value"),
         prevent_initial_call=True,
     )
-    def submit_data(n_clicks, order_id, order_date, customer_id, product_id, quantity):
+    def feedback_message_on_submit_data(
+        n_clicks, order_id, order_date, customer_id, product_id, quantity
+    ):
         return 'Order ID: "{}", Order date: "{}", Customer ID: "{}", Product ID: "{}", Quantity: "{}"'.format(
             order_id, order_date, customer_id, product_id, quantity
         )
@@ -37,7 +39,7 @@ def get_data_table_entry_callbacks(app):
         Output("positioned-toast", "is_open"),
         [Input("submit-val", "n_clicks")],
     )
-    def feedback_on_submit(n):
+    def feedback_status_on_submit(n):
         if n:
             return True
         return False
