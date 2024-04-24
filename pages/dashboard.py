@@ -7,13 +7,10 @@ import sys
 from os import path
 
 sys.path.append(path.dirname(path.dirname(path.abspath(__file__))))
-from app import dff
+from app import df_original as dff
 
 dash.register_page(__name__, name="Dashboard", path="/")
 
-
-# Convert 'Order Date' to datetime
-dff["Order Date"] = pd.to_datetime(dff["Order Date"])
 
 # Filter dff for the last four months
 most_recent_date = dff["Order Date"].max()

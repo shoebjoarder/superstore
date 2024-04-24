@@ -5,11 +5,11 @@ import dash
 from dash import dcc, html, dash_table
 from datetime import date
 from .page_components import create_data_table_filters, create_data_table_entry
+from app import df_original as df
 import sys
 from os import path
 
 sys.path.append(path.dirname(path.dirname(path.abspath(__file__))))
-from app import df
 
 dash.register_page(__name__, name="Data Table", path="/table-page")
 
