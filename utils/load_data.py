@@ -17,4 +17,4 @@ def load_dataset():
     df_original = merged_df.copy(deep=True)
     df_table = merged_df.copy(deep=True)
 
-    return merged_df, df_original, df_table
+    return df_original, df_table

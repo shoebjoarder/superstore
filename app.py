@@ -1,12 +1,13 @@
 import pandas as pd
 import dash
 import dash_bootstrap_components as dbc
-from callbacks import get_data_table_filters_callbacks, get_data_table_entry_callbacks
-from components import sidebar_component, navbar_component
+import callbacks
+import components
+from dash import dcc
 from utils import load_dataset
 
 
-merged_df, df_original, df_table = load_dataset()
+df_original, df_table = load_dataset()
 
 
 # Initialize the app
@@ -23,10 +24,11 @@ app = dash.Dash(
 
 app.layout = dbc.Container(
     [
-        dbc.Row([navbar_component()]),
+        dcc.Store(id="memory-output", data=df_table.to_dict("records")),
+        dbc.Row([components.navbar_component()]),
         dbc.Row(
             [
-                dbc.Col([sidebar_component()], lg=2),
+                dbc.Col([components.sidebar_component()], lg=2),
                 dbc.Col([dash.page_container], lg=10),
             ]
         ),
@@ -35,8 +37,9 @@ app.layout = dbc.Container(
 )
 
 # Callbacks
-get_data_table_filters_callbacks(app, df_table)
-get_data_table_entry_callbacks(app)
+callbacks.get_data_table_filters_callbacks(app)
+callbacks.get_data_table_entry_callbacks(app)
+callbacks.data_table_callbacks(app)
 
 # Run the app
 if __name__ == "__main__":

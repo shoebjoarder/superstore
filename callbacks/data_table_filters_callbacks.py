@@ -1,8 +1,9 @@
 from dash import Output, Input, State
+import pandas as pd
 
 
 def filter_data(
-    dataframe_table,
+    df,
     segment,
     ship_mode,
     ship_date_range_start,
@@ -15,6 +16,7 @@ def filter_data(
     state,
     city,
 ):
+    dataframe_table = df.dropna()
     count = 0
     temp = None
     temp_subcategory = sorted(dataframe_table["Sub-Category"].unique())
@@ -109,7 +111,7 @@ def filter_data(
     return temp, count, temp_subcategory, temp_state, temp_city
 
 
-def get_data_table_filters_callbacks(app, dataframe_table):
+def get_data_table_filters_callbacks(app):
     @app.callback(
         Output("submit-filter", "children"),
         Output("clear-filter", "disabled"),
@@ -127,6 +129,7 @@ def get_data_table_filters_callbacks(app, dataframe_table):
         Input("dropdown-country", "value"),
         Input("dropdown-state", "value"),
         Input("dropdown-city", "value"),
+        Input("memory-output", "data"),
     )
     def select_filters(
         segment,
@@ -140,9 +143,10 @@ def get_data_table_filters_callbacks(app, dataframe_table):
         country,
         state,
         city,
+        dataframe_data,
     ):
         temp, count, temp_subcategory, temp_state, temp_city = filter_data(
-            dataframe_table,
+            pd.DataFrame(dataframe_data),
             segment,
             ship_mode,
             ship_date_range_start,
@@ -196,6 +200,7 @@ def get_data_table_filters_callbacks(app, dataframe_table):
         State("dropdown-country", "value"),
         State("dropdown-state", "value"),
         State("dropdown-city", "value"),
+        Input("memory-output", "data"),
         prevent_initial_call=True,
     )
     def apply_filters(
@@ -211,9 +216,10 @@ def get_data_table_filters_callbacks(app, dataframe_table):
         country,
         state,
         city,
+        dataframe_data,
     ):
         temp, _, _, _, _ = filter_data(
-            dataframe_table,
+            pd.DataFrame(dataframe_data),
             segment,
             ship_mode,
             ship_date_range_start,
@@ -228,7 +234,7 @@ def get_data_table_filters_callbacks(app, dataframe_table):
         )
 
         if temp is None:
-            return dataframe_table.to_dict("records")
+            return dataframe_data
 
         return temp.to_dict("records")
 
@@ -246,11 +252,12 @@ def get_data_table_filters_callbacks(app, dataframe_table):
         Output("dropdown-state", "value"),
         Output("dropdown-city", "value"),
         Input("clear-filter", "n_clicks"),
+        Input("memory-output", "data"),
     )
-    def clear_filters(n_clicks):
+    def clear_filters(n_clicks, dataframe_data):
 
         return (
-            dataframe_table.to_dict("records"),
+            dataframe_data,
             None,
             None,
             None,

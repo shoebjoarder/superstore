@@ -4,8 +4,9 @@ import pandas as pd
 import dash
 from dash import dcc, html, dash_table
 from datetime import date
-from .page_components import create_data_table_filters, create_data_table_entry
-from app import df_original as df
+# from .page_components import create_data_table_filters, create_data_table_entry
+from .page_components import *
+from app import df_table as df
 import sys
 from os import path
 
@@ -27,13 +28,11 @@ layout = dbc.Container(
                 filters,
                 dash_table.DataTable(
                     id="data-table",
-                    data=df.to_dict("records"),
                     page_size=15,
                     style_table={"maxWidth": "100%", "overflowX": "auto"},
                     fill_width=True,
                 ),
             ],
-            style={"padding-bottom": "16px"},
             className="pb-3 mt-4",
         ),
         dbc.Row([add_new_data]),
