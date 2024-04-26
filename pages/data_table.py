@@ -1,9 +1,6 @@
 import dash_bootstrap_components as dbc
-import plotly.express as px
-import pandas as pd
 import dash
-from dash import dcc, html, dash_table
-from datetime import date
+from dash import dash_table, html
 from .page_components import *
 from app import df_table as df
 import sys

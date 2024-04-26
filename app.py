@@ -1,4 +1,3 @@
-import pandas as pd
 import dash
 import dash_bootstrap_components as dbc
 import callbacks
@@ -26,11 +25,23 @@ app.layout = dbc.Container(
     [
         dcc.Store(id="memory-output", data=df_table.to_dict("records")),
         dbc.Row([components.navbar_component()]),
-        dbc.Row(
+        dbc.Container(
             [
-                dbc.Col([components.sidebar_component()], lg=2),
-                dbc.Col([dash.page_container], lg=10),
-            ]
+                dbc.Row(
+                    [
+                        dbc.Col(
+                            [components.sidebar_component()],
+                            className="d-flex flex-column",
+                            lg=2,
+                        ),
+                        dbc.Col(
+                            [dash.page_container], className="d-flex flex-column", lg=10
+                        ),
+                    ],
+                    style={"max-width": "1536px", "width": "100%"},
+                ),
+            ],
+            className="d-flex justify-content-center",
         ),
     ],
     fluid=True,

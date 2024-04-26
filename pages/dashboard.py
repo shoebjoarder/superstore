@@ -203,7 +203,7 @@ layout = dbc.Container(
                                             className="card-title",
                                         ),
                                         html.P(
-                                            "Here you can preview and manipulate the Superstore data table.",
+                                            "Preview and manipulate the Superstore data table.",
                                             className="card-text",
                                         ),
                                         dbc.Button(
@@ -236,7 +236,7 @@ layout = dbc.Container(
                                             className="card-title",
                                         ),
                                         html.P(
-                                            "Here you can get insights into the data from various interactive charts.",
+                                            "Get insights into the data using interactive charts.",
                                             className="card-text",
                                         ),
                                         dbc.Button(

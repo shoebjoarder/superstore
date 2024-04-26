@@ -1,5 +1,4 @@
 import dash_bootstrap_components as dbc
-import plotly.express as px
 from dash import dcc, html
 from datetime import date
 
@@ -136,7 +135,7 @@ def create_data_table_entry():
                 },
             ),
         ],
-        # start_collapsed="True",
+        start_collapsed="True",
     )
 
     return accordion
