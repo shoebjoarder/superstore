@@ -26,6 +26,7 @@ layout = dbc.Container(
                 # Filter from the filter component for the data table
                 filters,
                 dash_table.DataTable(
+                    id="data-table",
                     data=df.to_dict("records"),
                     page_size=10,
                     style_table={"maxWidth": "100%", "overflowX": "auto"},
