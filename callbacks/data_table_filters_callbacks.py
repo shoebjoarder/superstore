@@ -1,5 +1,6 @@
 from dash import Output, Input, State
 import pandas as pd
+from dash.exceptions import PreventUpdate
 
 
 def filter_data(
@@ -111,7 +112,7 @@ def filter_data(
     return temp, count, temp_subcategory, temp_state, temp_city
 
 
-def get_data_table_filters_callbacks(app):
+def data_table_filters_callbacks(app):
     @app.callback(
         Output("submit-filter", "children"),
         Output("clear-filter", "disabled"),
@@ -143,10 +144,10 @@ def get_data_table_filters_callbacks(app):
         country,
         state,
         city,
-        dataframe_data,
+        memory_data,
     ):
         temp, count, temp_subcategory, temp_state, temp_city = filter_data(
-            pd.DataFrame(dataframe_data),
+            pd.DataFrame(memory_data),
             segment,
             ship_mode,
             ship_date_range_start,
@@ -216,10 +217,12 @@ def get_data_table_filters_callbacks(app):
         country,
         state,
         city,
-        dataframe_data,
+        memory_data,
     ):
+        if n_clicks is None:
+            raise PreventUpdate
         temp, _, _, _, _ = filter_data(
-            pd.DataFrame(dataframe_data),
+            pd.DataFrame(memory_data),
             segment,
             ship_mode,
             ship_date_range_start,
@@ -234,12 +237,12 @@ def get_data_table_filters_callbacks(app):
         )
 
         if temp is None:
-            return dataframe_data
+            return memory_data
 
         return temp.to_dict("records")
 
     @app.callback(
-        Output("data-table", "data"),
+        Output("data-table", "data", allow_duplicate=True),
         Output("dropdown-segment", "value"),
         Output("dropdown-ship-mode", "value"),
         Output("ship-date-range", "start_date"),
@@ -253,11 +256,13 @@ def get_data_table_filters_callbacks(app):
         Output("dropdown-city", "value"),
         Input("clear-filter", "n_clicks"),
         Input("memory-output", "data"),
+        prevent_initial_call=True,
     )
-    def clear_filters(n_clicks, dataframe_data):
-
+    def clear_filters(n_clicks, memory_data):
+        if n_clicks is None:
+            raise PreventUpdate
         return (
-            dataframe_data,
+            memory_data,
             None,
             None,
             None,

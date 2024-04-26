@@ -37,8 +37,8 @@ app.layout = dbc.Container(
 )
 
 # Callbacks
-callbacks.get_data_table_filters_callbacks(app)
-callbacks.get_data_table_entry_callbacks(app)
+callbacks.data_table_filters_callbacks(app)
+callbacks.data_table_entry_callbacks(app)
 callbacks.data_table_callbacks(app)
 
 # Run the app

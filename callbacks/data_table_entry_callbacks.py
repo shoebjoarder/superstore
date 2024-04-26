@@ -3,7 +3,7 @@ import pandas as pd
 from dash.exceptions import PreventUpdate
 
 
-def get_data_table_entry_callbacks(app):
+def data_table_entry_callbacks(app):
     @app.callback(
         Output("submit-val", "disabled"),
         [
@@ -40,7 +40,7 @@ def get_data_table_entry_callbacks(app):
         customer_id,
         product_id,
         quantity,
-        dataframe_data,
+        memory_data,
     ):
         if n_clicks is None:
             raise PreventUpdate
@@ -62,7 +62,7 @@ def get_data_table_entry_callbacks(app):
                 "Quantity": quantity,
             }
 
-            df = pd.DataFrame(dataframe_data)
+            df = pd.DataFrame(memory_data)
 
             df.loc[-1] = new_data
             df.index = df.index + 1
@@ -72,15 +72,8 @@ def get_data_table_entry_callbacks(app):
                 feedback_message,
                 df.to_dict("records"),
                 df.to_dict("records"),
-                # dataframe_table_updated.to_dict("records"),
             )
-        return (feedback_message, dataframe_data, dataframe_data)
-
-        # # Convert the new row data into a DataFrame
-        # new_row_df = pd.DataFrame([new_data])
-
-        # # Append the new row to the existing DataFrame
-        # dataframe_table_updated = pd.concat([new_row_df, dataframe_table], ignore_index=True)
+        return feedback_message, memory_data, memory_data
 
         # file_name = "updated_data.xlsx"
 
