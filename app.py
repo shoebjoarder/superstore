@@ -40,6 +40,7 @@ app.layout = dbc.Container(
 callbacks.data_table_filters_callbacks(app)
 callbacks.data_table_entry_callbacks(app)
 callbacks.data_table_callbacks(app)
+callbacks.insights_callbacks(app)
 
 # Run the app
 if __name__ == "__main__":

@@ -11,15 +11,25 @@ from app import df_original as dff
 
 dash.register_page(__name__, name="Dashboard", path="/")
 
+dff["Order Date"] = pd.to_datetime(dff["Order Date"])
 
-# Filter dff for the last four months
+# Calculate most_recent_date and four_months_ago as Timestamp objects
 most_recent_date = dff["Order Date"].max()
 four_months_ago = most_recent_date - pd.Timedelta(days=120)
 
-# Filter dff for the previous four months
+# Now, the comparison should work without errors
 recent_data = dff[
     (dff["Order Date"] >= four_months_ago) & (dff["Order Date"] <= most_recent_date)
 ]
+
+# # Filter dff for the last four months
+# most_recent_date = pd.to_datetime(dff["Order Date"].max())
+# four_months_ago = most_recent_date - pd.Timedelta(days=120)
+
+# # Filter dff for the previous four months
+# recent_data = dff[
+#     (dff["Order Date"] >= four_months_ago) & (dff["Order Date"] <= most_recent_date)
+# ]
 
 # Calculate accumulated sales and profit ratio
 accumulated_sales = recent_data["Sales"].sum()
@@ -199,7 +209,9 @@ layout = dbc.Container(
                                         dbc.Button(
                                             [
                                                 "To data table ",
-                                                html.I(className="fa-solid fa-arrow-right"),
+                                                html.I(
+                                                    className="fa-solid fa-arrow-right"
+                                                ),
                                             ],
                                             color="primary",
                                             href="/table-page",
@@ -230,7 +242,9 @@ layout = dbc.Container(
                                         dbc.Button(
                                             [
                                                 "To insights ",
-                                                html.I(className="fa-solid fa-arrow-right"),
+                                                html.I(
+                                                    className="fa-solid fa-arrow-right"
+                                                ),
                                             ],
                                             color="primary",
                                             href="/graph-page",

@@ -3,28 +3,9 @@ import dash_bootstrap_components as dbc
 import plotly.express as px
 import dash
 from dash import dcc, html
-import sys
-from os import path
-
-sys.path.append(path.dirname(path.dirname(path.abspath(__file__))))
-from app import df_original as df
 
 dash.register_page(__name__, name="Insights", path="/graph-page")
 
-
-# Calculate accumulated sales and profit ratio
-accumulated_sales = df["Sales"].sum()
-profit_ratio = df["Profit"].sum() / accumulated_sales
-
-# Group by 'Month', then sum 'Sales' for each unique year-month combination
-grouped_sales_monthly = df.resample("ME", on="Order Date")["Sales"].sum().reset_index()
-# Rename the columns for clarity
-grouped_sales_monthly.columns = ["Order Date", "Total Sales"]
-
-# Create a line chart for sales and profit
-plot_fig = px.line(
-    grouped_sales_monthly, x="Order Date", y="Total Sales", title="Sales Trends"
-)
 
 layout = dbc.Container(
     [
@@ -51,12 +32,13 @@ layout = dbc.Container(
                                 "Profit",
                                 "Profit Ratio",
                                 "Quantity",
-                                "Returns",
+                                "Returned",
                                 "Sales",
                             ],
+                            value="Discount",
                             id="dropdown-timeline-graph",
                         ),
-                        dcc.Graph(id="timeline-graph", figure=plot_fig),
+                        dcc.Graph(id="insights-timeline-graph"),
                     ],
                     xs=12,
                     lg=6,
@@ -120,7 +102,7 @@ layout = dbc.Container(
                                 ),
                             ]
                         ),
-                        dcc.Graph(id="graph-scatterplot", figure=plot_fig),
+                        # dcc.Graph(id="graph-scatterplot", figure=plot_fig),
                     ],
                     xs=12,
                     lg=6,
