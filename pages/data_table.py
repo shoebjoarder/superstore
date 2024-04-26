@@ -28,7 +28,7 @@ layout = dbc.Container(
                 dash_table.DataTable(
                     id="data-table",
                     data=df.to_dict("records"),
-                    page_size=10,
+                    page_size=15,
                     style_table={"maxWidth": "100%", "overflowX": "auto"},
                     fill_width=True,
                 ),
