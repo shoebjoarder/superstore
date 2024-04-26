@@ -20,24 +20,15 @@ def create_data_table_filters(df):
                                                 [
                                                     html.Div(["Segment"]),
                                                     dcc.Dropdown(
-                                                        [
-                                                            "Item 1",
-                                                            "Item 2",
-                                                            "Item 3",
-                                                        ],
+                                                        sorted(df["Segment"].unique()),
                                                         id="dropdown-segment",
                                                         className="mb-3",
                                                     ),
-                                                    # TODO: Testing callback, remove later
-                                                    html.Div(id="dd-output-container"),
-                                                    #
-                                                    html.Div(["Shop Mode"]),
+                                                    html.Div(["Ship Mode"]),
                                                     dcc.Dropdown(
-                                                        [
-                                                            "Item 1",
-                                                            "Item 2",
-                                                            "Item 3",
-                                                        ],
+                                                        sorted(
+                                                            df["Ship Mode"].unique()
+                                                        ),
                                                         id="dropdown-ship-mode",
                                                         className="mb-3",
                                                     ),
@@ -59,26 +50,18 @@ def create_data_table_filters(df):
                                                                             8,
                                                                             5,
                                                                         ),
-                                                                        max_date_allowed=date(
-                                                                            2017,
-                                                                            9,
-                                                                            19,
-                                                                        ),
-                                                                        initial_visible_month=date(
-                                                                            2017,
-                                                                            8,
-                                                                            5,
-                                                                        ),
-                                                                        end_date=date(
-                                                                            2017,
-                                                                            8,
-                                                                            25,
-                                                                        ),
+                                                                        max_date_allowed=df[
+                                                                            "Ship Date"
+                                                                        ].max(),
+                                                                        initial_visible_month=df[
+                                                                            "Ship Date"
+                                                                        ].max(),
+                                                                        clearable=True,
                                                                     ),
                                                                 ],
                                                                 className="mb-2",
                                                                 xs=12,
-                                                                xl=6,
+                                                                # xl=6,
                                                             ),
                                                             dbc.Col(
                                                                 [
@@ -92,29 +75,21 @@ def create_data_table_filters(df):
                                                                             8,
                                                                             5,
                                                                         ),
-                                                                        max_date_allowed=date(
-                                                                            2017,
-                                                                            9,
-                                                                            19,
-                                                                        ),
-                                                                        initial_visible_month=date(
-                                                                            2017,
-                                                                            8,
-                                                                            5,
-                                                                        ),
-                                                                        end_date=date(
-                                                                            2017,
-                                                                            8,
-                                                                            25,
-                                                                        ),
+                                                                        max_date_allowed=df[
+                                                                            "Order Date"
+                                                                        ].max(),
+                                                                        initial_visible_month=df[
+                                                                            "Order Date"
+                                                                        ].max(),
                                                                         style={
                                                                             "width": "100%"
                                                                         },
+                                                                        clearable=True,
                                                                     ),
                                                                 ],
                                                                 className="mb-2",
                                                                 xs=12,
-                                                                xl=6,
+                                                                # xl=6,
                                                             ),
                                                         ]
                                                     )
@@ -131,21 +106,15 @@ def create_data_table_filters(df):
                                                 [
                                                     html.Div(["Category"]),
                                                     dcc.Dropdown(
-                                                        [
-                                                            "Item 1",
-                                                            "Item 2",
-                                                            "Item 3",
-                                                        ],
+                                                        sorted(df["Category"].unique()),
                                                         id="dropdown-category",
                                                         className="mb-2",
                                                     ),
                                                     html.Div(["Sub-Category"]),
                                                     dcc.Dropdown(
-                                                        [
-                                                            "Item 1",
-                                                            "Item 2",
-                                                            "Item 3",
-                                                        ],
+                                                        sorted(
+                                                            df["Sub-Category"].unique()
+                                                        ),
                                                         id="dropdown-sub-category",
                                                         className="mb-2",
                                                     ),
@@ -161,31 +130,19 @@ def create_data_table_filters(df):
                                                 [
                                                     html.Div(["Country"]),
                                                     dcc.Dropdown(
-                                                        [
-                                                            "Item 1",
-                                                            "Item 2",
-                                                            "Item 3",
-                                                        ],
+                                                        sorted(df["Country"].unique()),
                                                         id="dropdown-country",
                                                         className="mb-2",
                                                     ),
                                                     html.Div(["State"]),
                                                     dcc.Dropdown(
-                                                        [
-                                                            "Item 1",
-                                                            "Item 2",
-                                                            "Item 3",
-                                                        ],
+                                                        sorted(df["State"].unique()),
                                                         id="dropdown-state",
                                                         className="mb-2",
                                                     ),
                                                     html.Div(["City"]),
                                                     dcc.Dropdown(
-                                                        [
-                                                            "Item 1",
-                                                            "Item 2",
-                                                            "Item 3",
-                                                        ],
+                                                        sorted(df["City"].unique()),
                                                         id="dropdown-city",
                                                         className="mb-2",
                                                     ),
@@ -203,24 +160,43 @@ def create_data_table_filters(df):
                                 ],
                                 className="g-3 mb-3",
                             ),
+                            dbc.Row([html.Hr()]),
+                            dbc.Row(
+                                [  # TODO: Testing callback, remove later
+                                    html.Div(id="dd-output-container"),
+                                ],
+                                className="mb-3",
+                            ),
+                            dbc.Row([html.Hr()]),
                             dbc.Row(
                                 [
                                     dbc.Col(
                                         [
                                             dbc.Button(
                                                 [
-                                                    html.I(className="bi bi-list-nested"),
-                                                    " Clear filters",
+                                                    html.I(
+                                                        className="bi bi-list-nested"
+                                                    ),
+                                                    " Clear all",
                                                 ],
                                                 color="primary",
-                                                size="sm",
-                                                outline=True
+                                                outline=True,
+                                            ),
+                                        ],
+                                        className="d-flex justify-content-start",
+                                    ),
+                                    dbc.Col(
+                                        [
+                                            dbc.Button(
+                                                children=["Apply Filters"],
+                                                color="primary",
+                                                id="submit-filter",
+                                                n_clicks=0,
                                             ),
                                         ],
                                         className="d-flex justify-content-end",
-                                    )
+                                    ),
                                 ],
-                                
                             ),
                         ]
                     ),
@@ -229,7 +205,7 @@ def create_data_table_filters(df):
                 className="mb-3",
             ),
         ],
-        start_collapsed="True",
+        # start_collapsed="True",
     )
 
     return accordion
