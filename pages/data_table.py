@@ -4,7 +4,6 @@ import pandas as pd
 import dash
 from dash import dcc, html, dash_table
 from datetime import date
-# from .page_components import create_data_table_filters, create_data_table_entry
 from .page_components import *
 from app import df_table as df
 import sys

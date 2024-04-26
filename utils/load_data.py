@@ -12,6 +12,9 @@ def load_dataset():
     merged_df = pd.merge(df_orders, df_returns, on="Order ID", how="outer")
 
     merged_df["Returned"] = merged_df["Returned"].fillna("No")
+    
+    merged_df['Order Date'] = merged_df['Order Date'].dt.strftime('%Y-%m-%d')
+    merged_df['Ship Date'] = merged_df['Ship Date'].dt.strftime('%Y-%m-%d')
 
     merged_df = merged_df.drop("Row ID", axis=1)
     df_original = merged_df.copy(deep=True)
