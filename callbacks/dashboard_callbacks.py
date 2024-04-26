@@ -19,7 +19,6 @@ def dashboard_callbacks(app):
         most_recent_date = df["Order Date"].max()
         four_months_ago = most_recent_date - pd.Timedelta(days=120)
 
-        # Now, the comparison should work without errors
         recent_data = df[
             (df["Order Date"] >= four_months_ago)
             & (df["Order Date"] <= most_recent_date)
@@ -28,8 +27,6 @@ def dashboard_callbacks(app):
         # Calculate accumulated sales and profit ratio
         accumulated_sales = recent_data["Sales"].sum()
         profit_ratio = df["Profit"].sum() / accumulated_sales
-
-        print(f"${accumulated_sales:,.2f}")
 
         # Group by 'Month', then sum 'Sales' for each unique year-month combination
         grouped_sales_monthly = (

@@ -1,7 +1,7 @@
 import dash
 import dash_bootstrap_components as dbc
 import callbacks
-import components
+import app_components
 from dash import dcc
 from utils import load_dataset
 
@@ -24,13 +24,13 @@ app = dash.Dash(
 app.layout = dbc.Container(
     [
         dcc.Store(id="memory-output", data=df_table.to_dict("records")),
-        dbc.Row([components.navbar_component()]),
+        dbc.Row([app_components.navbar_component()]),
         dbc.Container(
             [
                 dbc.Row(
                     [
                         dbc.Col(
-                            [components.sidebar_component()],
+                            [app_components.sidebar_component()],
                             className="d-flex flex-column",
                             lg=2,
                         ),
