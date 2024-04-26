@@ -112,6 +112,7 @@ def filter_data(
 def get_data_table_filters_callbacks(app, dataframe_table):
     @app.callback(
         Output("submit-filter", "children"),
+        Output("clear-filter", "disabled"),
         Output("dropdown-sub-category", "options"),
         Output("dropdown-state", "options"),
         Output("dropdown-city", "options"),
@@ -160,12 +161,14 @@ def get_data_table_filters_callbacks(app, dataframe_table):
             if count == 0:
                 return (
                     f"No data found!",
+                    False,
                     temp_subcategory,
                     temp_state,
                     temp_city,
                 )
             return (
                 f"Show {count} data",
+                False,
                 temp_subcategory,
                 temp_state,
                 temp_city,
@@ -173,13 +176,14 @@ def get_data_table_filters_callbacks(app, dataframe_table):
         else:
             return (
                 "Apply Filters",
+                True,
                 temp_subcategory,
                 temp_state,
                 temp_city,
             )
 
     @app.callback(
-        Output("data-table", "data"),
+        Output("data-table", "data", allow_duplicate=True),
         Input("submit-filter", "n_clicks"),
         State("dropdown-segment", "value"),
         State("dropdown-ship-mode", "value"),
@@ -192,6 +196,7 @@ def get_data_table_filters_callbacks(app, dataframe_table):
         State("dropdown-country", "value"),
         State("dropdown-state", "value"),
         State("dropdown-city", "value"),
+        prevent_initial_call=True,
     )
     def apply_filters(
         n_clicks,
@@ -226,3 +231,35 @@ def get_data_table_filters_callbacks(app, dataframe_table):
             return dataframe_table.to_dict("records")
 
         return temp.to_dict("records")
+
+    @app.callback(
+        Output("data-table", "data"),
+        Output("dropdown-segment", "value"),
+        Output("dropdown-ship-mode", "value"),
+        Output("ship-date-range", "start_date"),
+        Output("ship-date-range", "end_date"),
+        Output("order-date-range", "start_date"),
+        Output("order-date-range", "end_date"),
+        Output("dropdown-category", "value"),
+        Output("dropdown-sub-category", "value"),
+        Output("dropdown-country", "value"),
+        Output("dropdown-state", "value"),
+        Output("dropdown-city", "value"),
+        Input("clear-filter", "n_clicks"),
+    )
+    def clear_filters(n_clicks):
+
+        return (
+            dataframe_table.to_dict("records"),
+            None,
+            None,
+            None,
+            None,
+            None,
+            None,
+            None,
+            None,
+            None,
+            None,
+            None,
+        )

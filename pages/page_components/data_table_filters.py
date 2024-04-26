@@ -162,13 +162,6 @@ def create_data_table_filters(df):
                             ),
                             dbc.Row([html.Hr()]),
                             dbc.Row(
-                                [  # TODO: Testing callback, remove later
-                                    html.Div(id="dd-output-container"),
-                                ],
-                                className="mb-3",
-                            ),
-                            dbc.Row([html.Hr()]),
-                            dbc.Row(
                                 [
                                     dbc.Col(
                                         [
@@ -180,6 +173,8 @@ def create_data_table_filters(df):
                                                     " Clear all",
                                                 ],
                                                 color="primary",
+                                                id="clear-filter",
+                                                disabled=True,
                                                 outline=True,
                                             ),
                                         ],
