@@ -217,25 +217,6 @@ def insights_callbacks(app):
                         sorted(categorical_dropdown_list),
                     )
 
-                # if x_axis_value == "Returned" or y_axis_value == "Returned":
-                #     return (
-                #         px.scatter(
-                #             graph_returned(df)[
-                #                 [
-                #                     f"{x_axis_value}",
-                #                     f"{y_axis_value}",
-                #                     f"{categorical_value}",
-                #                 ]
-                #             ],
-                #             x=f"{x_axis_value}",
-                #             y=f"{y_axis_value}",
-                #             color=f"{categorical_value}",
-                #         ),
-                #         new_x_axis_dropdown_list,
-                #         new_y_axis_dropdown_list,
-                #         categorical_dropdown_list,
-                #     )
-
                 return (
                     px.scatter(
                         df[

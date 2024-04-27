@@ -126,6 +126,7 @@ def data_table_filters_callbacks(app):
         Output("dropdown-state", "options"),
         Output("dropdown-city", "options"),
         Input("memory-output", "data"),
+        prevent_initial_call=True,
     )
     def populate_filter_options(memory_data):
         df = pd.DataFrame(memory_data).dropna()
