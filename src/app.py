@@ -24,6 +24,7 @@ app = dash.Dash(
     ],
     use_pages=True,
 )
+server = app.server
 
 # Initialize the layout
 app.layout = dbc.Container(
@@ -59,4 +60,4 @@ callbacks.dashboard_callbacks(app)
 
 # Run the app
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run_server(debug=True)
