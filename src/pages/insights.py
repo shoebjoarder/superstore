@@ -26,6 +26,7 @@ layout = dbc.Container(
                 html.Div(["Filter by date"]),
                 dcc.DatePickerRange(
                     id="insights-date-range",
+                    # TODO: FIX required to help choose date easily
                     min_date_allowed=date(
                         1995,
                         8,

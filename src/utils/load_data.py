@@ -1,10 +1,17 @@
 import pandas as pd
 
 
-# Load the data
-def load_dataset():
-    df_orders = pd.read_excel("Sample - Superstore.xlsx", sheet_name="Orders")
-    df_returns = pd.read_excel("Sample - Superstore.xlsx", sheet_name="Returns")
+def load_dataset(url=None):
+    df_orders = None
+    df_returns = None
+    if url is None:
+        df_orders = pd.read_excel("../data/Sample - Superstore.xlsx", sheet_name="Orders")
+        df_returns = pd.read_excel("../data/Sample - Superstore.xlsx", sheet_name="Returns")
+        print("***** Local Excel file used to load dataset! *****")
+    else:
+        df_orders = pd.read_excel(url, sheet_name="Orders")
+        df_returns = pd.read_excel(url, sheet_name="Returns")
+        print("***** Fetched the Excel file from GitHub successfully! *****")
 
     # df_orders.sort_values("Order ID", inplace=True)
     # df_returns.sort_values("Order ID", inplace=True)
