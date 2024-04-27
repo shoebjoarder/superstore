@@ -57,7 +57,7 @@ def sidebar_component():
         ],
         vertical=True,
         pills=True,
-        className="mt-4 d-none d-lg-block",
+        className="mt-4 d-none d-xl-block",
     )
 
     return sidebar

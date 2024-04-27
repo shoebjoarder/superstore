@@ -5,9 +5,8 @@ import app_components
 from dash import dcc
 from utils import load_dataset
 
-
+# Load the dataset
 df_original, df_table = load_dataset()
-
 
 # Initialize the app
 app = dash.Dash(
@@ -20,7 +19,7 @@ app = dash.Dash(
     use_pages=True,
 )
 
-
+# Initialize the layout
 app.layout = dbc.Container(
     [
         dcc.Store(id="memory-output", data=df_table.to_dict("records")),
@@ -31,17 +30,15 @@ app.layout = dbc.Container(
                     [
                         dbc.Col(
                             [app_components.sidebar_component()],
-                            className="d-flex flex-column",
-                            lg=2,
+                            xl=2,
                         ),
                         dbc.Col(
-                            [dash.page_container], className="d-flex flex-column", lg=10
+                            [dash.page_container],
+                            xl=10,
                         ),
                     ],
-                    style={"max-width": "1536px", "width": "100%"},
                 ),
             ],
-            className="d-flex justify-content-center",
         ),
     ],
     fluid=True,

@@ -21,7 +21,7 @@ def navbar_component():
                             ],
                             href=page["path"],
                             active="exact",
-                            className="d-lg-none",
+                            className="d-xl-none",
                         )
                         if page["name"] == "Dashboard"
                         else (
@@ -42,7 +42,7 @@ def navbar_component():
                                 ],
                                 href=page["path"],
                                 active="exact",
-                                className="d-lg-none",
+                                className="d-xl-none",
                             )
                             if page["name"] == "Insights"
                             else dbc.NavLink(
@@ -60,7 +60,7 @@ def navbar_component():
                                 ],
                                 href=page["path"],
                                 active="exact",
-                                className="d-lg-none",
+                                className="d-xl-none",
                             )
                         )
                     )
@@ -72,7 +72,7 @@ def navbar_component():
         brand_href="#",
         color="dark",
         dark=True,
-        expand="lg",
+        expand="xl",
     )
 
     return navbar

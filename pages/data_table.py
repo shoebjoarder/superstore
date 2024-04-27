@@ -10,7 +10,7 @@ sys.path.append(path.dirname(path.dirname(path.abspath(__file__))))
 
 dash.register_page(__name__, name="Data Table", path="/table-page")
 
-
+# TODO: Need to remove the dependency of df_table and replace it with store data
 filters = create_data_table_filters(df)
 add_new_data = create_data_table_entry()
 
