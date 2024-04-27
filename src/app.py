@@ -4,9 +4,15 @@ import callbacks
 import app_components
 from dash import dcc
 from utils import load_dataset
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
+
+dataset_url = os.getenv("DATASET_URL")
 
 # Load the dataset
-df_original, df_table = load_dataset()
+df_table = load_dataset(url=dataset_url)
 
 # Initialize the app
 app = dash.Dash(
