@@ -24,22 +24,16 @@ layout = dbc.Container(
             [
                 dbc.Col(
                     [
+                        html.Div(["Select data"]),
                         dcc.Dropdown(
-                            [
-                                "Discount",
-                                "Profit",
-                                "Profit Ratio",
-                                "Quantity",
-                                "Returned",
-                                "Sales",
-                            ],
                             value="Discount",
                             id="dropdown-timeline-graph",
+                            clearable=False,
                         ),
                         dcc.Graph(id="insights-timeline-graph"),
                     ],
                     xs=12,
-                    lg=6,
+                    xl=6,
                     className="mb-5",
                 ),
                 dbc.Col(
@@ -48,62 +42,46 @@ layout = dbc.Container(
                             [
                                 dbc.Col(
                                     [
+                                        html.Div(["X-Axis"]),
                                         dcc.Dropdown(
-                                            [
-                                                "Days to Ship",
-                                                "Discount",
-                                                "Profit",
-                                                "Profit Ratio",
-                                                "Quantity",
-                                                "Returns",
-                                                "Sales",
-                                            ],
-                                            id="dropdown-x-axis",
+                                            value="Discount",
+                                            id="dropdown-scatter-x-axis",
                                             placeholder="Select x-axis",
+                                            clearable=False,
                                         ),
                                     ],
                                     xs=4,
                                 ),
                                 dbc.Col(
                                     [
+                                        html.Div(["Y-Axis"]),
                                         dcc.Dropdown(
-                                            [
-                                                "Discount",
-                                                "Profit",
-                                                "Profit Ratio",
-                                                "Quantity",
-                                                "Returns",
-                                                "Sales",
-                                            ],
-                                            id="dropdown-y-axis",
+                                            value="Profit",
+                                            id="dropdown-scatter-y-axis",
                                             placeholder="Select y-axis",
+                                            clearable=False,
                                         ),
                                     ],
                                     xs=4,
                                 ),
                                 dbc.Col(
                                     [
+                                        html.Div(["Select data"]),
                                         dcc.Dropdown(
-                                            [
-                                                "Segment",
-                                                "Ship Mode",
-                                                "Customer Name",
-                                                "Category",
-                                                "Sub-Category",
-                                                "Product Name",
-                                            ],
-                                            id="dropdown-breakdown",
+                                            value="Segment",
+                                            id="dropdown-scatter-categorical",
                                             placeholder="Select categorical data",
+                                            clearable=False,
                                         ),
                                     ],
                                     xs=4,
                                 ),
                             ]
                         ),
-                        # dcc.Graph(id="graph-scatterplot", figure=plot_fig),
+                        dcc.Graph(id="insights-scatterplot-graph"),
                     ],
                     xs=12,
-                    lg=6,
+                    xl=6,
                     className="mb-5",
                 ),
             ],
