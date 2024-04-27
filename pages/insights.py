@@ -1,6 +1,7 @@
 import dash_bootstrap_components as dbc
 import dash
 from dash import dcc, html
+from datetime import date
 
 dash.register_page(__name__, name="Insights", path="/graph-page")
 
@@ -22,18 +23,62 @@ layout = dbc.Container(
         ),
         dbc.Row(
             [
+                html.Div(["Filter by date"]),
+                dcc.DatePickerRange(
+                    id="insights-date-range",
+                    min_date_allowed=date(
+                        1995,
+                        8,
+                        5,
+                    ),
+                    max_date_allowed=date.today(),
+                    initial_visible_month=date.today(),
+                    clearable=True,
+                ),
+            ],
+            className="mb-3",
+        ),
+        dbc.Row(
+            [
                 dbc.Col(
                     [
-                        html.Div(["Select data"]),
-                        dcc.Dropdown(
-                            value="Discount",
-                            id="dropdown-timeline-graph",
-                            clearable=False,
+                        dbc.Row(
+                            [
+                                dbc.Col(
+                                    [
+                                        html.Div(["Select data"]),
+                                        dcc.Dropdown(
+                                            value="Discount",
+                                            id="dropdown-timeline-graph",
+                                            clearable=False,
+                                        ),
+                                    ],
+                                    xs=6,
+                                    className="mb-2",
+                                ),
+                                dbc.Col(
+                                    [
+                                        html.Div(["Select Week/Month/Quarter/Year"]),
+                                        dcc.Dropdown(
+                                            # ["Week", "Month", "Quarter", "Year"],
+                                            value="Month",
+                                            id="dropdown-week-month-quarter-year",
+                                            clearable=False,
+                                        ),
+                                    ],
+                                    xs=6,
+                                    className="mb-2",
+                                ),
+                            ]
                         ),
-                        dcc.Graph(id="insights-timeline-graph"),
+                        dbc.Row(
+                            [
+                                dcc.Graph(id="insights-timeline-graph"),
+                            ]
+                        ),
                     ],
                     xs=12,
-                    xl=6,
+                    # xl=6,
                     className="mb-5",
                 ),
                 dbc.Col(
@@ -42,11 +87,11 @@ layout = dbc.Container(
                             [
                                 dbc.Col(
                                     [
-                                        html.Div(["X-Axis"]),
+                                        html.Div(["Y-Axis"]),
                                         dcc.Dropdown(
-                                            value="Discount",
-                                            id="dropdown-scatter-x-axis",
-                                            placeholder="Select x-axis",
+                                            value="Profit",
+                                            id="dropdown-scatter-y-axis",
+                                            placeholder="Select y-axis",
                                             clearable=False,
                                         ),
                                     ],
@@ -54,11 +99,11 @@ layout = dbc.Container(
                                 ),
                                 dbc.Col(
                                     [
-                                        html.Div(["Y-Axis"]),
+                                        html.Div(["X-Axis"]),
                                         dcc.Dropdown(
-                                            value="Profit",
-                                            id="dropdown-scatter-y-axis",
-                                            placeholder="Select y-axis",
+                                            value="Discount",
+                                            id="dropdown-scatter-x-axis",
+                                            placeholder="Select x-axis",
                                             clearable=False,
                                         ),
                                     ],
@@ -81,7 +126,7 @@ layout = dbc.Container(
                         dcc.Graph(id="insights-scatterplot-graph"),
                     ],
                     xs=12,
-                    xl=6,
+                    # xl=6,
                     className="mb-5",
                 ),
             ],
