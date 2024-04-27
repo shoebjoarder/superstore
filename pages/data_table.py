@@ -2,17 +2,10 @@ import dash_bootstrap_components as dbc
 import dash
 from dash import dash_table, html
 from .page_components import *
-from app import df_table as df
-import sys
-from os import path
 
-sys.path.append(path.dirname(path.dirname(path.abspath(__file__))))
 
 dash.register_page(__name__, name="Data Table", path="/table-page")
 
-# TODO: Need to remove the dependency of df_table and replace it with store data
-filters = create_data_table_filters(df)
-add_new_data = create_data_table_entry()
 
 layout = dbc.Container(
     [
@@ -21,7 +14,7 @@ layout = dbc.Container(
                 html.H2("Data Table"),
                 html.P("Preview and manipulate the Superstore data table below."),
                 # Filter from the filter component for the data table
-                filters,
+                create_data_table_filters(),
                 dash_table.DataTable(
                     id="data-table",
                     page_size=15,
@@ -31,6 +24,6 @@ layout = dbc.Container(
             ],
             className="pb-3 mt-4",
         ),
-        dbc.Row([add_new_data]),
+        dbc.Row([create_data_table_entry()]),
     ]
 )

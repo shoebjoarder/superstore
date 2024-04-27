@@ -6,13 +6,11 @@ from dash.exceptions import PreventUpdate
 def data_table_entry_callbacks(app):
     @app.callback(
         Output("submit-val", "disabled"),
-        [
-            Input("input-order-id", "value"),
-            Input("input-order-date", "date"),
-            Input("input-customer-id", "value"),
-            Input("input-product-id", "value"),
-            Input("input-quantity", "value"),
-        ],
+        Input("input-order-id", "value"),
+        Input("input-order-date", "date"),
+        Input("input-customer-id", "value"),
+        Input("input-product-id", "value"),
+        Input("input-quantity", "value"),
     )
     def enable_submit_button(order_id, order_date, customer_id, product_id, quantity):
         if order_id and order_date and customer_id and product_id and quantity:

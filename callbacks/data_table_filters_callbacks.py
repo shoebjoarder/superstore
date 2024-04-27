@@ -114,11 +114,42 @@ def filter_data(
 
 def data_table_filters_callbacks(app):
     @app.callback(
-        Output("submit-filter", "children"),
-        Output("clear-filter", "disabled"),
+        Output("dropdown-segment", "options"),
+        Output("dropdown-ship-mode", "options"),
+        Output("ship-date-range", "max_date_allowed"),
+        Output("ship-date-range", "initial_visible_month"),
+        Output("order-date-range", "max_date_allowed"),
+        Output("order-date-range", "initial_visible_month"),
+        Output("dropdown-category", "options"),
         Output("dropdown-sub-category", "options"),
+        Output("dropdown-country", "options"),
         Output("dropdown-state", "options"),
         Output("dropdown-city", "options"),
+        Input("memory-output", "data"),
+    )
+    def populate_filter_options(memory_data):
+        df = pd.DataFrame(memory_data).dropna()
+
+        return (
+            sorted(df["Segment"].unique()),
+            sorted(df["Ship Mode"].unique()),
+            df["Ship Date"].max(),
+            df["Ship Date"].max(),
+            df["Order Date"].max(),
+            df["Order Date"].max(),
+            sorted(df["Category"].unique()),
+            sorted(df["Sub-Category"].unique()),
+            sorted(df["Country"].unique()),
+            sorted(df["State"].unique()),
+            sorted(df["City"].unique()),
+        )
+
+    @app.callback(
+        Output("submit-filter", "children"),
+        Output("clear-filter", "disabled"),
+        Output("dropdown-sub-category", "options", allow_duplicate=True),
+        Output("dropdown-state", "options", allow_duplicate=True),
+        Output("dropdown-city", "options", allow_duplicate=True),
         Input("dropdown-segment", "value"),
         Input("dropdown-ship-mode", "value"),
         Input("ship-date-range", "start_date"),
@@ -131,6 +162,7 @@ def data_table_filters_callbacks(app):
         Input("dropdown-state", "value"),
         Input("dropdown-city", "value"),
         Input("memory-output", "data"),
+        prevent_initial_call=True,
     )
     def select_filters(
         segment,
