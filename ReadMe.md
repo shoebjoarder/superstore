@@ -32,8 +32,7 @@ Link: [Live Demo](https://shoeb-superstore.onrender.com/)
 2. Create a Python virtual environment in the project directory
 
    ```bash
-   cd superstore
-   python -m venv venv
+   cd superstore && python -m venv venv
    ```
 
 3. Activate the environment
