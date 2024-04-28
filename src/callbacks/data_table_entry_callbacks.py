@@ -20,11 +20,19 @@ def data_table_entry_callbacks(app):
         Input("input-customer-id", "value"),
         Input("input-product-id", "value"),
         Input("input-quantity", "value"),
+        Input("submit-data-entry", "disabled"),
         prevent_initial_call=True,
     )
-    def enable_submit_button(order_date, ship_mode, customer_id, product_id, quantity):
+    def enable_submit_button(
+        order_date, ship_mode, customer_id, product_id, quantity, button_disabled
+    ):
         if order_date and ship_mode and customer_id and product_id and quantity:
-            return False
+            if button_disabled == True:
+                return False
+            else:
+                raise PreventUpdate
+        elif button_disabled == True:
+            raise PreventUpdate
         else:
             return True
 

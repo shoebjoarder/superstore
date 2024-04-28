@@ -112,7 +112,6 @@ def create_data_table_entry():
                                             "Submit",
                                             id="submit-data-entry",
                                             color="primary",
-                                            n_clicks=0,
                                             disabled=True,
                                         ),
                                     ],
