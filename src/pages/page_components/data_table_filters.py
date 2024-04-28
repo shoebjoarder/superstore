@@ -160,7 +160,6 @@ def create_data_table_filters():
                                                 children=["Apply Filters"],
                                                 color="primary",
                                                 id="submit-filter",
-                                                n_clicks=0,
                                             ),
                                         ],
                                         className="d-flex justify-content-end",
