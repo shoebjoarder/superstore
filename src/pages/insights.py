@@ -101,7 +101,7 @@ layout = dbc.Container(
                                     [
                                         html.Div(["X-Axis"]),
                                         dcc.Dropdown(
-                                            value="Discount",
+                                            options=[],
                                             id="dropdown-scatter-x-axis",
                                             placeholder="Select x-axis",
                                             clearable=False,
@@ -113,7 +113,7 @@ layout = dbc.Container(
                                     [
                                         html.Div(["Select data"]),
                                         dcc.Dropdown(
-                                            value="Segment",
+                                            options=[],
                                             id="dropdown-scatter-categorical",
                                             placeholder="Select categorical data",
                                             clearable=False,

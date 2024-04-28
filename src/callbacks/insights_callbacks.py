@@ -44,32 +44,68 @@ def graphs_shipping(df, value, date_key="ME"):
     return df.resample(date_key, on="Order Date")[value].mean().reset_index()
 
 
+DROPDOWN_LIST = [
+    "Days to Ship",
+    "Discount",
+    "Profit",
+    "Profit Ratio",
+    "Quantity",
+    "Returned",
+    "Sales",
+]
+
+CATEGORICAL_DROPDOWN_LIST = [
+    "Returned",
+    "Segment",
+    "Ship Mode",
+    "Customer Name",
+    "Category",
+    "Sub-Category",
+    "Product Name",
+]
+
+AXIS_DROPDOWN_LIST = [
+    "Days to Ship",
+    # "Returned",
+    "Discount",
+    "Profit",
+    "Profit Ratio",
+    "Quantity",
+    "Sales",
+]
+
+
 def insights_callbacks(app):
     @app.callback(
         Output("dropdown-timeline-graph", "options"),
         Output("dropdown-week-month-quarter-year", "options"),
         Output("dropdown-timeline-graph", "value"),
         Output("dropdown-week-month-quarter-year", "value"),
+        Output("dropdown-scatter-x-axis", "options"),
+        Output("dropdown-scatter-y-axis", "options"),
+        Output("dropdown-scatter-categorical", "options"),
+        Output("dropdown-scatter-x-axis", "value"),
+        Output("dropdown-scatter-y-axis", "value"),
+        Output("dropdown-scatter-categorical", "value"),
         Input("dropdown-timeline-graph", "options"),
     )
     def populate_dropdown_options(timeline_options):
         if len(timeline_options) == 0:
-            dropdown_list = [
-                "Days to Ship",
-                "Discount",
-                "Profit",
-                "Profit Ratio",
-                "Quantity",
-                "Returned",
-                "Sales",
-            ]
-            sorted_list = sorted(dropdown_list)
+            sorted_list = sorted(DROPDOWN_LIST)
             dropdown_date = ["Week", "Month", "Quarter", "Year"]
+            sorted_axis_dropdown_list = sorted(AXIS_DROPDOWN_LIST)
+            sorted_categorical_dropdown_list = sorted(CATEGORICAL_DROPDOWN_LIST)
             return (
                 sorted_list,
                 dropdown_date,
                 sorted_list[1],
                 dropdown_date[1],
+                sorted_axis_dropdown_list,
+                sorted_axis_dropdown_list,
+                sorted_categorical_dropdown_list,
+                sorted_axis_dropdown_list[4],
+                sorted_axis_dropdown_list[2],
+                sorted_categorical_dropdown_list[0],
             )
         else:
             raise PreventUpdate
@@ -162,15 +198,15 @@ def insights_callbacks(app):
 
     @app.callback(
         Output("insights-scatterplot-graph", "figure"),
-        Output("dropdown-scatter-x-axis", "options"),
-        Output("dropdown-scatter-y-axis", "options"),
-        Output("dropdown-scatter-categorical", "options"),
+        Output("dropdown-scatter-x-axis", "options", allow_duplicate=True),
+        Output("dropdown-scatter-y-axis", "options", allow_duplicate=True),
         Input("dropdown-scatter-x-axis", "value"),
         Input("dropdown-scatter-y-axis", "value"),
         Input("dropdown-scatter-categorical", "value"),
         Input("insights-date-range", "start_date"),
         Input("insights-date-range", "end_date"),
         Input("memory-output", "data"),
+        prevent_initial_call=True,
     )
     def input_scatterplot_graph(
         x_axis_value,
@@ -180,35 +216,17 @@ def insights_callbacks(app):
         insights_date_range_end,
         memory_data,
     ):
-        axis_dropdown_list = [
-            # "Days to Ship",
-            # "Returned",
-            "Discount",
-            "Profit",
-            "Profit Ratio",
-            "Quantity",
-            "Sales",
-        ]
-        categorical_dropdown_list = [
-            "Returned",
-            "Segment",
-            "Ship Mode",
-            "Customer Name",
-            "Category",
-            "Sub-Category",
-            "Product Name",
-        ]
-
-        new_x_axis_dropdown_list = [
-            item for item in axis_dropdown_list if item != y_axis_value
-        ]
-        new_y_axis_dropdown_list = [
-            item for item in axis_dropdown_list if item != x_axis_value
-        ]
-
         if x_axis_value is not None and y_axis_value is not None:
+            new_x_axis_dropdown_list = [
+                item for item in AXIS_DROPDOWN_LIST if item != y_axis_value
+            ]
+            new_y_axis_dropdown_list = [
+                item for item in AXIS_DROPDOWN_LIST if item != x_axis_value
+            ]
             df = pd.DataFrame(memory_data).dropna()
             df["Order Date"] = pd.to_datetime(df["Order Date"])
+            df["Ship Date"] = pd.to_datetime(df["Ship Date"])
+            df["Days to Ship"] = (df["Ship Date"] - df["Order Date"]).dt.days
             if (
                 insights_date_range_start is not None
                 and insights_date_range_end is not None
@@ -217,35 +235,26 @@ def insights_callbacks(app):
                     (df["Order Date"] >= insights_date_range_start)
                     & (df["Order Date"] <= insights_date_range_end)
                 ]
-            if (
-                x_axis_value == "Discount"
-                or x_axis_value == "Profit"
-                or x_axis_value == "Quantity"
-                or x_axis_value == "Sales"
-                or y_axis_value == "Discount"
-                or y_axis_value == "Profit"
-                or y_axis_value == "Quantity"
-                or y_axis_value == "Sales"
-            ):
-                if x_axis_value == "Profit Ratio" or y_axis_value == "Profit Ratio":
-                    df["Profit Ratio"] = (df["Profit"] / df["Sales"]) * 100
-                    return (
-                        px.scatter(
-                            df[
-                                [
-                                    f"{x_axis_value}",
-                                    f"{y_axis_value}",
-                                    f"{categorical_value}",
-                                ]
-                            ],
-                            x=f"{x_axis_value}",
-                            y=f"{y_axis_value}",
-                            color=f"{categorical_value}",
-                        ),
-                        sorted(new_x_axis_dropdown_list),
-                        sorted(new_y_axis_dropdown_list),
-                        sorted(categorical_dropdown_list),
-                    )
+            if x_axis_value == "Profit Ratio" or y_axis_value == "Profit Ratio":
+                df["Profit Ratio"] = (df["Profit"] / df["Sales"]) * 100
+                return (
+                    px.scatter(
+                        df[
+                            [
+                                f"{x_axis_value}",
+                                f"{y_axis_value}",
+                                f"{categorical_value}",
+                            ]
+                        ],
+                        x=f"{x_axis_value}",
+                        y=f"{y_axis_value}",
+                        color=f"{categorical_value}",
+                    ),
+                    sorted(new_x_axis_dropdown_list),
+                    sorted(new_y_axis_dropdown_list),
+                )
+            
+            if x_axis_value == "Days to Ship" or y_axis_value == "Days to Ship":
 
                 return (
                     px.scatter(
@@ -262,7 +271,23 @@ def insights_callbacks(app):
                     ),
                     sorted(new_x_axis_dropdown_list),
                     sorted(new_y_axis_dropdown_list),
-                    sorted(categorical_dropdown_list),
                 )
-
-        return
+                
+            return (
+                px.scatter(
+                    df[
+                        [
+                            f"{x_axis_value}",
+                            f"{y_axis_value}",
+                            f"{categorical_value}",
+                        ]
+                    ],
+                    x=f"{x_axis_value}",
+                    y=f"{y_axis_value}",
+                    color=f"{categorical_value}",
+                ),
+                sorted(new_x_axis_dropdown_list),
+                sorted(new_y_axis_dropdown_list),
+            )
+        else:
+            raise PreventUpdate
