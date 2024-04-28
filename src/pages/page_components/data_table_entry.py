@@ -51,6 +51,18 @@ def create_data_table_entry():
                                 ),
                                 dbc.Col(
                                     [
+                                        html.Div(["Order ID"]),
+                                        dbc.Input(
+                                            id="input-order-id",
+                                            placeholder="Enter order ID",
+                                            type="text",
+                                        ),
+                                    ],
+                                    className="mb-3",
+                                    xs=12,
+                                ),
+                                dbc.Col(
+                                    [
                                         html.Div(["Customer ID"]),
                                         dbc.Input(
                                             id="input-customer-id",

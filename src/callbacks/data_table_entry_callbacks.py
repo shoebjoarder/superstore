@@ -40,14 +40,18 @@ def data_table_entry_callbacks(app):
     @app.callback(
         Output("container-button-basic", "children"),
         Output("positioned-toast", "is_open"),
+        Output("positioned-toast", "header"),
+        Output("positioned-toast", "icon"),
         Output("memory-output", "data"),
         Output("input-ship-mode", "value"),
+        Output("input-order-id", "value"),
         Output("input-customer-id", "value"),
         Output("input-product-id", "value"),
         Output("input-quantity", "value"),
         Input("submit-data-entry", "n_clicks"),
         State("input-ship-mode", "value"),
         State("input-order-date", "date"),
+        State("input-order-id", "value"),
         State("input-customer-id", "value"),
         State("input-product-id", "value"),
         State("input-quantity", "value"),
@@ -58,31 +62,56 @@ def data_table_entry_callbacks(app):
         n_clicks,
         ship_mode,
         order_date,
+        order_id,
         customer_id,
         product_id,
         quantity,
         memory_data,
     ):
+        df = pd.DataFrame(memory_data)
         feedback_message = "Error: No data could be added"
+
+        found_duplicate_product = df.loc[
+            (df["Ship Mode"] == ship_mode)
+            & (df["Order Date"] == order_date)
+            & (df["Order ID"] == order_id)
+            & (df["Customer ID"] == customer_id)
+            & (df["Product ID"] == product_id)
+        ]
+        if not found_duplicate_product.empty:
+            feedback_message = "Duplicate: Data already exists!"
+            return (
+                feedback_message,
+                True,
+                "Error",
+                "danger",
+                memory_data,
+                ship_mode,
+                order_id,
+                customer_id,
+                product_id,
+                quantity,
+            )
         if (
             ship_mode is not None
             and order_date is not None
+            and order_id is not None
             and customer_id is not None
             and product_id is not None
             and quantity is not None
         ):
-            feedback_message = f'Order date: "{order_date}", Ship Mode: "{ship_mode}", Customer ID: "{customer_id}", Product ID: "{product_id}", Quantity: "{quantity}"'
+            feedback_message = f'Order date: "{order_date}", Ship Mode: "{ship_mode}", Order ID: "{order_id}", Customer ID: "{customer_id}", Product ID: "{product_id}", Quantity: "{quantity}"'
             new_data = {
                 # ! Customer Order ID function
-                "Order ID": generate_order_id("US"),
+                # "Order ID": generate_order_id("US"),
                 "Ship Mode": ship_mode,
                 "Order Date": order_date,
+                "Order ID": order_id,
                 "Customer ID": customer_id,
                 "Product ID": product_id,
                 "Quantity": quantity,
                 "Returned": "No",
             }
-            df = pd.DataFrame(memory_data)
 
             # * Inferring the relevant product details based on the newest order
             found_product = df.loc[df["Product ID"] == product_id][:1].sort_values(
@@ -113,7 +142,10 @@ def data_table_entry_callbacks(app):
             return (
                 feedback_message,
                 True,
+                "Data added successfully!",
+                "success",
                 df.to_dict("records"),
+                None,
                 None,
                 None,
                 None,
@@ -122,7 +154,10 @@ def data_table_entry_callbacks(app):
         return (
             feedback_message,
             None,
+            "Something went wrong",
+            "danger",
             memory_data,
+            None,
             None,
             None,
             None,
