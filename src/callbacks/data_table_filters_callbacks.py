@@ -254,16 +254,16 @@ def data_table_filters_callbacks(app):
         Output("dropdown-state", "options", allow_duplicate=True),
         Output("dropdown-city", "options", allow_duplicate=True),
         Input("clear-filter", "n_clicks"),
-        Input("memory-output", "data"),
+        Input("memory-copy", "data"),
         prevent_initial_call=True,
     )
-    def clear_filters(n_clicks, memory_data):
+    def clear_filters(n_clicks, memory_copy):
         if n_clicks is None:
             raise PreventUpdate
         else:
-            df = pd.DataFrame(memory_data)
+            df = pd.DataFrame(memory_copy)
             return (
-                memory_data,
+                memory_copy,
                 None,
                 None,
                 None,

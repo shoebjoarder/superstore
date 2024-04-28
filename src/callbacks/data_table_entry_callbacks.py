@@ -123,7 +123,7 @@ def data_table_entry_callbacks(app):
         df_copy = pd.DataFrame(memory_copy)
         feedback_message = "Error: No data could be added"
 
-        found_duplicate_product = df_copy.loc[
+        found_duplicate_product = df.loc[
             (df["Ship Mode"] == ship_mode)
             & (df["Order Date"] == order_date)
             & (df["Order ID"] == order_id)
