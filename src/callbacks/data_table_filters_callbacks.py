@@ -147,80 +147,85 @@ def data_table_filters_callbacks(app):
         else:
             raise PreventUpdate
 
-    # @app.callback(
-    #     Output("submit-filter", "children"),
-    #     Output("clear-filter", "disabled"),
-    #     Output("dropdown-sub-category", "options", allow_duplicate=True),
-    #     Output("dropdown-state", "options", allow_duplicate=True),
-    #     Output("dropdown-city", "options", allow_duplicate=True),
-    #     Input("dropdown-segment", "value"),
-    #     Input("dropdown-ship-mode", "value"),
-    #     Input("ship-date-range", "start_date"),
-    #     Input("ship-date-range", "end_date"),
-    #     Input("order-date-range", "start_date"),
-    #     Input("order-date-range", "end_date"),
-    #     Input("dropdown-category", "value"),
-    #     Input("dropdown-sub-category", "value"),
-    #     Input("dropdown-country", "value"),
-    #     Input("dropdown-state", "value"),
-    #     Input("dropdown-city", "value"),
-    #     Input("memory-output", "data"),
-    #     prevent_initial_call=True,
-    # )
-    # def select_filters(
-    #     segment,
-    #     ship_mode,
-    #     ship_date_range_start,
-    #     ship_date_range_end,
-    #     order_date_range_start,
-    #     order_date_range_end,
-    #     category,
-    #     subcategory,
-    #     country,
-    #     state,
-    #     city,
-    #     memory_data,
-    # ):
-    #     temp, count, temp_subcategory, temp_state, temp_city = filter_data(
-    #         pd.DataFrame(memory_data),
-    #         segment,
-    #         ship_mode,
-    #         ship_date_range_start,
-    #         ship_date_range_end,
-    #         order_date_range_start,
-    #         order_date_range_end,
-    #         category,
-    #         subcategory,
-    #         country,
-    #         state,
-    #         city,
-    #     )
+    @app.callback(
+        Output("submit-filter", "children"),
+        Output("clear-filter", "disabled"),
+        Output("dropdown-sub-category", "options", allow_duplicate=True),
+        Output("dropdown-state", "options", allow_duplicate=True),
+        Output("dropdown-city", "options", allow_duplicate=True),
+        Input("dropdown-segment", "value"),
+        Input("dropdown-ship-mode", "value"),
+        Input("ship-date-range", "start_date"),
+        Input("ship-date-range", "end_date"),
+        Input("order-date-range", "start_date"),
+        Input("order-date-range", "end_date"),
+        Input("dropdown-category", "value"),
+        Input("dropdown-sub-category", "value"),
+        Input("dropdown-country", "value"),
+        Input("dropdown-state", "value"),
+        Input("dropdown-city", "value"),
+        Input("clear-filter", "n_clicks"),
+        Input("memory-output", "data"),
+        prevent_initial_call=True,
+    )
+    def select_filters(
+        segment,
+        ship_mode,
+        ship_date_range_start,
+        ship_date_range_end,
+        order_date_range_start,
+        order_date_range_end,
+        category,
+        subcategory,
+        country,
+        state,
+        city,
+        clear_n_click,
+        memory_data,
+    ):
+        if clear_n_click is None:
+            temp, count, temp_subcategory, temp_state, temp_city = filter_data(
+                pd.DataFrame(memory_data),
+                segment,
+                ship_mode,
+                ship_date_range_start,
+                ship_date_range_end,
+                order_date_range_start,
+                order_date_range_end,
+                category,
+                subcategory,
+                country,
+                state,
+                city,
+            )
 
-    #     if temp is not None:
-    #         count = len(temp)
-    #         if count == 0:
-    #             return (
-    #                 f"No data found!",
-    #                 False,
-    #                 temp_subcategory,
-    #                 temp_state,
-    #                 temp_city,
-    #             )
-    #         return (
-    #             f"Show {count} data",
-    #             False,
-    #             temp_subcategory,
-    #             temp_state,
-    #             temp_city,
-    #         )
-    #     else:
-    #         return (
-    #             "Apply Filters",
-    #             True,
-    #             temp_subcategory,
-    #             temp_state,
-    #             temp_city,
-    #         )
+            if temp is not None:
+                count = len(temp)
+                if count == 0:
+                    return (
+                        f"No data found!",
+                        False,
+                        temp_subcategory,
+                        temp_state,
+                        temp_city,
+                    )
+                return (
+                    f"Show {count} data",
+                    False,
+                    temp_subcategory,
+                    temp_state,
+                    temp_city,
+                )
+            else:
+                return (
+                    "Apply Filters",
+                    True,
+                    temp_subcategory,
+                    temp_state,
+                    temp_city,
+                )
+        else:
+            raise PreventUpdate
 
     # @app.callback(
     #     Output("data-table", "data", allow_duplicate=True),
