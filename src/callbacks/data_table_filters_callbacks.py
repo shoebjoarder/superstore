@@ -184,48 +184,104 @@ def data_table_filters_callbacks(app):
         memory_data,
     ):
         if clear_n_click is None:
-            temp, count, temp_subcategory, temp_state, temp_city = filter_data(
-                pd.DataFrame(memory_data),
-                segment,
-                ship_mode,
-                ship_date_range_start,
-                ship_date_range_end,
-                order_date_range_start,
-                order_date_range_end,
-                category,
-                subcategory,
-                country,
-                state,
-                city,
-            )
 
-            if temp is not None:
-                count = len(temp)
-                if count == 0:
+            if (
+                segment
+                or ship_mode
+                or ship_date_range_start
+                or ship_date_range_end
+                or order_date_range_start
+                or order_date_range_end
+                or category
+                or subcategory
+                or country
+                or state
+                or city
+            ):
+                temp, count, temp_subcategory, temp_state, temp_city = filter_data(
+                    pd.DataFrame(memory_data),
+                    segment,
+                    ship_mode,
+                    ship_date_range_start,
+                    ship_date_range_end,
+                    order_date_range_start,
+                    order_date_range_end,
+                    category,
+                    subcategory,
+                    country,
+                    state,
+                    city,
+                )
+                if temp is not None:
+                    count = len(temp)
+                    if count == 0:
+                        return (
+                            f"No data found!",
+                            False,
+                            temp_subcategory,
+                            temp_state,
+                            temp_city,
+                        )
                     return (
-                        f"No data found!",
+                        f"Show {count} data",
                         False,
                         temp_subcategory,
                         temp_state,
                         temp_city,
                     )
-                return (
-                    f"Show {count} data",
-                    False,
-                    temp_subcategory,
-                    temp_state,
-                    temp_city,
-                )
             else:
-                return (
-                    "Apply Filters",
-                    True,
-                    temp_subcategory,
-                    temp_state,
-                    temp_city,
-                )
+                raise PreventUpdate
         else:
             raise PreventUpdate
+
+    @app.callback(
+        Output("memory-output", "data", allow_duplicate=True),
+        Output("dropdown-segment", "value"),
+        Output("dropdown-ship-mode", "value"),
+        Output("ship-date-range", "start_date"),
+        Output("ship-date-range", "end_date"),
+        Output("order-date-range", "start_date"),
+        Output("order-date-range", "end_date"),
+        Output("dropdown-category", "value"),
+        Output("dropdown-sub-category", "value"),
+        Output("dropdown-country", "value"),
+        Output("dropdown-state", "value"),
+        Output("dropdown-city", "value"),
+        Output("clear-filter", "n_clicks"),
+        Output("submit-filter", "children", allow_duplicate=True),
+        Output("clear-filter", "disabled", allow_duplicate=True),
+        Output("dropdown-sub-category", "options", allow_duplicate=True),
+        Output("dropdown-state", "options", allow_duplicate=True),
+        Output("dropdown-city", "options", allow_duplicate=True),
+        Input("clear-filter", "n_clicks"),
+        Input("memory-output", "data"),
+        prevent_initial_call=True,
+    )
+    def clear_filters(n_clicks, memory_data):
+        if n_clicks is None:
+            raise PreventUpdate
+        else:
+            df = pd.DataFrame(memory_data)
+            return (
+                memory_data,
+                None,
+                None,
+                None,
+                None,
+                None,
+                None,
+                None,
+                None,
+                None,
+                None,
+                None,
+                None,
+                "Apply Filters",
+                True,
+                sorted(df["Sub-Category"].unique()),
+                sorted(df["State"].unique()),
+                sorted(df["City"].unique()),
+            )
 
     # @app.callback(
     #     Output("data-table", "data", allow_duplicate=True),
@@ -280,38 +336,3 @@ def data_table_filters_callbacks(app):
     #         return memory_data
 
     #     return temp.to_dict("records")
-
-    # @app.callback(
-    #     Output("data-table", "data", allow_duplicate=True),
-    #     Output("dropdown-segment", "value"),
-    #     Output("dropdown-ship-mode", "value"),
-    #     Output("ship-date-range", "start_date"),
-    #     Output("ship-date-range", "end_date"),
-    #     Output("order-date-range", "start_date"),
-    #     Output("order-date-range", "end_date"),
-    #     Output("dropdown-category", "value"),
-    #     Output("dropdown-sub-category", "value"),
-    #     Output("dropdown-country", "value"),
-    #     Output("dropdown-state", "value"),
-    #     Output("dropdown-city", "value"),
-    #     Input("clear-filter", "n_clicks"),
-    #     Input("memory-output", "data"),
-    #     prevent_initial_call=True,
-    # )
-    # def clear_filters(n_clicks, memory_data):
-    #     if n_clicks is None:
-    #         raise PreventUpdate
-    #     return (
-    #         memory_data,
-    #         None,
-    #         None,
-    #         None,
-    #         None,
-    #         None,
-    #         None,
-    #         None,
-    #         None,
-    #         None,
-    #         None,
-    #         None,
-    #     )
