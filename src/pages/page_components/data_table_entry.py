@@ -18,19 +18,6 @@ def create_data_table_entry():
                                             [
                                                 dbc.Col(
                                                     [
-                                                        html.Div(["Order ID"]),
-                                                        dbc.Input(
-                                                            id="input-order-id",
-                                                            placeholder="Enter order ID",
-                                                            type="text",
-                                                        ),
-                                                    ],
-                                                    className="mb-3",
-                                                    xs=12,
-                                                    md=9,
-                                                ),
-                                                dbc.Col(
-                                                    [
                                                         html.Div(["Order date"]),
                                                         dcc.DatePickerSingle(
                                                             id="input-order-date",
@@ -43,9 +30,24 @@ def create_data_table_entry():
                                                     xs=12,
                                                     md=3,
                                                 ),
-                                            ],
+                                                dbc.Col(
+                                                    [
+                                                        html.Div(["Ship Mode"]),
+                                                        dcc.Dropdown(
+                                                            options=[],
+                                                            id="input-ship-mode",
+                                                            value=None,
+                                                            className="mb-2",
+                                                        ),
+                                                    ],
+                                                    xs=12,
+                                                    md=9,
+                                                ),
+                                            ]
                                         ),
                                     ],
+                                    xs=12,
+                                    className="mb-3",
                                 ),
                                 dbc.Col(
                                     [
@@ -96,7 +98,7 @@ def create_data_table_entry():
                                     [
                                         dbc.Button(
                                             "Submit",
-                                            id="submit-val",
+                                            id="submit-data-entry",
                                             color="primary",
                                             n_clicks=0,
                                             disabled=True,
