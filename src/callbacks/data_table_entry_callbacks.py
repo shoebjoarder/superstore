@@ -52,7 +52,7 @@ def data_table_entry_callbacks(app):
         Output("positioned-toast", "is_open"),
         Output("positioned-toast", "header"),
         Output("positioned-toast", "icon"),
-        Output("memory-output", "data"),
+        Output("memory-output", "data", allow_duplicate=True),
         Output("input-ship-mode", "value"),
         Output("input-order-id", "value"),
         Output("input-customer-id", "value"),
@@ -102,7 +102,7 @@ def data_table_entry_callbacks(app):
                 product_id,
                 quantity,
             )
-        if (
+        elif (
             ship_mode is not None
             and order_date is not None
             and order_id is not None
@@ -161,18 +161,8 @@ def data_table_entry_callbacks(app):
                 None,
                 None,
             )
-        return (
-            feedback_message,
-            None,
-            "Something went wrong",
-            "danger",
-            memory_data,
-            None,
-            None,
-            None,
-            None,
-            None,
-        )
+        else:
+            raise PreventUpdate
 
     #         # file_name = "updated_data.xlsx"
 
