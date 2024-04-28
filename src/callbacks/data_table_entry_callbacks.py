@@ -2,6 +2,7 @@ from dash import Output, Input, State
 import pandas as pd
 import time
 import random
+from dash.exceptions import PreventUpdate
 
 
 def generate_order_id(country_code):
@@ -29,13 +30,14 @@ def data_table_entry_callbacks(app):
 
     @app.callback(
         Output("input-ship-mode", "options"),
+        Input("input-ship-mode", "options"),
         Input("memory-output", "data"),
-        prevent_initial_call=True,
     )
-    def populate_ship_mode_options(memory_data):
-        df = pd.DataFrame(memory_data)
-        ship_mode_options = sorted(df["Ship Mode"].unique())
-        return ship_mode_options
+    def populate_ship_mode_options(ship_mode_options, memory_data):
+        if len(ship_mode_options) == 0:
+            return sorted(pd.DataFrame(memory_data)["Ship Mode"].unique())
+        else:
+            raise PreventUpdate
 
     @app.callback(
         Output("container-button-basic", "children"),
