@@ -124,11 +124,12 @@ def data_table_entry_callbacks(app):
         feedback_message = "Error: No data could be added"
 
         found_duplicate_product = df.loc[
-            (df["Ship Mode"] == ship_mode)
-            & (df["Order Date"] == order_date)
-            & (df["Order ID"] == order_id)
+            (df["Order ID"] == order_id)
             & (df["Customer ID"] == customer_id)
             & (df["Product ID"] == product_id)
+            # & (df["Ship Mode"] == ship_mode)
+            # & (df["Order Date"] == order_date)
+            # & (df["Quantity"] == quantity)
         ]
         if not found_duplicate_product.empty:
             feedback_message = "Duplicate: Data already exists!"
@@ -138,6 +139,7 @@ def data_table_entry_callbacks(app):
                 "Error",
                 "danger",
                 memory_data,
+                memory_copy,
                 ship_mode,
                 order_id,
                 customer_id,
