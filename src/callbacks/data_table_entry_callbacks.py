@@ -5,11 +5,49 @@ import random
 from dash.exceptions import PreventUpdate
 
 
-def generate_order_id(country_code):
-    current_year = time.strftime("%Y")
-    unique_id = random.randint(100000, 999999)
-    order_id = f"{country_code}-{current_year}-{unique_id}"
-    return order_id
+def add_new_data_to_dataframe(
+    dataframe, ship_mode, order_date, order_id, customer_id, product_id, quantity
+):
+    df = dataframe
+    new_data = {
+        # ! Customer Order ID function
+        # "Order ID": generate_order_id("US"),
+        "Ship Mode": ship_mode,
+        "Order Date": order_date,
+        "Order ID": order_id,
+        "Customer ID": customer_id,
+        "Product ID": product_id,
+        "Quantity": quantity,
+        "Returned": "No",
+    }
+
+    # * Inferring the relevant product details based on the newest order
+    found_product = df.loc[df["Product ID"] == product_id][:1].sort_values(
+        by=["Order Date"], ascending=False
+    )
+    if not found_product.empty:
+        new_data["Category"] = found_product["Category"].values[0]
+        new_data["Sub-Category"] = found_product["Sub-Category"].values[0]
+        new_data["Product Name"] = found_product["Product Name"].values[0]
+
+    # ! Inferring the relevant customer details based on the newest order (Not recommended)
+    found_user = df.loc[df["Customer ID"] == customer_id][:1].sort_values(
+        by=["Order Date"], ascending=False
+    )
+    if not found_product.empty:
+        new_data["Customer Name"] = found_user["Customer Name"].values[0]
+        new_data["Segment"] = found_user["Segment"].values[0]
+        new_data["Country"] = found_user["Country"].values[0]
+        new_data["City"] = found_user["City"].values[0]
+        new_data["State"] = found_user["State"].values[0]
+        new_data["Postal Code"] = found_user["Postal Code"].values[0]
+        new_data["Region"] = found_user["Region"].values[0]
+
+    df.loc[-1] = new_data
+    df.index = df.index + 1
+    df.sort_index(inplace=True)
+
+    return df
 
 
 def data_table_entry_callbacks(app):
@@ -53,6 +91,7 @@ def data_table_entry_callbacks(app):
         Output("positioned-toast", "header"),
         Output("positioned-toast", "icon"),
         Output("memory-output", "data", allow_duplicate=True),
+        Output("memory-copy", "data", allow_duplicate=True),
         Output("input-ship-mode", "value"),
         Output("input-order-id", "value"),
         Output("input-customer-id", "value"),
@@ -66,6 +105,7 @@ def data_table_entry_callbacks(app):
         State("input-product-id", "value"),
         State("input-quantity", "value"),
         Input("memory-output", "data"),
+        Input("memory-copy", "data"),
         prevent_initial_call=True,
     )
     def add_data_on_submit_data(
@@ -77,11 +117,13 @@ def data_table_entry_callbacks(app):
         product_id,
         quantity,
         memory_data,
+        memory_copy,
     ):
         df = pd.DataFrame(memory_data)
+        df_copy = pd.DataFrame(memory_copy)
         feedback_message = "Error: No data could be added"
 
-        found_duplicate_product = df.loc[
+        found_duplicate_product = df_copy.loc[
             (df["Ship Mode"] == ship_mode)
             & (df["Order Date"] == order_date)
             & (df["Order ID"] == order_id)
@@ -111,43 +153,18 @@ def data_table_entry_callbacks(app):
             and quantity is not None
         ):
             feedback_message = f'Order date: "{order_date}", Ship Mode: "{ship_mode}", Order ID: "{order_id}", Customer ID: "{customer_id}", Product ID: "{product_id}", Quantity: "{quantity}"'
-            new_data = {
-                # ! Customer Order ID function
-                # "Order ID": generate_order_id("US"),
-                "Ship Mode": ship_mode,
-                "Order Date": order_date,
-                "Order ID": order_id,
-                "Customer ID": customer_id,
-                "Product ID": product_id,
-                "Quantity": quantity,
-                "Returned": "No",
-            }
-
-            # * Inferring the relevant product details based on the newest order
-            found_product = df.loc[df["Product ID"] == product_id][:1].sort_values(
-                by=["Order Date"], ascending=False
+            df = add_new_data_to_dataframe(
+                df, ship_mode, order_date, order_id, customer_id, product_id, quantity
             )
-            if not found_product.empty:
-                new_data["Category"] = found_product["Category"].values[0]
-                new_data["Sub-Category"] = found_product["Sub-Category"].values[0]
-                new_data["Product Name"] = found_product["Product Name"].values[0]
-
-            # ! Inferring the relevant customer details based on the newest order (Not recommended)
-            found_user = df.loc[df["Customer ID"] == customer_id][:1].sort_values(
-                by=["Order Date"], ascending=False
+            df_copy = add_new_data_to_dataframe(
+                df_copy,
+                ship_mode,
+                order_date,
+                order_id,
+                customer_id,
+                product_id,
+                quantity,
             )
-            if not found_product.empty:
-                new_data["Customer Name"] = found_user["Customer Name"].values[0]
-                new_data["Segment"] = found_user["Segment"].values[0]
-                new_data["Country"] = found_user["Country"].values[0]
-                new_data["City"] = found_user["City"].values[0]
-                new_data["State"] = found_user["State"].values[0]
-                new_data["Postal Code"] = found_user["Postal Code"].values[0]
-                new_data["Region"] = found_user["Region"].values[0]
-
-            df.loc[-1] = new_data
-            df.index = df.index + 1
-            df.sort_index(inplace=True)
 
             return (
                 feedback_message,
@@ -155,6 +172,7 @@ def data_table_entry_callbacks(app):
                 "Data added successfully!",
                 "success",
                 df.to_dict("records"),
+                df_copy.to_dict("records"),
                 None,
                 None,
                 None,
