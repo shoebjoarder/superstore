@@ -12,9 +12,9 @@ layout = dbc.Container(
             [
                 dbc.Col(
                     [
-                        html.H2("Insights"),
+                        html.H4("Insights"),
                         html.P(
-                            "Interactive charts that provides in-depth insights for your analysis."
+                            "Get in-depth insights using the interactive charts."
                         ),
                     ]
                 ),

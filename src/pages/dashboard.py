@@ -11,7 +11,7 @@ layout = dbc.Container(
             [
                 dbc.Col(
                     [
-                        html.H2("Superstore Dashboard"),
+                        html.H4("Superstore Dashboard"),
                         html.P(
                             "An overview of the most recent data of the Superstore."
                         ),
@@ -48,7 +48,7 @@ layout = dbc.Container(
                                                     },
                                                 ),
                                                 dbc.Tooltip(
-                                                    "The number represents the accumulated sales in the past four months.",
+                                                    "The number represents the accumulated sales in the past 12 months.",
                                                     target="tooltip-target-acc-sales",
                                                 ),
                                             ],
@@ -92,7 +92,7 @@ layout = dbc.Container(
                                                     },
                                                 ),
                                                 dbc.Tooltip(
-                                                    "The number represents the profit ratio in the past four months.",
+                                                    "The number represents the profit ratio in the past 12 months.",
                                                     target="tooltip-target-profit-ratio",
                                                 ),
                                             ],

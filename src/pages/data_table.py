@@ -12,7 +12,7 @@ layout = dbc.Container(
     [
         dbc.Row(
             [
-                html.H2("Data Table"),
+                html.H4("Data Table"),
                 html.P("Preview and manipulate the Superstore data table below."),
                 # Filter from the filter component for the data table
                 create_data_table_filters(),
