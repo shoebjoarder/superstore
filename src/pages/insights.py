@@ -49,7 +49,7 @@ layout = dbc.Container(
                                     [
                                         html.Div(["Select data"]),
                                         dcc.Dropdown(
-                                            value="Discount",
+                                            options=[],
                                             id="dropdown-timeline-graph",
                                             clearable=False,
                                         ),
@@ -61,8 +61,7 @@ layout = dbc.Container(
                                     [
                                         html.Div(["Select Week/Month/Quarter/Year"]),
                                         dcc.Dropdown(
-                                            # ["Week", "Month", "Quarter", "Year"],
-                                            value="Month",
+                                            options=[],
                                             id="dropdown-week-month-quarter-year",
                                             clearable=False,
                                         ),

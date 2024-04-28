@@ -1,13 +1,18 @@
 from dash import Input, Output, State
 import plotly.express as px
 import pandas as pd
+from dash.exceptions import PreventUpdate
 
 
-def graph_discount_profit_quantity_sales(df, value, date_key="ME"):
+def graph_total(df, value, date_key="ME"):
     return df.resample(date_key, on="Order Date")[value].sum().reset_index()
 
 
-def graph_profit_ratio(df, date_key="ME"):
+def graph_average(df, value, date_key="ME"):
+    return df.resample(date_key, on="Order Date")[value].mean().mul(100).reset_index()
+
+
+def graph_profit_ratio(df, value, date_key="ME"):
     grouped_profit_monthly = (
         df.resample(date_key, on="Order Date")["Profit"].sum().reset_index()
     )
@@ -20,33 +25,63 @@ def graph_profit_ratio(df, date_key="ME"):
         on="Order Date",
         how="outer",
     )
-    merge_profit_sales["Profit Ratio"] = (
+    merge_profit_sales[value] = (
         merge_profit_sales["Profit"] / merge_profit_sales["Sales"]
     ) * 100
     return merge_profit_sales
 
 
-def graph_returned(df, date_key="ME"):
-    new_df = (
-        df[df["Returned"] == "Yes"]
-        .groupby("Order Date")
-        .size()
-        .reset_index(name="Returned")
-    )
+def graph_returned(df, value, date_key="ME"):
+    new_df = df[df[value] == "Yes"].groupby("Order Date").size().reset_index(name=value)
+    return new_df.resample(date_key, on="Order Date")[value].count().reset_index()
 
-    return new_df.resample(date_key, on="Order Date")["Returned"].count().reset_index()
+
+def graphs_shipping(df, value, date_key="ME"):
+    # df['Order Date'] = pd.to_datetime(df['Order Date'])
+    df["Ship Date"] = pd.to_datetime(df["Ship Date"])
+    df[value] = (df["Ship Date"] - df["Order Date"]).dt.days
+
+    return df.resample(date_key, on="Order Date")[value].mean().reset_index()
 
 
 def insights_callbacks(app):
     @app.callback(
-        Output("insights-timeline-graph", "figure"),
         Output("dropdown-timeline-graph", "options"),
         Output("dropdown-week-month-quarter-year", "options"),
+        Output("dropdown-timeline-graph", "value"),
+        Output("dropdown-week-month-quarter-year", "value"),
+        Input("dropdown-timeline-graph", "options"),
+    )
+    def populate_dropdown_options(timeline_options):
+        if len(timeline_options) == 0:
+            dropdown_list = [
+                "Days to Ship",
+                "Discount",
+                "Profit",
+                "Profit Ratio",
+                "Quantity",
+                "Returned",
+                "Sales",
+            ]
+            sorted_list = sorted(dropdown_list)
+            dropdown_date = ["Week", "Month", "Quarter", "Year"]
+            return (
+                sorted_list,
+                dropdown_date,
+                sorted_list[1],
+                dropdown_date[1],
+            )
+        else:
+            raise PreventUpdate
+
+    @app.callback(
+        Output("insights-timeline-graph", "figure"),
         Input("dropdown-timeline-graph", "value"),
         Input("dropdown-week-month-quarter-year", "value"),
         Input("insights-date-range", "start_date"),
         Input("insights-date-range", "end_date"),
-        Input("memory-output", "data"),
+        Input("memory-copy", "data"),
+        prevent_initial_call=True,
     )
     def input_linegraph_data(
         value,
@@ -55,80 +90,75 @@ def insights_callbacks(app):
         insights_date_range_end,
         memory_data,
     ):
-        dropdown_list = [
-            # "Days to Ship",
-            "Discount",
-            "Profit",
-            "Profit Ratio",
-            "Quantity",
-            "Returned",
-            "Sales",
-        ]
-        dropdown_date = {
-            "Week": "W",
-            "Month": "ME",
-            "Quarter": "QE",
-            "Year": "YE",
-        }
-        list_dropdown_date = list(dropdown_date.keys())
-        date_key = dropdown_date[date_value]
+        if value is None or date_value is None:
+            raise PreventUpdate
+        else:
+            dropdown_date = {
+                "Week": "W",
+                "Month": "ME",
+                "Quarter": "QE",
+                "Year": "YE",
+            }
+            date_key = dropdown_date[date_value]
 
-        df = pd.DataFrame(memory_data).dropna()
-        df["Order Date"] = pd.to_datetime(df["Order Date"])
-        if (
-            insights_date_range_start is not None
-            and insights_date_range_end is not None
-        ):
-            df = df[
-                (df["Order Date"] >= insights_date_range_start)
-                & (df["Order Date"] <= insights_date_range_end)
-            ]
-        if (
-            value == "Discount"
-            or value == "Profit"
-            or value == "Quantity"
-            or value == "Sales"
-        ):
-            return (
-                px.line(
-                    graph_discount_profit_quantity_sales(df, value, date_key),
+            df = pd.DataFrame(memory_data).dropna()
+            df["Order Date"] = pd.to_datetime(df["Order Date"])
+            if (
+                insights_date_range_start is not None
+                and insights_date_range_end is not None
+            ):
+                df = df[
+                    (df["Order Date"] >= insights_date_range_start)
+                    & (df["Order Date"] <= insights_date_range_end)
+                ]
+            if value == "Discount":
+                return px.line(
+                    graph_average(df, value, date_key),
                     x="Order Date",
                     y=f"{value}",
                     title=f"{value} Trend",
                     markers=True,
-                ),
-                sorted(dropdown_list),
-                list_dropdown_date,
-            )
-        if value == "Profit Ratio":
-            return (
-                px.line(
-                    graph_profit_ratio(df, date_key),
+                    labels={value: f"{value} (Avg %)"},
+                )
+
+            if value == "Returned":
+                return px.line(
+                    graph_returned(df, value, date_key),
+                    x="Order Date",
+                    y=f"{value}",
+                    title=f"{value} Trend",
+                    markers=True,
+                    labels={value: f"{value} (Total)"},
+                )
+
+            if value == "Profit Ratio":
+                return px.line(
+                    graph_profit_ratio(df, value, date_key),
                     x="Order Date",
                     y="Profit Ratio",
                     title=f"{value} Trend",
                     markers=True,
-                    labels={"Profit Ratio": "Profit Ratio (%)"},
-                ),
-                sorted(dropdown_list),
-                list_dropdown_date,
-            )
+                    labels={value: f"{value} (%)"},
+                )
 
-        if value == "Returned":
-            return (
-                px.line(
-                    graph_returned(df, date_key),
+            if value == "Days to Ship":
+                return px.line(
+                    graphs_shipping(df, value, date_key),
                     x="Order Date",
-                    y="Returned",
+                    y=value,
                     title=f"{value} Trend",
                     markers=True,
-                    labels={"Count": "Total Returns"},
-                ),
-                sorted(dropdown_list),
-                list_dropdown_date,
+                    labels={value: f"{value} (Avg)"},
+                )
+
+            return px.line(
+                graph_total(df, value, date_key),
+                x="Order Date",
+                y=f"{value}",
+                title=f"{value} Trend",
+                markers=True,
+                labels={value: f"{value} (Total)"},
             )
-        if value is None:
-            return
 
     @app.callback(
         Output("insights-scatterplot-graph", "figure"),
