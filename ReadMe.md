@@ -1,6 +1,6 @@
 # Dash & Plotly Superstore Application
 
-A web application built with Dash and Plotly to analyze the Superstore dataset  ([link here](https://datawonders.atlassian.net/wiki/spaces/TABLEAU/blog/2022/10/26/1953431553/Where+Can+I+Find+Superstore+Sales)). The app has three pages: Dashboard, Data Table, and Insights. Some features of the application includes:
+A web application built with Dash and Plotly to analyze the Superstore dataset. The app has three pages: Dashboard, Data Table, and Insights. Some features of the application includes:
 
 - Get insights of the recent (past four months) sales and profit ratio
 - Add new data to the dataset
@@ -12,6 +12,10 @@ A web application built with Dash and Plotly to analyze the Superstore dataset  
 ## Live Demo
 
 Link: [Live Demo](https://shoeb-superstore.onrender.com/)
+
+## Dataset
+
+Link to the Superstore [dataset](https://datawonders.atlassian.net/wiki/spaces/TABLEAU/blog/2022/10/26/1953431553/Where+Can+I+Find+Superstore+Sales).
 
 ## 🚀 Getting Started
 
@@ -32,13 +36,21 @@ Link: [Live Demo](https://shoeb-superstore.onrender.com/)
 2. Create a Python virtual environment in the project directory
 
    ```bash
-   cd superstore && python -m venv venv
+   # Move to the directory
+   cd superstore 
+
+   # Create a virtual environment
+   python -m venv venv
    ```
 
 3. Activate the environment
 
    ```bash
+   # Command for Linux
    source ./venv/bin/activate
+   
+   # Command for Windows
+   ./venv/Scripts/activate
    ```
 
 4. Install the Python packages
