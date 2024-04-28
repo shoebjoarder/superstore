@@ -39,7 +39,7 @@ layout = dbc.Container(
                                                 ),
                                                 dbc.Col(
                                                     html.I(
-                                                        className="bi bi-info-circle",
+                                                        className="fa-regular fa-circle-question",
                                                         id="tooltip-target-acc-sales",
                                                     ),
                                                     style={
@@ -83,7 +83,7 @@ layout = dbc.Container(
                                                 ),
                                                 dbc.Col(
                                                     html.I(
-                                                        className="bi bi-info-circle",
+                                                        className="fa-regular fa-circle-question",
                                                         id="tooltip-target-profit-ratio",
                                                     ),
                                                     style={

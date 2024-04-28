@@ -99,9 +99,9 @@ def create_data_table_filters():
                                                 ],
                                                 style={
                                                     "border": "solid 1px #CFCFCF",
-                                                    "border-radius": "8px",
+                                                    "borderRadius": "8px",
                                                     "padding": "8px",
-                                                    "margin-bottom": "16px",
+                                                    "marginBottom": "16px",
                                                 },
                                             ),
                                             html.Div(
@@ -124,7 +124,7 @@ def create_data_table_filters():
                                                 ],
                                                 style={
                                                     "border": "solid 1px #CFCFCF",
-                                                    "border-radius": "8px",
+                                                    "borderRadius": "8px",
                                                     "padding": "8px",
                                                 },
                                             ),
@@ -143,7 +143,7 @@ def create_data_table_filters():
                                             dbc.Button(
                                                 [
                                                     html.I(
-                                                        className="bi bi-list-nested"
+                                                        className="fa-solid fa-broom"
                                                     ),
                                                     " Clear all",
                                                 ],

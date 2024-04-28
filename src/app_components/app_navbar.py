@@ -13,10 +13,10 @@ def navbar_component():
                             [
                                 html.Div(
                                     [
-                                        html.I(className="bi bi-house-door-fill"),
+                                        html.I(className="fa-solid fa-house"),
                                         html.Div(page["name"], className="ms-2"),
                                     ],
-                                    style={"display": "flex", "align-items": "center"},
+                                    style={"display": "flex", "alignItems": "center"},
                                 )
                             ],
                             href=page["path"],
@@ -36,7 +36,7 @@ def navbar_component():
                                         ],
                                         style={
                                             "display": "flex",
-                                            "align-items": "center",
+                                            "alignItems": "center",
                                         },
                                     )
                                 ],
@@ -49,12 +49,12 @@ def navbar_component():
                                 [
                                     html.Div(
                                         [
-                                            html.I(className="bi bi-table"),
+                                            html.I(className="fa-solid fa-table"),
                                             html.Div(page["name"], className="ms-2"),
                                         ],
                                         style={
                                             "display": "flex",
-                                            "align-items": "center",
+                                            "alignItems": "center",
                                         },
                                     )
                                 ],

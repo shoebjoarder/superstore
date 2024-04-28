@@ -121,14 +121,14 @@ def create_data_table_entry():
                             ],
                             justify="center",
                             style={
-                                "max-width": "600px",
+                                "maxWidth": "600px",
                                 "margin": "0 auto",
                             },
                         ),
                         fluid=True,
                     ),
                 ],
-                title="Do you want to add a new entry to the data table? Click here.",
+                title="Do you want to add a new data to the table? Click here.",
                 className="mb-3",
             ),
             dbc.Toast(
@@ -137,7 +137,7 @@ def create_data_table_entry():
                 ),
                 id="positioned-toast",
                 header="Data added successfully",
-                duration=4000,
+                duration=7000,
                 is_open=False,
                 icon="success",
                 style={
