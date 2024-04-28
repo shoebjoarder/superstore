@@ -19,6 +19,7 @@ def create_data_table_filters():
                                                 [
                                                     html.Div(["Segment"]),
                                                     dcc.Dropdown(
+                                                        options=[],
                                                         id="dropdown-segment",
                                                         className="mb-3",
                                                     ),

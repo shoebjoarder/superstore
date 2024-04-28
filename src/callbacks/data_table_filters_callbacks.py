@@ -126,185 +126,187 @@ def data_table_filters_callbacks(app):
         Output("dropdown-state", "options"),
         Output("dropdown-city", "options"),
         Input("memory-output", "data"),
-        prevent_initial_call=True,
+        State("dropdown-segment", "options"),
     )
-    def populate_filter_options(memory_data):
-        df = pd.DataFrame(memory_data).dropna()
-
-        return (
-            sorted(df["Segment"].unique()),
-            sorted(df["Ship Mode"].unique()),
-            df["Ship Date"].max(),
-            df["Ship Date"].max(),
-            df["Order Date"].max(),
-            df["Order Date"].max(),
-            sorted(df["Category"].unique()),
-            sorted(df["Sub-Category"].unique()),
-            sorted(df["Country"].unique()),
-            sorted(df["State"].unique()),
-            sorted(df["City"].unique()),
-        )
-
-    @app.callback(
-        Output("submit-filter", "children"),
-        Output("clear-filter", "disabled"),
-        Output("dropdown-sub-category", "options", allow_duplicate=True),
-        Output("dropdown-state", "options", allow_duplicate=True),
-        Output("dropdown-city", "options", allow_duplicate=True),
-        Input("dropdown-segment", "value"),
-        Input("dropdown-ship-mode", "value"),
-        Input("ship-date-range", "start_date"),
-        Input("ship-date-range", "end_date"),
-        Input("order-date-range", "start_date"),
-        Input("order-date-range", "end_date"),
-        Input("dropdown-category", "value"),
-        Input("dropdown-sub-category", "value"),
-        Input("dropdown-country", "value"),
-        Input("dropdown-state", "value"),
-        Input("dropdown-city", "value"),
-        Input("memory-output", "data"),
-        prevent_initial_call=True,
-    )
-    def select_filters(
-        segment,
-        ship_mode,
-        ship_date_range_start,
-        ship_date_range_end,
-        order_date_range_start,
-        order_date_range_end,
-        category,
-        subcategory,
-        country,
-        state,
-        city,
-        memory_data,
-    ):
-        temp, count, temp_subcategory, temp_state, temp_city = filter_data(
-            pd.DataFrame(memory_data),
-            segment,
-            ship_mode,
-            ship_date_range_start,
-            ship_date_range_end,
-            order_date_range_start,
-            order_date_range_end,
-            category,
-            subcategory,
-            country,
-            state,
-            city,
-        )
-
-        if temp is not None:
-            count = len(temp)
-            if count == 0:
-                return (
-                    f"No data found!",
-                    False,
-                    temp_subcategory,
-                    temp_state,
-                    temp_city,
-                )
+    def populate_filter_options(memory_data, segment):
+        if len(segment) == 0:
+            df = pd.DataFrame(memory_data).dropna()
             return (
-                f"Show {count} data",
-                False,
-                temp_subcategory,
-                temp_state,
-                temp_city,
+                sorted(df["Segment"].unique()),
+                sorted(df["Ship Mode"].unique()),
+                df["Ship Date"].max(),
+                df["Ship Date"].max(),
+                df["Order Date"].max(),
+                df["Order Date"].max(),
+                sorted(df["Category"].unique()),
+                sorted(df["Sub-Category"].unique()),
+                sorted(df["Country"].unique()),
+                sorted(df["State"].unique()),
+                sorted(df["City"].unique()),
             )
         else:
-            return (
-                "Apply Filters",
-                True,
-                temp_subcategory,
-                temp_state,
-                temp_city,
-            )
-
-    @app.callback(
-        Output("data-table", "data", allow_duplicate=True),
-        Input("submit-filter", "n_clicks"),
-        State("dropdown-segment", "value"),
-        State("dropdown-ship-mode", "value"),
-        State("ship-date-range", "start_date"),
-        State("ship-date-range", "end_date"),
-        State("order-date-range", "start_date"),
-        State("order-date-range", "end_date"),
-        State("dropdown-category", "value"),
-        State("dropdown-sub-category", "value"),
-        State("dropdown-country", "value"),
-        State("dropdown-state", "value"),
-        State("dropdown-city", "value"),
-        Input("memory-output", "data"),
-        prevent_initial_call=True,
-    )
-    def apply_filters(
-        n_clicks,
-        segment,
-        ship_mode,
-        ship_date_range_start,
-        ship_date_range_end,
-        order_date_range_start,
-        order_date_range_end,
-        category,
-        subcategory,
-        country,
-        state,
-        city,
-        memory_data,
-    ):
-        if n_clicks is None:
             raise PreventUpdate
-        temp, _, _, _, _ = filter_data(
-            pd.DataFrame(memory_data),
-            segment,
-            ship_mode,
-            ship_date_range_start,
-            ship_date_range_end,
-            order_date_range_start,
-            order_date_range_end,
-            category,
-            subcategory,
-            country,
-            state,
-            city,
-        )
 
-        if temp is None:
-            return memory_data
+    # @app.callback(
+    #     Output("submit-filter", "children"),
+    #     Output("clear-filter", "disabled"),
+    #     Output("dropdown-sub-category", "options", allow_duplicate=True),
+    #     Output("dropdown-state", "options", allow_duplicate=True),
+    #     Output("dropdown-city", "options", allow_duplicate=True),
+    #     Input("dropdown-segment", "value"),
+    #     Input("dropdown-ship-mode", "value"),
+    #     Input("ship-date-range", "start_date"),
+    #     Input("ship-date-range", "end_date"),
+    #     Input("order-date-range", "start_date"),
+    #     Input("order-date-range", "end_date"),
+    #     Input("dropdown-category", "value"),
+    #     Input("dropdown-sub-category", "value"),
+    #     Input("dropdown-country", "value"),
+    #     Input("dropdown-state", "value"),
+    #     Input("dropdown-city", "value"),
+    #     Input("memory-output", "data"),
+    #     prevent_initial_call=True,
+    # )
+    # def select_filters(
+    #     segment,
+    #     ship_mode,
+    #     ship_date_range_start,
+    #     ship_date_range_end,
+    #     order_date_range_start,
+    #     order_date_range_end,
+    #     category,
+    #     subcategory,
+    #     country,
+    #     state,
+    #     city,
+    #     memory_data,
+    # ):
+    #     temp, count, temp_subcategory, temp_state, temp_city = filter_data(
+    #         pd.DataFrame(memory_data),
+    #         segment,
+    #         ship_mode,
+    #         ship_date_range_start,
+    #         ship_date_range_end,
+    #         order_date_range_start,
+    #         order_date_range_end,
+    #         category,
+    #         subcategory,
+    #         country,
+    #         state,
+    #         city,
+    #     )
 
-        return temp.to_dict("records")
+    #     if temp is not None:
+    #         count = len(temp)
+    #         if count == 0:
+    #             return (
+    #                 f"No data found!",
+    #                 False,
+    #                 temp_subcategory,
+    #                 temp_state,
+    #                 temp_city,
+    #             )
+    #         return (
+    #             f"Show {count} data",
+    #             False,
+    #             temp_subcategory,
+    #             temp_state,
+    #             temp_city,
+    #         )
+    #     else:
+    #         return (
+    #             "Apply Filters",
+    #             True,
+    #             temp_subcategory,
+    #             temp_state,
+    #             temp_city,
+    #         )
 
-    @app.callback(
-        Output("data-table", "data", allow_duplicate=True),
-        Output("dropdown-segment", "value"),
-        Output("dropdown-ship-mode", "value"),
-        Output("ship-date-range", "start_date"),
-        Output("ship-date-range", "end_date"),
-        Output("order-date-range", "start_date"),
-        Output("order-date-range", "end_date"),
-        Output("dropdown-category", "value"),
-        Output("dropdown-sub-category", "value"),
-        Output("dropdown-country", "value"),
-        Output("dropdown-state", "value"),
-        Output("dropdown-city", "value"),
-        Input("clear-filter", "n_clicks"),
-        Input("memory-output", "data"),
-        prevent_initial_call=True,
-    )
-    def clear_filters(n_clicks, memory_data):
-        if n_clicks is None:
-            raise PreventUpdate
-        return (
-            memory_data,
-            None,
-            None,
-            None,
-            None,
-            None,
-            None,
-            None,
-            None,
-            None,
-            None,
-            None,
-        )
+    # @app.callback(
+    #     Output("data-table", "data", allow_duplicate=True),
+    #     Input("submit-filter", "n_clicks"),
+    #     State("dropdown-segment", "value"),
+    #     State("dropdown-ship-mode", "value"),
+    #     State("ship-date-range", "start_date"),
+    #     State("ship-date-range", "end_date"),
+    #     State("order-date-range", "start_date"),
+    #     State("order-date-range", "end_date"),
+    #     State("dropdown-category", "value"),
+    #     State("dropdown-sub-category", "value"),
+    #     State("dropdown-country", "value"),
+    #     State("dropdown-state", "value"),
+    #     State("dropdown-city", "value"),
+    #     Input("memory-output", "data"),
+    #     prevent_initial_call=True,
+    # )
+    # def apply_filters(
+    #     n_clicks,
+    #     segment,
+    #     ship_mode,
+    #     ship_date_range_start,
+    #     ship_date_range_end,
+    #     order_date_range_start,
+    #     order_date_range_end,
+    #     category,
+    #     subcategory,
+    #     country,
+    #     state,
+    #     city,
+    #     memory_data,
+    # ):
+    #     if n_clicks is None:
+    #         raise PreventUpdate
+    #     temp, _, _, _, _ = filter_data(
+    #         pd.DataFrame(memory_data),
+    #         segment,
+    #         ship_mode,
+    #         ship_date_range_start,
+    #         ship_date_range_end,
+    #         order_date_range_start,
+    #         order_date_range_end,
+    #         category,
+    #         subcategory,
+    #         country,
+    #         state,
+    #         city,
+    #     )
+
+    #     if temp is None:
+    #         return memory_data
+
+    #     return temp.to_dict("records")
+
+    # @app.callback(
+    #     Output("data-table", "data", allow_duplicate=True),
+    #     Output("dropdown-segment", "value"),
+    #     Output("dropdown-ship-mode", "value"),
+    #     Output("ship-date-range", "start_date"),
+    #     Output("ship-date-range", "end_date"),
+    #     Output("order-date-range", "start_date"),
+    #     Output("order-date-range", "end_date"),
+    #     Output("dropdown-category", "value"),
+    #     Output("dropdown-sub-category", "value"),
+    #     Output("dropdown-country", "value"),
+    #     Output("dropdown-state", "value"),
+    #     Output("dropdown-city", "value"),
+    #     Input("clear-filter", "n_clicks"),
+    #     Input("memory-output", "data"),
+    #     prevent_initial_call=True,
+    # )
+    # def clear_filters(n_clicks, memory_data):
+    #     if n_clicks is None:
+    #         raise PreventUpdate
+    #     return (
+    #         memory_data,
+    #         None,
+    #         None,
+    #         None,
+    #         None,
+    #         None,
+    #         None,
+    #         None,
+    #         None,
+    #         None,
+    #         None,
+    #         None,
+    #     )
