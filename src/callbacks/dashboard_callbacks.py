@@ -16,43 +16,42 @@ def dashboard_callbacks(app):
         df = pd.DataFrame(memory_data).dropna()
         df["Order Date"] = pd.to_datetime(df["Order Date"])
 
-        most_recent_date = df["Order Date"].max()
-        four_months_ago = most_recent_date - pd.Timedelta(days=120)
-
-        recent_data = df[
-            (df["Order Date"] >= four_months_ago)
-            & (df["Order Date"] <= most_recent_date)
-        ]
-
-        # Calculate accumulated sales and profit ratio
-        accumulated_sales = recent_data["Sales"].sum()
-        profit_ratio = df["Profit"].sum() / accumulated_sales
-
-        # Group by 'Month', then sum 'Sales' for each unique year-month combination
-        grouped_sales_monthly = (
-            recent_data.resample("ME", on="Order Date")["Sales"].sum().reset_index()
+        months = 12
+        df["Order Date"] = pd.to_datetime(df["Order Date"])
+        df_profit = (
+            df.resample("ME", on="Order Date")["Profit"]
+            .sum()
+            .reset_index()
+            .sort_values(by=["Order Date"], ascending=False)
         )
-        grouped_profit_monthly = (
-            recent_data.resample("ME", on="Order Date")["Profit"].sum().reset_index()
+        df_sales = (
+            df.resample("ME", on="Order Date")["Sales"]
+            .sum()
+            .reset_index()
+            .sort_values(by=["Order Date"], ascending=False)
         )
+
+        acc_sales = df_sales["Sales"][0:months].sum()
+        total_profit = df_profit["Profit"][0:months].sum()
+        profit_ratio = total_profit / acc_sales
 
         # Create a line chart for sales and profit
         sales_fig = px.line(
-            grouped_sales_monthly,
+            df_sales[0:months],
             x="Order Date",
             y="Sales",
-            title="Sales Trends",
+            # title="Sales Trends",
             labels={"Sales": "Total Sales"},
         )
         profit_fig = px.line(
-            grouped_profit_monthly,
+            df_profit[0:months],
             x="Order Date",
             y="Profit",
-            title="Profit Trends",
+            # title="Profit Trends",
             labels={"Profit": "Total Profit"},
         )
         return (
-            f"${accumulated_sales:,.2f}",
+            f"${acc_sales:,.2f}",
             f"{profit_ratio:.2%}",
             sales_fig,
             profit_fig,
