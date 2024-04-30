@@ -9,32 +9,6 @@ from typing import Any, Dict, Tuple
 MONTHS: int = 12
 
 
-def dashboard_callbacks(app: Any) -> None:
-    @app.callback(
-        Output("accumulated-sales", "children"),
-        Output("profit-ratio", "children"),
-        Output("dashboard-sales-graph", "figure"),
-        Output("dashboard-profit-graph", "figure"),
-        Input("memory-output", "data"),
-    )
-    def populate_dashboard(
-        memory_data: Dict[str, Any]
-    ) -> Tuple[str, str, go.Figure, go.Figure]:
-        if not memory_data:
-            raise PreventUpdate
-
-        df = prepare_dataframe(memory_data)
-        acc_sales, _, profit_ratio = calculate_metrics(df, MONTHS)
-        sales_fig, profit_fig = create_graphs(df, MONTHS)
-
-        return (
-            f"${acc_sales:,.2f}",
-            f"{profit_ratio:.2%}",
-            sales_fig,
-            profit_fig,
-        )
-
-
 def prepare_dataframe(memory_data: Dict[str, Any]) -> pd.DataFrame:
     """Prepare the DataFrame from memory data."""
     df = pd.DataFrame(memory_data).dropna()
@@ -81,3 +55,29 @@ def create_graphs(df: pd.DataFrame, months: int) -> Tuple[go.Figure, go.Figure]:
         labels={"Profit": "Total Profit"},
     )
     return sales_fig, profit_fig
+
+
+def dashboard_callbacks(app: Any) -> None:
+    @app.callback(
+        Output("accumulated-sales", "children"),
+        Output("profit-ratio", "children"),
+        Output("dashboard-sales-graph", "figure"),
+        Output("dashboard-profit-graph", "figure"),
+        Input("memory-output", "data"),
+    )
+    def populate_dashboard(
+        memory_data: Dict[str, Any]
+    ) -> Tuple[str, str, go.Figure, go.Figure]:
+        if not memory_data:
+            raise PreventUpdate
+
+        df = prepare_dataframe(memory_data)
+        acc_sales, _, profit_ratio = calculate_metrics(df, MONTHS)
+        sales_fig, profit_fig = create_graphs(df, MONTHS)
+
+        return (
+            f"${acc_sales:,.2f}",
+            f"{profit_ratio:.2%}",
+            sales_fig,
+            profit_fig,
+        )
