@@ -2,7 +2,7 @@ import logging
 import dash
 import dash_bootstrap_components as dbc
 import callbacks
-import app_components
+import components
 from dash import dcc
 from utils import load_dataset
 import os
@@ -32,13 +32,13 @@ app.layout = dbc.Container(
     [
         dcc.Store(id="memory-output", data=df_table.to_dict("records")),
         dcc.Store(id="memory-copy", data=df_table.to_dict("records")),
-        dbc.Row([app_components.navbar_component()]),
+        dbc.Row([components.navbar_component()]),
         dbc.Container(
             [
                 dbc.Row(
                     [
                         dbc.Col(
-                            [app_components.sidebar_component()],
+                            [components.sidebar_component()],
                             xl=2,
                         ),
                         dbc.Col(
