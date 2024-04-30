@@ -1,3 +1,4 @@
+import logging
 import dash
 import dash_bootstrap_components as dbc
 import callbacks
@@ -10,6 +11,10 @@ from dotenv import load_dotenv
 load_dotenv()
 
 dataset_url = os.getenv("DATASET_URL")
+
+# Configuration of logging
+logging.basicConfig(level=logging.INFO)
+log = logging.getLogger(__name__)
 
 # Load the dataset
 df_table = load_dataset(url=dataset_url)
