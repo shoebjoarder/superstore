@@ -3,64 +3,39 @@ import dash
 from dash import html
 
 
+def page_link_component(page_name, page_path, icon):
+    return dbc.NavLink(
+        [
+            html.Div(
+                [html.I(className=icon), html.Div(page_name, className="ms-2")],
+                style={"display": "flex", "alignItems": "center"},
+            )
+        ],
+        href=page_path,
+        active="exact",
+        className="d-xl-none",
+    )
+
+
 def navbar_component():
     navbar = dbc.NavbarSimple(
         children=[
             dbc.Container(
                 [
                     (
-                        dbc.NavLink(
-                            [
-                                html.Div(
-                                    [
-                                        html.I(className="fa-solid fa-house"),
-                                        html.Div(page["name"], className="ms-2"),
-                                    ],
-                                    style={"display": "flex", "alignItems": "center"},
-                                )
-                            ],
-                            href=page["path"],
-                            active="exact",
-                            className="d-xl-none",
+                        page_link_component(
+                            page["name"], page["path"], "fa-solid fa-house"
                         )
                         if page["name"] == "Dashboard"
                         else (
-                            dbc.NavLink(
-                                [
-                                    html.Div(
-                                        [
-                                            html.I(
-                                                className="fa-solid fa-magnifying-glass-chart"
-                                            ),  # Data Insights icon
-                                            html.Div(page["name"], className="ms-2"),
-                                        ],
-                                        style={
-                                            "display": "flex",
-                                            "alignItems": "center",
-                                        },
-                                    )
-                                ],
-                                href=page["path"],
-                                active="exact",
-                                className="d-xl-none",
+                            page_link_component(
+                                page["name"],
+                                page["path"],
+                                "fa-solid fa-magnifying-glass-chart",
                             )
                             if page["name"] == "Insights"
-                            else dbc.NavLink(
-                                [
-                                    html.Div(
-                                        [
-                                            html.I(className="fa-solid fa-table"),
-                                            html.Div(page["name"], className="ms-2"),
-                                        ],
-                                        style={
-                                            "display": "flex",
-                                            "alignItems": "center",
-                                        },
-                                    )
-                                ],
-                                href=page["path"],
-                                active="exact",
-                                className="d-xl-none",
+                            else page_link_component(
+                                page["name"], page["path"], "fa-solid fa-table"
                             )
                         )
                     )
@@ -69,7 +44,7 @@ def navbar_component():
             )
         ],
         brand="Superstore",
-        brand_href="#",
+        brand_href="/",
         color="dark",
         dark=True,
         expand="xl",
