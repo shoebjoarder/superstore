@@ -5,7 +5,7 @@ This web application is developed using Dash and Plotly, designed to provide a c
 ### ✅ Key Features
 
 - **Dynamic Insights**: Analyze recent trends in sales and profit ratios.
-- **Data Management**: Seamlessly add new entries to update and expand the dataset.
+- **Data Management**: Seamlessly add new entries to update, expand the dataset and export the data as excel sheet. 
 - **Advanced Filtering**: Utilize powerful filters to refine data searches; includes a real-time preview feature.
 - **Interactive Visualizations**: Explore data through engaging and customizable visual graphics, adjustable with various filters to pinpoint precise information.
 - **User-Friendly Navigation**: Easily move between different sections using a responsive sidebar.
@@ -13,7 +13,7 @@ This web application is developed using Dash and Plotly, designed to provide a c
 
 ### 💡 Benefits
 
-This application aims to empower users to make data-driven decisions by offering detailed and intuitive analyses of sales and profitability metrics. Whether you are looking to identify trends, assess performance, or enhance operational strategies, this tool provides essential functionalities to navigate and interpret complex datasets.
+This application aims to empower users to make data-driven decisions by offering detailed and intuitive analyses of sales and profitability metrics. Whether you are looking to identify trends, assess performance, or enhance operational strategies, this tool provides essential functionalities to navigate and interpret the Superstore dataset.
 
 ## Live Demo
 
