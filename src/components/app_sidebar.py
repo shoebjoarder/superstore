@@ -3,53 +3,34 @@ import dash
 from dash import html
 
 
+def page_link_component(page_name, page_path, icon):
+    return dbc.NavLink(
+        [
+            html.Div(
+                [html.I(className=icon), html.Div(page_name, className="ms-2")],
+                style={"display": "flex", "alignItems": "center"},
+            )
+        ],
+        href=page_path,
+        active="exact",
+    )
+
+
 def sidebar_component():
     sidebar = dbc.Nav(
         [
             (
-                dbc.NavLink(
-                    [
-                        html.Div(
-                            [
-                                html.I(className="fa-solid fa-house"),
-                                html.Div(page["name"], className="ms-2"),
-                            ],
-                            style={"display": "flex", "alignItems": "center"},
-                        )
-                    ],
-                    href=page["path"],
-                    active="exact",
-                )
+                page_link_component(page["name"], page["path"], "fa-solid fa-house")
                 if page["name"] == "Dashboard"
                 else (
-                    dbc.NavLink(
-                        [
-                            html.Div(
-                                [
-                                    html.I(
-                                        className="fa-solid fa-magnifying-glass-chart"
-                                    ),  # Data Insights icon
-                                    html.Div(page["name"], className="ms-2"),
-                                ],
-                                style={"display": "flex", "alignItems": "center"},
-                            )
-                        ],
-                        href=page["path"],
-                        active="exact",
+                    page_link_component(
+                        page["name"],
+                        page["path"],
+                        "fa-solid fa-magnifying-glass-chart",
                     )
                     if page["name"] == "Insights"
-                    else dbc.NavLink(
-                        [
-                            html.Div(
-                                [
-                                    html.I(className="fa-solid fa-table"),
-                                    html.Div(page["name"], className="ms-2"),
-                                ],
-                                style={"display": "flex", "alignItems": "center"},
-                            )
-                        ],
-                        href=page["path"],
-                        active="exact",
+                    else page_link_component(
+                        page["name"], page["path"], "fa-solid fa-table"
                     )
                 )
             )
