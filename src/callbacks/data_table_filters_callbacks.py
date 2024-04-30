@@ -49,30 +49,37 @@ def filter_data(
                 subset=[COLUMN_SHIP_MODE]
             )
 
-    if ship_date_range_start is not None and ship_date_range_end is not None:
+    if ship_date_range_start is not None:
         if temp is None:
             temp = dataframe_table[
-                (dataframe_table[COLUMN_SHIP_DATE] >= ship_date_range_start)
-                & (dataframe_table[COLUMN_SHIP_DATE] <= ship_date_range_end)
+                dataframe_table[COLUMN_SHIP_DATE] >= ship_date_range_start
             ]
         else:
-            temp = temp[
-                (temp[COLUMN_SHIP_DATE] >= ship_date_range_start)
-                & (temp[COLUMN_SHIP_DATE] <= ship_date_range_end)
-            ]
+            temp = temp[temp[COLUMN_SHIP_DATE] >= ship_date_range_start]
 
-    if order_date_range_start is not None and order_date_range_end is not None:
+    if ship_date_range_end is not None:
         if temp is None:
             temp = dataframe_table[
-                (dataframe_table[COLUMN_ORDER_DATE] >= order_date_range_start)
-                & (dataframe_table[COLUMN_ORDER_DATE] <= order_date_range_end)
+                dataframe_table[COLUMN_SHIP_DATE] <= ship_date_range_end
             ]
         else:
-            temp = temp[
-                (temp[COLUMN_ORDER_DATE] >= order_date_range_start)
-                & (temp[COLUMN_ORDER_DATE] <= order_date_range_end)
-            ]
+            temp = temp[temp[COLUMN_SHIP_DATE] <= ship_date_range_end]
 
+    if order_date_range_start is not None:
+        if temp is None:
+            temp = dataframe_table[
+                dataframe_table[COLUMN_ORDER_DATE] >= order_date_range_start
+            ]
+        else:
+            temp = temp[temp[COLUMN_ORDER_DATE] >= order_date_range_start]
+
+    if order_date_range_end is not None:
+        if temp is None:
+            temp = dataframe_table[
+                dataframe_table[COLUMN_ORDER_DATE] <= order_date_range_end
+            ]
+        else:
+            temp = temp[temp[COLUMN_ORDER_DATE] <= order_date_range_end]
     if category is not None:
         if temp is None:
             temp = dataframe_table[dataframe_table[COLUMN_CATEGORY] == category].dropna(
@@ -198,10 +205,7 @@ def data_table_filters_callbacks(app):
         clear_n_click,
         memory_data,
     ):
-        if clear_n_click is None and (
-            (ship_date_range_start is not None and ship_date_range_end is not None)
-            or (order_date_range_start is not None and order_date_range_end is not None)
-        ):
+        if clear_n_click is None:
 
             if (
                 segment
@@ -230,7 +234,7 @@ def data_table_filters_callbacks(app):
                     state,
                     city,
                 )
-                if temp is not None:
+                if not temp.empty:
                     count = len(temp)
                     if count == 0:
                         return (
