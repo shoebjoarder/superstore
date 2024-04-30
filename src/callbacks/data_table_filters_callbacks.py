@@ -1,6 +1,7 @@
 from dash import Output, Input, State
 import pandas as pd
 from dash.exceptions import PreventUpdate
+from typing import Any, Dict, List, Tuple, Optional
 
 
 COLUMN_ORDER_DATE: str = "Order Date"
@@ -28,7 +29,7 @@ def filter_dataframe(
     return df
 
 
-def filter_data(df, filters):
+def filter_data(df: pd.DataFrame, filters: List[Tuple[str, str, str]]) -> pd.DataFrame:
     """Apply multiple filters to a DataFrame."""
     filtered_df = df.dropna()
     for column, value, operator in filters:
@@ -36,7 +37,7 @@ def filter_data(df, filters):
     return filtered_df
 
 
-def data_table_filters_callbacks(app):
+def data_table_filters_callbacks(app: Any) -> None:
     @app.callback(
         Output("dropdown-segment", "options"),
         Output("dropdown-ship-mode", "options"),
@@ -52,7 +53,21 @@ def data_table_filters_callbacks(app):
         Input("memory-output", "data"),
         State("dropdown-segment", "options"),
     )
-    def populate_filter_options(memory_data, segment):
+    def populate_filter_options(
+        memory_data: Dict[str, Any], segment: List[str]
+    ) -> Tuple[
+        List[str],
+        List[str],
+        str,
+        str,
+        str,
+        str,
+        List[str],
+        List[str],
+        List[str],
+        List[str],
+        List[str],
+    ]:
         if len(segment) == 0:
             df = pd.DataFrame(memory_data).dropna()
             return (
@@ -93,20 +108,20 @@ def data_table_filters_callbacks(app):
         prevent_initial_call=True,
     )
     def select_filters(
-        segment,
-        ship_mode,
-        ship_date_range_start,
-        ship_date_range_end,
-        order_date_range_start,
-        order_date_range_end,
-        category,
-        subcategory,
-        country,
-        state,
-        city,
-        clear_n_click,
-        memory_data,
-    ):
+        segment: str,
+        ship_mode: str,
+        ship_date_range_start: str,
+        ship_date_range_end: str,
+        order_date_range_start: str,
+        order_date_range_end: str,
+        category: str,
+        subcategory: str,
+        country: str,
+        state: str,
+        city: str,
+        clear_n_click: int,
+        memory_data: Dict[str, Any],
+    ) -> Tuple[str, bool, List[str], List[str], List[str]]:
         if clear_n_click is None:
             if (
                 segment
@@ -183,7 +198,25 @@ def data_table_filters_callbacks(app):
         Input("memory-copy", "data"),
         prevent_initial_call=True,
     )
-    def clear_filters(n_clicks, memory_copy):
+    def clear_filters(n_clicks: Optional[int], memory_copy: Dict[str, Any]) -> Tuple[
+        Dict[str, Any],
+        Optional[str],
+        Optional[str],
+        Optional[str],
+        Optional[str],
+        Optional[str],
+        Optional[str],
+        Optional[str],
+        Optional[str],
+        Optional[str],
+        Optional[str],
+        Optional[int],
+        str,
+        bool,
+        List[str],
+        List[str],
+        List[str],
+    ]:
         if n_clicks is None:
             raise PreventUpdate
         else:
@@ -228,20 +261,20 @@ def data_table_filters_callbacks(app):
         prevent_initial_call=True,
     )
     def apply_filters(
-        n_clicks,
-        segment,
-        ship_mode,
-        ship_date_range_start,
-        ship_date_range_end,
-        order_date_range_start,
-        order_date_range_end,
-        category,
-        subcategory,
-        country,
-        state,
-        city,
-        memory_data,
-    ):
+        n_clicks: Optional[int],
+        segment: Optional[str],
+        ship_mode: Optional[str],
+        ship_date_range_start: Optional[str],
+        ship_date_range_end: Optional[str],
+        order_date_range_start: Optional[str],
+        order_date_range_end: Optional[str],
+        category: Optional[str],
+        subcategory: Optional[str],
+        country: Optional[str],
+        state: Optional[str],
+        city: Optional[str],
+        memory_data: Dict[str, Any],
+    ) -> Tuple[Dict[str, Any], Optional[int]]:
         if n_clicks is not None:
             filters = [
                 (COLUMN_SEGMENT, segment, "=="),
