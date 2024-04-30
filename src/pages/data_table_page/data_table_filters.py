@@ -3,99 +3,66 @@ from dash import dcc, html
 from datetime import date
 
 
-def create_data_table_filters():
-    accordion = dbc.Accordion(
+def filter_dropdown(title: str) -> dbc.Row:
+    title_hypen = title.lower().replace(" ", "-")
+    return dbc.Row(
+        [
+            html.Div([title]),
+            dcc.Dropdown(
+                options=[],
+                id=f"dropdown-filter-{title_hypen}",
+            ),
+        ],
+        class_name="mb-3",
+    )
+
+
+def date_range(title: str) -> dbc.Row:
+    title_hypen = title.lower().replace(" ", "-")
+    return dbc.Row(
+        [
+            html.Div([title]),
+            dcc.DatePickerRange(
+                id=f"filter-{title_hypen}-range",
+                min_date_allowed=date(
+                    1995,
+                    8,
+                    5,
+                ),
+                clearable=True,
+            ),
+        ],
+        className="mb-3",
+    )
+
+
+def create_data_table_filters() -> dbc.Accordion:
+    return dbc.Accordion(
         [
             dbc.AccordionItem(
                 [
-                    html.P("Apply filters to the Superstore data table below"),
                     dbc.Container(
                         [
+                            html.P("Apply filters to the Superstore data table below"),
                             dbc.Row(
                                 [
                                     dbc.Col(
                                         [
-                                            html.Div(
-                                                [
-                                                    html.Div(["Segment"]),
-                                                    dcc.Dropdown(
-                                                        options=[],
-                                                        id="dropdown-segment",
-                                                        className="mb-3",
-                                                    ),
-                                                    html.Div(["Ship Mode"]),
-                                                    dcc.Dropdown(
-                                                        id="dropdown-ship-mode",
-                                                        className="mb-3",
-                                                    ),
-                                                ]
-                                            ),
-                                            html.Div(
-                                                [
-                                                    dbc.Row(
-                                                        [
-                                                            dbc.Col(
-                                                                [
-                                                                    html.Div(
-                                                                        ["Ship Date"]
-                                                                    ),
-                                                                    dcc.DatePickerRange(
-                                                                        id="ship-date-range",
-                                                                        min_date_allowed=date(
-                                                                            1995,
-                                                                            8,
-                                                                            5,
-                                                                        ),
-                                                                        clearable=True,
-                                                                    ),
-                                                                ],
-                                                                className="mb-2",
-                                                                xs=12,
-                                                            ),
-                                                            dbc.Col(
-                                                                [
-                                                                    html.Div(
-                                                                        ["Order Date"]
-                                                                    ),
-                                                                    dcc.DatePickerRange(
-                                                                        id="order-date-range",
-                                                                        min_date_allowed=date(
-                                                                            1995,
-                                                                            8,
-                                                                            5,
-                                                                        ),
-                                                                        style={
-                                                                            "width": "100%"
-                                                                        },
-                                                                        clearable=True,
-                                                                    ),
-                                                                ],
-                                                                className="mb-2",
-                                                                xs=12,
-                                                            ),
-                                                        ]
-                                                    )
-                                                ],
-                                                className="mb-2",
-                                            ),
+                                            filter_dropdown("Segment"),
+                                            filter_dropdown("Ship Mode"),
+                                            filter_dropdown("Ship Mode"),
+                                            date_range("Ship Date"),
+                                            date_range("Order Date"),
                                         ],
                                         xs=12,
                                         md=6,
                                     ),
                                     dbc.Col(
                                         [
-                                            html.Div(
+                                            dbc.Container(
                                                 [
-                                                    html.Div(["Category"]),
-                                                    dcc.Dropdown(
-                                                        id="dropdown-category",
-                                                        className="mb-2",
-                                                    ),
-                                                    html.Div(["Sub-Category"]),
-                                                    dcc.Dropdown(
-                                                        id="dropdown-sub-category",
-                                                        className="mb-2",
-                                                    ),
+                                                    filter_dropdown("Category"),
+                                                    filter_dropdown("Sub-Category"),
                                                 ],
                                                 style={
                                                     "border": "solid 1px #CFCFCF",
@@ -104,28 +71,17 @@ def create_data_table_filters():
                                                     "marginBottom": "16px",
                                                 },
                                             ),
-                                            html.Div(
+                                            dbc.Container(
                                                 [
-                                                    html.Div(["Country"]),
-                                                    dcc.Dropdown(
-                                                        id="dropdown-country",
-                                                        className="mb-2",
-                                                    ),
-                                                    html.Div(["State"]),
-                                                    dcc.Dropdown(
-                                                        id="dropdown-state",
-                                                        className="mb-2",
-                                                    ),
-                                                    html.Div(["City"]),
-                                                    dcc.Dropdown(
-                                                        id="dropdown-city",
-                                                        className="mb-2",
-                                                    ),
+                                                    filter_dropdown("Country"),
+                                                    filter_dropdown("State"),
+                                                    filter_dropdown("City"),
                                                 ],
                                                 style={
                                                     "border": "solid 1px #CFCFCF",
                                                     "borderRadius": "8px",
                                                     "padding": "8px",
+                                                    "marginBottom": "16px",
                                                 },
                                             ),
                                         ],
@@ -175,5 +131,3 @@ def create_data_table_filters():
         ],
         start_collapsed="True",
     )
-
-    return accordion
