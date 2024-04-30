@@ -4,10 +4,10 @@ from typing import Optional
 import logging
 
 # Define constants for column names and messages
+COLUMN_SHIP_DATE = "Order Date"
+COLUMN_ORDER_DATE = "Ship Date"
 COLUMN_ORDER_ID = "Order ID"
 COLUMN_RETURNED = "Returned"
-MESSAGE_LOCAL_FILE = "***** Local Excel file used to load dataset! *****"
-MESSAGE_GITHUB_FILE = "***** Fetched the Excel file from GitHub successfully! *****"
 
 
 def load_dataset(url: Optional[str] = None) -> pd.DataFrame:
@@ -29,18 +29,18 @@ def load_dataset(url: Optional[str] = None) -> pd.DataFrame:
 
         df_orders = pd.read_excel(excel_file_path, sheet_name="Orders")
         df_returns = pd.read_excel(excel_file_path, sheet_name="Returns")
-        logging.info(MESSAGE_LOCAL_FILE)
+        logging.info("***** Local Excel file used to load dataset! *****")
     else:
         df_orders = pd.read_excel(url, sheet_name="Orders")
         df_returns = pd.read_excel(url, sheet_name="Returns")
-        logging.info(MESSAGE_GITHUB_FILE)
+        logging.info("***** Fetched the Excel file from GitHub successfully! *****")
 
     merged_df = pd.merge(df_orders, df_returns, on=COLUMN_ORDER_ID, how="outer")
 
     merged_df[COLUMN_RETURNED] = merged_df[COLUMN_RETURNED].fillna("No")
 
-    merged_df["Order Date"] = merged_df["Order Date"].dt.strftime("%Y-%m-%d")
-    merged_df["Ship Date"] = merged_df["Ship Date"].dt.strftime("%Y-%m-%d")
+    merged_df[COLUMN_SHIP_DATE] = merged_df[COLUMN_SHIP_DATE].dt.strftime("%Y-%m-%d")
+    merged_df[COLUMN_ORDER_DATE] = merged_df[COLUMN_ORDER_DATE].dt.strftime("%Y-%m-%d")
 
     merged_df = merged_df.drop("Row ID", axis=1)
 
