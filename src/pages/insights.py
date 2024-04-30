@@ -19,7 +19,7 @@ def graph_dropdown(title: str, type: str, size: int) -> dbc.Col:
     )
 
 
-def create_layout():
+def create_layout() -> dbc.Container:
     return dbc.Container(
         [
             dbc.Row(
