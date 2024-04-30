@@ -6,7 +6,7 @@ import plotly.graph_objects as go
 from typing import Any, Dict, Tuple
 
 
-MONTHS = 12
+MONTHS: int = 12
 
 
 def dashboard_callbacks(app: Any) -> None:
