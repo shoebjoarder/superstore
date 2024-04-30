@@ -1,47 +1,91 @@
 from dash import Output, Input, State
 import pandas as pd
-import time
-import random
+from typing import Any, Dict, List, Optional, Tuple
 from dash.exceptions import PreventUpdate
 
 
+COLUMN_ORDER_ID = "Order ID"
+COLUMN_ORDER_DATE = "Order Date"
+COLUMN_SHIP_MODE = "Ship Mode"
+COLUMN_CUSTOMER_ID = "Customer ID"
+COLUMN_CUSTOMER_NAME = "Customer Name"
+COLUMN_SEGMENT = "Segment"
+COLUMN_COUNTRY = "Country"
+COLUMN_STATE = "State"
+COLUMN_CITY = "City"
+COLUMN_POSTAL_CODE = "Postal Code"
+COLUMN_REGION = "Region"
+COLUMN_PRODUCT_ID = "Product ID"
+COLUMN_CATEGORY = "Category"
+COLUMN_SUBCATEGORY = "Sub-Category"
+COLUMN_PRODUCT_NAME = "Product Name"
+COLUMN_QUANTITY = "Quantity"
+COLUMN_RETURNED = "Returned"
+
+
+def add_product_details_to_dataframe(
+    df: pd.DataFrame, product_id: str
+) -> Dict[str, Any]:
+    """Adds product details to the dataframe based on the ID of the product."""
+    # * Inferring the relevant product details based on the newest order
+    found_product = df.loc[df[COLUMN_PRODUCT_ID] == product_id][:1].sort_values(
+        by=[COLUMN_ORDER_DATE], ascending=False
+    )
+    if not found_product.empty:
+        return {
+            COLUMN_CATEGORY: found_product["Category"].values[0],
+            COLUMN_SUBCATEGORY: found_product["Sub-Category"].values[0],
+            COLUMN_PRODUCT_NAME: found_product["Product Name"].values[0],
+        }
+    return {}
+
+
+def add_customer_details_to_dataframe(
+    df: pd.DataFrame, customer_id: str
+) -> Dict[str, Any]:
+    """Adds customer details to the dataframe based on the ID of the customer"""
+    # ! Inferring the relevant customer details based on the newest order (Not recommended)
+    found_user = df.loc[df[COLUMN_CUSTOMER_ID] == customer_id][:1].sort_values(
+        by=[COLUMN_ORDER_DATE], ascending=False
+    )
+    if not found_user.empty:
+        return {
+            COLUMN_CUSTOMER_NAME: found_user["Customer Name"].values[0],
+            COLUMN_SEGMENT: found_user["Segment"].values[0],
+            COLUMN_COUNTRY: found_user["Country"].values[0],
+            COLUMN_CITY: found_user["City"].values[0],
+            COLUMN_STATE: found_user["State"].values[0],
+            COLUMN_POSTAL_CODE: found_user["Postal Code"].values[0],
+            COLUMN_REGION: found_user["Region"].values[0],
+        }
+    return {}
+
+
 def add_new_data_to_dataframe(
-    dataframe, ship_mode, order_date, order_id, customer_id, product_id, quantity
-):
+    dataframe: pd.DataFrame,
+    ship_mode: str,
+    order_date: str,
+    order_id: str,
+    customer_id: str,
+    product_id: str,
+    quantity: int,
+) -> pd.DataFrame:
+    """Adds new data to the dataframe"""
     df = dataframe
     new_data = {
-        # ! Customer Order ID function
-        # "Order ID": generate_order_id("US"),
-        "Ship Mode": ship_mode,
-        "Order Date": order_date,
-        "Order ID": order_id,
-        "Customer ID": customer_id,
-        "Product ID": product_id,
-        "Quantity": quantity,
-        "Returned": "No",
+        COLUMN_SHIP_MODE: ship_mode,
+        COLUMN_ORDER_DATE: order_date,
+        COLUMN_ORDER_ID: order_id,
+        COLUMN_CUSTOMER_ID: customer_id,
+        COLUMN_PRODUCT_ID: product_id,
+        COLUMN_QUANTITY: quantity,
+        COLUMN_RETURNED: "No",
     }
+    product_details = add_product_details_to_dataframe(df, product_id)
+    new_data.update(product_details)
 
-    # * Inferring the relevant product details based on the newest order
-    found_product = df.loc[df["Product ID"] == product_id][:1].sort_values(
-        by=["Order Date"], ascending=False
-    )
-    if not found_product.empty:
-        new_data["Category"] = found_product["Category"].values[0]
-        new_data["Sub-Category"] = found_product["Sub-Category"].values[0]
-        new_data["Product Name"] = found_product["Product Name"].values[0]
-
-    # ! Inferring the relevant customer details based on the newest order (Not recommended)
-    found_user = df.loc[df["Customer ID"] == customer_id][:1].sort_values(
-        by=["Order Date"], ascending=False
-    )
-    if not found_product.empty:
-        new_data["Customer Name"] = found_user["Customer Name"].values[0]
-        new_data["Segment"] = found_user["Segment"].values[0]
-        new_data["Country"] = found_user["Country"].values[0]
-        new_data["City"] = found_user["City"].values[0]
-        new_data["State"] = found_user["State"].values[0]
-        new_data["Postal Code"] = found_user["Postal Code"].values[0]
-        new_data["Region"] = found_user["Region"].values[0]
+    customer_details = add_customer_details_to_dataframe(df, customer_id)
+    new_data.update(customer_details)
 
     df.loc[-1] = new_data
     df.index = df.index + 1
@@ -50,7 +94,7 @@ def add_new_data_to_dataframe(
     return df
 
 
-def data_table_entry_callbacks(app):
+def data_table_entry_callbacks(app: Any) -> None:
     @app.callback(
         Output("submit-data-entry", "disabled"),
         Input("input-order-date", "date"),
@@ -62,8 +106,13 @@ def data_table_entry_callbacks(app):
         prevent_initial_call=True,
     )
     def enable_submit_button(
-        order_date, ship_mode, customer_id, product_id, quantity, button_disabled
-    ):
+        order_date: str,
+        ship_mode: str,
+        customer_id: str,
+        product_id: str,
+        quantity: str,
+        button_disabled: bool,
+    ) -> bool:
         if order_date and ship_mode and customer_id and product_id and quantity:
             if button_disabled == True:
                 return False
@@ -79,9 +128,11 @@ def data_table_entry_callbacks(app):
         Input("input-ship-mode", "options"),
         Input("memory-output", "data"),
     )
-    def populate_ship_mode_options(ship_mode_options, memory_data):
+    def populate_ship_mode_options(
+        ship_mode_options: List[str], memory_data: Dict[str, Any]
+    ):
         if len(ship_mode_options) == 0:
-            return sorted(pd.DataFrame(memory_data)["Ship Mode"].unique())
+            return sorted(pd.DataFrame(memory_data)[COLUMN_SHIP_MODE].unique())
         else:
             raise PreventUpdate
 
@@ -109,27 +160,36 @@ def data_table_entry_callbacks(app):
         prevent_initial_call=True,
     )
     def add_data_on_submit_data(
-        n_clicks,
-        ship_mode,
-        order_date,
-        order_id,
-        customer_id,
-        product_id,
-        quantity,
-        memory_data,
-        memory_copy,
-    ):
+        n_clicks: Optional[int],
+        ship_mode: str,
+        order_date: str,
+        order_id: str,
+        customer_id: str,
+        product_id: str,
+        quantity: str,
+        memory_data: Dict[str, Any],
+        memory_copy: Dict[str, Any],
+    ) -> Tuple[
+        str,
+        bool,
+        str,
+        str,
+        Dict[str, Any],
+        Dict[str, Any],
+        Optional[str],
+        Optional[str],
+        Optional[str],
+        Optional[str],
+        Optional[str],
+    ]:
         df = pd.DataFrame(memory_data)
         df_copy = pd.DataFrame(memory_copy)
         feedback_message = "Error: No data could be added"
 
         found_duplicate_product = df.loc[
-            (df["Order ID"] == order_id)
-            & (df["Customer ID"] == customer_id)
-            & (df["Product ID"] == product_id)
-            # & (df["Ship Mode"] == ship_mode)
-            # & (df["Order Date"] == order_date)
-            # & (df["Quantity"] == quantity)
+            (df[COLUMN_ORDER_ID] == order_id)
+            & (df[COLUMN_CUSTOMER_ID] == customer_id)
+            & (df[COLUMN_PRODUCT_ID] == product_id)
         ]
         if not found_duplicate_product.empty:
             feedback_message = "Duplicate: Data already exists!"
@@ -184,8 +244,10 @@ def data_table_entry_callbacks(app):
         else:
             raise PreventUpdate
 
-    #         # file_name = "updated_data.xlsx"
 
-    #         # with pd.ExcelWriter(file_name) as writer:
-    #         #     dataframe_table.to_excel(writer, sheet_name="Orders", index=False)
-    #         # print("Exported to an excel sheet")
+# TODO: Enhance the data table with Download file feature
+# file_name = "updated_data.xlsx"
+
+# with pd.ExcelWriter(file_name) as writer:
+#     dataframe_table.to_excel(writer, sheet_name="Orders", index=False)
+# print("Exported to an excel sheet")
