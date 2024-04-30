@@ -3,6 +3,17 @@ import pandas as pd
 from dash.exceptions import PreventUpdate
 
 
+COLUMN_ORDER_DATE: str = "Order Date"
+COLUMN_SHIP_DATE: str = "Ship Date"
+COLUMN_SHIP_MODE: str = "Ship Mode"
+COLUMN_SEGMENT: str = "Segment"
+COLUMN_COUNTRY: str = "Country"
+COLUMN_STATE: str = "State"
+COLUMN_CITY: str = "City"
+COLUMN_CATEGORY: str = "Category"
+COLUMN_SUBCATEGORY: str = "Sub-Category"
+
+
 def filter_data(
     df,
     segment,
@@ -20,94 +31,98 @@ def filter_data(
     dataframe_table = df.dropna()
     count = 0
     temp = None
-    temp_subcategory = sorted(dataframe_table["Sub-Category"].unique())
-    temp_state = sorted(dataframe_table["State"].unique())
-    temp_city = sorted(dataframe_table["City"].unique())
+    temp_subcategory = sorted(dataframe_table[COLUMN_SUBCATEGORY].unique())
+    temp_state = sorted(dataframe_table[COLUMN_STATE].unique())
+    temp_city = sorted(dataframe_table[COLUMN_CITY].unique())
 
     if segment is not None:
-        temp = dataframe_table[dataframe_table["Segment"] == segment]
-        temp = temp.dropna(subset="Segment")
+        temp = dataframe_table[dataframe_table[COLUMN_SEGMENT] == segment]
+        temp = temp.dropna(subset=COLUMN_SEGMENT)
 
     if ship_mode is not None:
         if temp is None:
-            temp = dataframe_table[dataframe_table["Ship Mode"] == ship_mode].dropna(
-                subset="Ship Mode"
-            )
+            temp = dataframe_table[
+                dataframe_table[COLUMN_SHIP_MODE] == ship_mode
+            ].dropna(subset=COLUMN_SHIP_MODE)
         else:
-            temp = temp[temp["Ship Mode"] == ship_mode].dropna(subset=["Ship Mode"])
+            temp = temp[temp[COLUMN_SHIP_MODE] == ship_mode].dropna(
+                subset=[COLUMN_SHIP_MODE]
+            )
 
     if ship_date_range_start is not None and ship_date_range_end is not None:
         if temp is None:
             temp = dataframe_table[
-                (dataframe_table["Ship Date"] >= ship_date_range_start)
-                & (dataframe_table["Ship Date"] <= ship_date_range_end)
+                (dataframe_table[COLUMN_SHIP_DATE] >= ship_date_range_start)
+                & (dataframe_table[COLUMN_SHIP_DATE] <= ship_date_range_end)
             ]
         else:
             temp = temp[
-                (temp["Ship Date"] >= ship_date_range_start)
-                & (temp["Ship Date"] <= ship_date_range_end)
+                (temp[COLUMN_SHIP_DATE] >= ship_date_range_start)
+                & (temp[COLUMN_SHIP_DATE] <= ship_date_range_end)
             ]
 
     if order_date_range_start is not None and order_date_range_end is not None:
         if temp is None:
             temp = dataframe_table[
-                (dataframe_table["Order Date"] >= order_date_range_start)
-                & (dataframe_table["Order Date"] <= order_date_range_end)
+                (dataframe_table[COLUMN_ORDER_DATE] >= order_date_range_start)
+                & (dataframe_table[COLUMN_ORDER_DATE] <= order_date_range_end)
             ]
         else:
             temp = temp[
-                (temp["Order Date"] >= order_date_range_start)
-                & (temp["Order Date"] <= order_date_range_end)
+                (temp[COLUMN_ORDER_DATE] >= order_date_range_start)
+                & (temp[COLUMN_ORDER_DATE] <= order_date_range_end)
             ]
 
     if category is not None:
         if temp is None:
-            temp = dataframe_table[dataframe_table["Category"] == category].dropna(
-                subset="Category"
+            temp = dataframe_table[dataframe_table[COLUMN_CATEGORY] == category].dropna(
+                subset=COLUMN_CATEGORY
             )
-            temp_subcategory = sorted(temp["Sub-Category"].unique())
+            temp_subcategory = sorted(temp[COLUMN_SUBCATEGORY].unique())
         else:
-            temp = temp[temp["Category"] == category].dropna(subset=["Category"])
-            temp_subcategory = sorted(temp["Sub-Category"].unique())
+            temp = temp[temp[COLUMN_CATEGORY] == category].dropna(
+                subset=[COLUMN_CATEGORY]
+            )
+            temp_subcategory = sorted(temp[COLUMN_SUBCATEGORY].unique())
 
     if subcategory is not None:
         if temp is None:
             temp = dataframe_table[
-                dataframe_table["Sub-Category"] == subcategory
-            ].dropna(subset="Sub-Category")
+                dataframe_table[COLUMN_SUBCATEGORY] == subcategory
+            ].dropna(subset=COLUMN_SUBCATEGORY)
         else:
-            temp = temp[temp["Sub-Category"] == subcategory]
-            temp = temp.dropna(subset=["Sub-Category"])
+            temp = temp[temp[COLUMN_SUBCATEGORY] == subcategory]
+            temp = temp.dropna(subset=[COLUMN_SUBCATEGORY])
 
     if country is not None:
         if temp is None:
-            temp = dataframe_table[dataframe_table["Country"] == country].dropna(
-                subset="Country"
+            temp = dataframe_table[dataframe_table[COLUMN_COUNTRY] == country].dropna(
+                subset=COLUMN_COUNTRY
             )
-            temp_state = sorted(temp["State"].unique())
-            temp_city = sorted(temp["City"].unique())
+            temp_state = sorted(temp[COLUMN_STATE].unique())
+            temp_city = sorted(temp[COLUMN_CITY].unique())
         else:
-            temp = temp[temp["Country"] == country].dropna(subset=["Country"])
-            temp_state = sorted(temp["State"].unique())
-            temp_city = sorted(temp["City"].unique())
+            temp = temp[temp[COLUMN_COUNTRY] == country].dropna(subset=[COLUMN_COUNTRY])
+            temp_state = sorted(temp[COLUMN_STATE].unique())
+            temp_city = sorted(temp[COLUMN_CITY].unique())
 
     if state is not None:
         if temp is None:
-            temp = dataframe_table[dataframe_table["State"] == state].dropna(
-                subset="State"
+            temp = dataframe_table[dataframe_table[COLUMN_STATE] == state].dropna(
+                subset=COLUMN_STATE
             )
-            temp_city = sorted(temp["City"].unique())
+            temp_city = sorted(temp[COLUMN_CITY].unique())
         else:
-            temp = temp[temp["State"] == state].dropna(subset=["State"])
-            temp_city = sorted(temp["City"].unique())
+            temp = temp[temp[COLUMN_STATE] == state].dropna(subset=[COLUMN_STATE])
+            temp_city = sorted(temp[COLUMN_CITY].unique())
 
     if city is not None:
         if temp is None:
-            temp = dataframe_table[dataframe_table["City"] == city].dropna(
-                subset="City"
+            temp = dataframe_table[dataframe_table[COLUMN_CITY] == city].dropna(
+                subset=COLUMN_CITY
             )
         else:
-            temp = temp[temp["City"] == city].dropna(subset=["City"])
+            temp = temp[temp[COLUMN_CITY] == city].dropna(subset=[COLUMN_CITY])
 
     return temp, count, temp_subcategory, temp_state, temp_city
 
@@ -132,17 +147,17 @@ def data_table_filters_callbacks(app):
         if len(segment) == 0:
             df = pd.DataFrame(memory_data).dropna()
             return (
-                sorted(df["Segment"].unique()),
-                sorted(df["Ship Mode"].unique()),
-                df["Ship Date"].max(),
-                df["Ship Date"].max(),
-                df["Order Date"].max(),
-                df["Order Date"].max(),
-                sorted(df["Category"].unique()),
-                sorted(df["Sub-Category"].unique()),
-                sorted(df["Country"].unique()),
-                sorted(df["State"].unique()),
-                sorted(df["City"].unique()),
+                sorted(df[COLUMN_SEGMENT].unique()),
+                sorted(df[COLUMN_SHIP_MODE].unique()),
+                df[COLUMN_SHIP_DATE].max(),
+                df[COLUMN_SHIP_DATE].max(),
+                df[COLUMN_ORDER_DATE].max(),
+                df[COLUMN_ORDER_DATE].max(),
+                sorted(df[COLUMN_CATEGORY].unique()),
+                sorted(df[COLUMN_SUBCATEGORY].unique()),
+                sorted(df[COLUMN_COUNTRY].unique()),
+                sorted(df[COLUMN_STATE].unique()),
+                sorted(df[COLUMN_CITY].unique()),
             )
         else:
             raise PreventUpdate
@@ -183,7 +198,10 @@ def data_table_filters_callbacks(app):
         clear_n_click,
         memory_data,
     ):
-        if clear_n_click is None:
+        if clear_n_click is None and (
+            (ship_date_range_start is not None and ship_date_range_end is not None)
+            or (order_date_range_start is not None and order_date_range_end is not None)
+        ):
 
             if (
                 segment
@@ -278,9 +296,9 @@ def data_table_filters_callbacks(app):
                 None,
                 "Apply Filters",
                 True,
-                sorted(df["Sub-Category"].unique()),
-                sorted(df["State"].unique()),
-                sorted(df["City"].unique()),
+                sorted(df[COLUMN_SUBCATEGORY].unique()),
+                sorted(df[COLUMN_STATE].unique()),
+                sorted(df[COLUMN_CITY].unique()),
             )
 
     @app.callback(
