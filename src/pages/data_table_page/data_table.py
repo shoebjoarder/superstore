@@ -1,12 +1,11 @@
 import dash_bootstrap_components as dbc
 import dash
 from dash import dash_table, html
-from .page_components import *
+from .data_table_filters import create_data_table_filters
+from .data_table_entry import create_data_table_entry
 
 
 dash.register_page(__name__, name="Data Table", path="/table-page")
-
-data_table_entry = create_data_table_entry()
 
 layout = dbc.Container(
     [
@@ -25,6 +24,6 @@ layout = dbc.Container(
             ],
             className="pb-3 mt-4",
         ),
-        dbc.Row([data_table_entry]),
+        dbc.Row([create_data_table_entry()]),
     ]
 )

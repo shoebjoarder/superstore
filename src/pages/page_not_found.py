@@ -1,7 +1,6 @@
 import dash_bootstrap_components as dbc
-import plotly.express as px
-from dash import dcc, html
-from .page_components import *
+from dash import html
+
 
 # TODO: Not implemented
 def page_not_found():
