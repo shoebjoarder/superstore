@@ -238,20 +238,20 @@ def insights_callbacks(app: Any) -> None:
                 return px.line(
                     graph_average(df, value, date_key),
                     x=COLUMN_ORDER_DATE,
-                    y=f"{value}",
-                    title=f"{value} Trend",
+                    y=COLUMN_DISCOUNT,
+                    title=f"{COLUMN_DISCOUNT} Trend",
                     markers=True,
-                    labels={value: f"{value} (Avg %)"},
+                    labels={COLUMN_DISCOUNT: f"{COLUMN_DISCOUNT} (Avg %)"},
                 )
 
             if value == COLUMN_RETURNED:
                 return px.line(
                     graph_returned(df, date_key),
                     x=COLUMN_ORDER_DATE,
-                    y=f"{value}",
-                    title=f"{value} Trend",
+                    y=COLUMN_RETURNED,
+                    title=f"{COLUMN_RETURNED} Trend",
                     markers=True,
-                    labels={value: f"{value} (Total)"},
+                    labels={COLUMN_RETURNED: f"{COLUMN_RETURNED} (Total)"},
                 )
 
             if value == PROFIT_RATIO:
@@ -259,29 +259,50 @@ def insights_callbacks(app: Any) -> None:
                     graph_profit_ratio(df, date_key),
                     x=COLUMN_ORDER_DATE,
                     y=PROFIT_RATIO,
-                    title=f"{value} Trend",
+                    title=f"{PROFIT_RATIO} Trend",
                     markers=True,
-                    labels={value: f"{value} (%)"},
+                    labels={PROFIT_RATIO: f"{PROFIT_RATIO} (%)"},
                 )
 
             if value == DAYS_TO_SHIP:
                 return px.line(
                     graphs_shipping(df, date_key),
                     x=COLUMN_ORDER_DATE,
-                    y=value,
-                    title=f"{value} Trend",
+                    y=DAYS_TO_SHIP,
+                    title=f"{DAYS_TO_SHIP} Trend",
                     markers=True,
-                    labels={value: f"{value} (Avg)"},
+                    labels={DAYS_TO_SHIP: f"{DAYS_TO_SHIP} (Avg)"},
                 )
 
-            return px.line(
-                graph_total(df, value, date_key),
-                x=COLUMN_ORDER_DATE,
-                y=f"{value}",
-                title=f"{value} Trend",
-                markers=True,
-                labels={value: f"{value} (Total)"},
-            )
+            if value == COLUMN_PROFIT:
+                return px.line(
+                    graph_total(df, value, date_key),
+                    x=COLUMN_ORDER_DATE,
+                    y=COLUMN_PROFIT,
+                    title=f"{COLUMN_PROFIT} Trend",
+                    markers=True,
+                    labels={COLUMN_PROFIT: f"{COLUMN_PROFIT} (Total)"},
+                )
+
+            if value == COLUMN_QUANTITY:
+                return px.line(
+                    graph_total(df, value, date_key),
+                    x=COLUMN_ORDER_DATE,
+                    y=COLUMN_QUANTITY,
+                    title=f"{COLUMN_QUANTITY} Trend",
+                    markers=True,
+                    labels={COLUMN_QUANTITY: f"{COLUMN_QUANTITY} (Total)"},
+                )
+
+            if value == COLUMN_SALES:
+                return px.line(
+                    graph_total(df, value, date_key),
+                    x=COLUMN_ORDER_DATE,
+                    y=COLUMN_SALES,
+                    title=f"{COLUMN_SALES} Trend",
+                    markers=True,
+                    labels={COLUMN_SALES: f"{COLUMN_SALES} (Total)"},
+                )
 
     @app.callback(
         Output("insights-scatterplot-graph", "figure"),
