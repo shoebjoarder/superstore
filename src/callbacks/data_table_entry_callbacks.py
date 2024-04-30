@@ -137,10 +137,10 @@ def data_table_entry_callbacks(app: Any) -> None:
             raise PreventUpdate
 
     @app.callback(
-        Output("container-button-basic", "children"),
-        Output("positioned-toast", "is_open"),
-        Output("positioned-toast", "header"),
-        Output("positioned-toast", "icon"),
+        Output("data-entry-feedback", "children"),
+        Output("data-entry-feedback-toast", "is_open"),
+        Output("data-entry-feedback-toast", "header"),
+        Output("data-entry-feedback-toast", "icon"),
         Output("memory-output", "data", allow_duplicate=True),
         Output("memory-copy", "data", allow_duplicate=True),
         Output("input-ship-mode", "value"),
