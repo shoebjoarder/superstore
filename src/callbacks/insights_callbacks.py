@@ -160,17 +160,17 @@ def graphs_shipping(df: pd.DataFrame, date_key: str = "ME") -> pd.DataFrame:
 
 def insights_callbacks(app: Any) -> None:
     @app.callback(
-        Output("dropdown-timeline-graph", "options"),
-        Output("dropdown-week-month-quarter-year", "options"),
-        Output("dropdown-timeline-graph", "value"),
-        Output("dropdown-week-month-quarter-year", "value"),
+        Output("dropdown-timeline-select-data", "options"),
+        Output("dropdown-timeline-select-interval", "options"),
+        Output("dropdown-timeline-select-data", "value"),
+        Output("dropdown-timeline-select-interval", "value"),
         Output("dropdown-scatter-x-axis", "options"),
         Output("dropdown-scatter-y-axis", "options"),
-        Output("dropdown-scatter-categorical", "options"),
+        Output("dropdown-scatter-select-data", "options"),
         Output("dropdown-scatter-x-axis", "value"),
         Output("dropdown-scatter-y-axis", "value"),
-        Output("dropdown-scatter-categorical", "value"),
-        Input("dropdown-timeline-graph", "options"),
+        Output("dropdown-scatter-select-data", "value"),
+        Input("dropdown-timeline-select-data", "options"),
     )
     def populate_dropdown_options(
         timeline_options: Optional[List[str]],
@@ -199,8 +199,8 @@ def insights_callbacks(app: Any) -> None:
 
     @app.callback(
         Output("insights-timeline-graph", "figure"),
-        Input("dropdown-timeline-graph", "value"),
-        Input("dropdown-week-month-quarter-year", "value"),
+        Input("dropdown-timeline-select-data", "value"),
+        Input("dropdown-timeline-select-interval", "value"),
         Input("insights-date-range", "start_date"),
         Input("insights-date-range", "end_date"),
         Input("memory-copy", "data"),
@@ -310,7 +310,7 @@ def insights_callbacks(app: Any) -> None:
         Output("dropdown-scatter-y-axis", "options", allow_duplicate=True),
         Input("dropdown-scatter-x-axis", "value"),
         Input("dropdown-scatter-y-axis", "value"),
-        Input("dropdown-scatter-categorical", "value"),
+        Input("dropdown-scatter-select-data", "value"),
         Input("insights-date-range", "start_date"),
         Input("insights-date-range", "end_date"),
         Input("memory-output", "data"),
