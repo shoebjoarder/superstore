@@ -359,20 +359,20 @@ def data_table_filters_callbacks(app: Any) -> None:
         memory_data: Dict[str, Any],
     ) -> Tuple[Dict[str, Any], Optional[int]]:
         if n_clicks is not None:
-            filters = [
-                (COLUMN_SEGMENT, segment, "=="),
-                (COLUMN_SHIP_MODE, ship_mode, "=="),
-                (COLUMN_SHIP_DATE, ship_date_range_start, ">="),
-                (COLUMN_SHIP_DATE, ship_date_range_end, "<="),
-                (COLUMN_ORDER_DATE, order_date_range_start, ">="),
-                (COLUMN_ORDER_DATE, order_date_range_end, "<="),
-                (COLUMN_CATEGORY, category, "=="),
-                (COLUMN_SUBCATEGORY, subcategory, "=="),
-                (COLUMN_COUNTRY, country, "=="),
-                (COLUMN_STATE, state, "=="),
-                (COLUMN_CITY, city, "=="),
-            ]
-            filtered_df = filter_data(pd.DataFrame(memory_data), filters)
+            filtered_df, _, _, _ = filter_data(
+                pd.DataFrame(memory_data),
+                segment,
+                ship_mode,
+                ship_date_range_start,
+                ship_date_range_end,
+                order_date_range_start,
+                order_date_range_end,
+                category,
+                subcategory,
+                country,
+                state,
+                city,
+            )
 
             if filtered_df.empty:
                 raise PreventUpdate
