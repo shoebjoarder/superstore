@@ -71,7 +71,14 @@ def create_layout() -> dbc.Container:
                     graph_dropdown("Select data", "scatter", 4),
                 ]
             ),
-            dbc.Row([dcc.Graph(id="insights-scatterplot-graph")], class_name="mb-5"),
+            dbc.Row(
+                [
+                    dcc.Loading(
+                        [dcc.Graph(id="insights-scatterplot-graph")], type="circle"
+                    )
+                ],
+                class_name="mb-5",
+            ),
         ]
     )
 
