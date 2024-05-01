@@ -70,11 +70,8 @@ def filter_data(
         (COLUMN_ORDER_DATE, order_date_range_end, "le"),
     ]
 
-    for column, value, operator in filters:
-        filtered_df = filter_dataframe(clean_df, filtered_df, column, value, operator)
-
     if category is not None:
-        if filtered_df is None:
+        if filtered_df.empty:
             filtered_df = clean_df[clean_df[COLUMN_CATEGORY] == category].dropna(
                 subset=COLUMN_CATEGORY
             )
@@ -86,7 +83,7 @@ def filter_data(
             filtered_subcategory = sorted(filtered_df[COLUMN_SUBCATEGORY].unique())
 
     if subcategory is not None:
-        if filtered_df is None:
+        if filtered_df.empty:
             filtered_df = clean_df[clean_df[COLUMN_SUBCATEGORY] == subcategory].dropna(
                 subset=COLUMN_SUBCATEGORY
             )
@@ -95,7 +92,7 @@ def filter_data(
             filtered_df = filtered_df.dropna(subset=[COLUMN_SUBCATEGORY])
 
     if country is not None:
-        if filtered_df is None:
+        if filtered_df.empty:
             filtered_df = clean_df[clean_df[COLUMN_COUNTRY] == country].dropna(
                 subset=COLUMN_COUNTRY
             )
@@ -109,7 +106,7 @@ def filter_data(
             filtered_city = sorted(filtered_df[COLUMN_CITY].unique())
 
     if state is not None:
-        if filtered_df is None:
+        if filtered_df.empty:
             filtered_df = clean_df[clean_df[COLUMN_STATE] == state].dropna(
                 subset=COLUMN_STATE
             )
@@ -121,7 +118,7 @@ def filter_data(
             filtered_city = sorted(filtered_df[COLUMN_CITY].unique())
 
     if city is not None:
-        if filtered_df is None:
+        if filtered_df.empty:
             filtered_df = clean_df[clean_df[COLUMN_CITY] == city].dropna(
                 subset=COLUMN_CITY
             )
@@ -129,6 +126,9 @@ def filter_data(
             filtered_df = filtered_df[filtered_df[COLUMN_CITY] == city].dropna(
                 subset=[COLUMN_CITY]
             )
+
+    for column, value, operator in filters:
+        filtered_df = filter_dataframe(clean_df, filtered_df, column, value, operator)
 
     return filtered_df, filtered_subcategory, filtered_state, filtered_city
 
