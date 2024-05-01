@@ -53,7 +53,8 @@ def create_card(card_title: str) -> dbc.Col:
                                         ],
                                         type="circle",
                                     )
-                                ]
+                                ],
+                                style={"min-height": "36.8px"},
                             ),
                         ]
                     ),

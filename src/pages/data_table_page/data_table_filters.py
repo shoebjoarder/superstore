@@ -49,7 +49,6 @@ def create_data_table_filters() -> dbc.Accordion:
                                         [
                                             filter_dropdown("Segment"),
                                             filter_dropdown("Ship Mode"),
-                                            filter_dropdown("Ship Mode"),
                                             date_range("Ship Date"),
                                             date_range("Order Date"),
                                         ],

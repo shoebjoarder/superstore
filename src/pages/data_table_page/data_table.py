@@ -18,26 +18,22 @@ def create_layout() -> dbc.Container:
             dbc.Row([create_data_table_filters()]),
             dbc.Row(
                 [
-                    html.Div(
+                    dcc.Loading(
                         [
-                            dcc.Loading(
-                                [
-                                    dash_table.DataTable(
-                                        id="data-table",
-                                        page_size=10,
-                                        style_table={
-                                            "maxWidth": "100%",
-                                            "overflowX": "auto",
-                                        },
-                                        fill_width=True,
-                                    ),
-                                ],
-                                type="circle",
+                            dash_table.DataTable(
+                                id="data-table",
+                                page_size=10,
+                                style_table={
+                                    "maxWidth": "100%",
+                                    "overflowX": "auto",
+                                },
+                                fill_width=True,
                             ),
                         ],
-                        style={"margin": "16px 0"},
-                    )
+                        type="circle",
+                    ),
                 ],
+                style={"min-height": "5vh"},
             ),
             dbc.Row([create_data_table_entry()], class_name="pt-3"),
         ]
