@@ -170,14 +170,19 @@ def insights_callbacks(app: Any) -> None:
         Output("dropdown-scatter-x-axis", "value"),
         Output("dropdown-scatter-y-axis", "value"),
         Output("dropdown-scatter-select-data", "value"),
+        Output("insights-date-range", "min_date_allowed"),
+        Output("insights-date-range", "max_date_allowed"),
+        Output("insights-date-range", "initial_visible_month"),
         Input("dropdown-timeline-select-data", "options"),
+        Input("memory-copy", "data"),
     )
     def populate_dropdown_options(
-        timeline_options: Optional[List[str]],
+        timeline_options: Optional[List[str]], memory_data: Dict[str, Any]
     ) -> Tuple[
         List[str], List[str], str, str, List[str], List[str], List[str], str, str, str
     ]:
         if len(timeline_options) == 0:
+            df = pd.DataFrame(memory_data).dropna()
             sorted_list = sorted(DROPDOWN_LIST)
             dropdown_date = ["Week", "Month", "Quarter", "Year"]
             sorted_axis_dropdown_list = sorted(AXIS_DROPDOWN_LIST)
@@ -193,6 +198,9 @@ def insights_callbacks(app: Any) -> None:
                 sorted_axis_dropdown_list[4],
                 sorted_axis_dropdown_list[2],
                 sorted_categorical_dropdown_list[0],
+                df[COLUMN_ORDER_DATE].min(),
+                df[COLUMN_ORDER_DATE].max(),
+                df[COLUMN_ORDER_DATE].max(),
             )
         else:
             raise PreventUpdate
