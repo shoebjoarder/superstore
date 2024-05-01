@@ -249,7 +249,7 @@ def data_table_filters_callbacks(app: Any) -> None:
                         city,
                     )
                 )
-                if filtered_df is not None:
+                if not filtered_df.empty:
                     if len(filtered_df) == 0:
                         return (
                             f"No data found!",
