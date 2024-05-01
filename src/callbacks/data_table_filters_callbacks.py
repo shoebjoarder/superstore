@@ -50,7 +50,7 @@ def data_table_filters_callbacks(app: Any) -> None:
         Output("dropdown-filter-country", "options"),
         Output("dropdown-filter-state", "options"),
         Output("dropdown-filter-city", "options"),
-        Input("memory-output", "data"),
+        Input("memory-copy", "data"),
         State("dropdown-filter-segment", "options"),
     )
     def populate_filter_options(
