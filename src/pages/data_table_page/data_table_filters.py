@@ -9,8 +9,7 @@ def filter_dropdown(title: str) -> dbc.Row:
         [
             html.Div([title]),
             dcc.Dropdown(
-                options=[],
-                id=f"dropdown-filter-{title_hypen}",
+                options=[], id=f"dropdown-filter-{title_hypen}", searchable=False
             ),
         ],
         class_name="mb-3",

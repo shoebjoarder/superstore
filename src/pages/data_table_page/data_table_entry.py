@@ -48,6 +48,7 @@ def create_data_table_entry() -> dbc.Accordion:
                                                         options=[],
                                                         id="input-ship-mode",
                                                         value=None,
+                                                        searchable=False,
                                                         className="mb-2",
                                                     ),
                                                 ],

@@ -13,6 +13,7 @@ def graph_dropdown(title: str, type: str, size: int) -> dbc.Col:
                 options=[],
                 id=f"dropdown-{type}-{title_hypen}",
                 clearable=False,
+                searchable=False,
             ),
         ],
         xs=size,
