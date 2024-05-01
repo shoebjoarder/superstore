@@ -18,6 +18,18 @@ COLUMN_SUBCATEGORY: str = "Sub-Category"
 def filter_dataframe(
     df: pd.DataFrame, filtered_df: pd.DataFrame, column: str, value: str, operator: str
 ) -> pd.DataFrame:
+    """
+    Filters a DataFrame based on a column, value, and operator.
+
+    Parameters:
+    - df: The DataFrame to filter.
+    - column: The column to filter on.
+    - value: The value to compare against.
+    - operator: The comparison operator ('eq', 'ge', 'le').
+
+    Returns:
+    - The filtered DataFrame.
+    """
     if value is not None:
         if filtered_df.empty:
             filtered_df = df[getattr(df[column], operator)(value)].dropna(subset=column)
