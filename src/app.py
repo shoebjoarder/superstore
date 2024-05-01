@@ -32,28 +32,22 @@ app.layout = dbc.Container(
     [
         dcc.Store(id="memory-output", data=df_table.to_dict("records")),
         dcc.Store(id="memory-copy", data=df_table.to_dict("records")),
-        dcc.Loading(
+        dbc.Row([components.navbar_component()]),
+        dbc.Container(
             [
-                dbc.Row([components.navbar_component()]),
-                dbc.Container(
+                dbc.Row(
                     [
-                        dbc.Row(
-                            [
-                                dbc.Col(
-                                    [components.sidebar_component()],
-                                    xl=2,
-                                ),
-                                dbc.Col(
-                                    [dash.page_container],
-                                    xl=10,
-                                ),
-                            ],
+                        dbc.Col(
+                            [components.sidebar_component()],
+                            xl=2,
+                        ),
+                        dbc.Col(
+                            [dash.page_container],
+                            xl=10,
                         ),
                     ],
                 ),
             ],
-            type="circle",
-            fullscreen=True,
         ),
     ],
     fluid=True,
