@@ -61,7 +61,7 @@ def create_layout() -> dbc.Container:
                 className="mb-2",
             ),
             dbc.Row(
-                [dcc.Graph(id="insights-timeline-graph")],
+                [dcc.Loading([dcc.Graph(id="insights-timeline-graph")], type="circle")],
                 className="mb-5",
             ),
             dbc.Row(

@@ -7,7 +7,12 @@ MONTHS = 12
 
 
 def create_graph(graph_id: str) -> dbc.Col:
-    return dbc.Col([dcc.Graph(id=graph_id)], class_name="mb-3", xs=12, lg=6)
+    return dbc.Col(
+        [dcc.Loading([dcc.Graph(id=graph_id)], type="circle")],
+        class_name="mb-3",
+        xs=12,
+        lg=6,
+    )
 
 
 def create_card(card_title: str) -> dbc.Col:
@@ -37,9 +42,18 @@ def create_card(card_title: str) -> dbc.Col:
                                     ),
                                 ],
                             ),
-                            html.H4(
-                                id=card_title_hypen,
-                                className="card-text",
+                            dbc.Row(
+                                [
+                                    dcc.Loading(
+                                        [
+                                            html.H4(
+                                                id=card_title_hypen,
+                                                className="card-text",
+                                            ),
+                                        ],
+                                        type="circle",
+                                    )
+                                ]
                             ),
                         ]
                     ),
