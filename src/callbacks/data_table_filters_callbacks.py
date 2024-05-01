@@ -16,25 +16,109 @@ COLUMN_SUBCATEGORY: str = "Sub-Category"
 
 
 def filter_dataframe(
-    df: pd.DataFrame, column: str, value: str, operator: str
+    df: pd.DataFrame, filtered_df: pd.DataFrame, column: str, value: str, operator: str
 ) -> pd.DataFrame:
-    """Helper function to filter dataframe based on condition."""
     if value is not None:
-        if operator == "==":
-            return df[df[column] == value]
-        if operator == ">=":
-            return df[df[column] >= value]
-        if operator == "<=":
-            return df[df[column] <= value]
-    return df
+        if filtered_df.empty:
+            filtered_df = df[getattr(df[column], operator)(value)].dropna(subset=column)
+        else:
+            filtered_df = filtered_df[
+                getattr(filtered_df[column], operator)(value)
+            ].dropna(subset=[column])
 
-
-def filter_data(df: pd.DataFrame, filters: List[Tuple[str, str, str]]) -> pd.DataFrame:
-    """Apply multiple filters to a DataFrame."""
-    filtered_df = df.dropna()
-    for column, value, operator in filters:
-        filtered_df = filter_dataframe(filtered_df, column, value, operator)
     return filtered_df
+
+
+def filter_data(
+    df: pd.DataFrame,
+    segment: str,
+    ship_mode: str,
+    ship_date_range_start: str,
+    ship_date_range_end: str,
+    order_date_range_start: str,
+    order_date_range_end: str,
+    category: str,
+    subcategory: str,
+    country: str,
+    state: str,
+    city: str,
+) -> Tuple[pd.DataFrame, List[str], List[str], List[str]]:
+    clean_df = df.dropna()
+    filtered_df = pd.DataFrame({})
+    filtered_subcategory: pd.DataFrame = sorted(clean_df[COLUMN_SUBCATEGORY].unique())
+    filtered_state: pd.DataFrame = sorted(clean_df[COLUMN_STATE].unique())
+    filtered_city: pd.DataFrame = sorted(clean_df[COLUMN_CITY].unique())
+
+    filters: List[Tuple[str, str, str]] = [
+        (COLUMN_SEGMENT, segment, "eq"),
+        (COLUMN_SHIP_MODE, ship_mode, "eq"),
+        (COLUMN_SHIP_DATE, ship_date_range_start, "ge"),
+        (COLUMN_SHIP_DATE, ship_date_range_end, "le"),
+        (COLUMN_ORDER_DATE, order_date_range_start, "ge"),
+        (COLUMN_ORDER_DATE, order_date_range_end, "le"),
+    ]
+
+    for column, value, operator in filters:
+        filtered_df = filter_dataframe(clean_df, filtered_df, column, value, operator)
+
+    if category is not None:
+        if filtered_df is None:
+            filtered_df = clean_df[clean_df[COLUMN_CATEGORY] == category].dropna(
+                subset=COLUMN_CATEGORY
+            )
+            filtered_subcategory = sorted(filtered_df[COLUMN_SUBCATEGORY].unique())
+        else:
+            filtered_df = filtered_df[filtered_df[COLUMN_CATEGORY] == category].dropna(
+                subset=[COLUMN_CATEGORY]
+            )
+            filtered_subcategory = sorted(filtered_df[COLUMN_SUBCATEGORY].unique())
+
+    if subcategory is not None:
+        if filtered_df is None:
+            filtered_df = clean_df[clean_df[COLUMN_SUBCATEGORY] == subcategory].dropna(
+                subset=COLUMN_SUBCATEGORY
+            )
+        else:
+            filtered_df = filtered_df[filtered_df[COLUMN_SUBCATEGORY] == subcategory]
+            filtered_df = filtered_df.dropna(subset=[COLUMN_SUBCATEGORY])
+
+    if country is not None:
+        if filtered_df is None:
+            filtered_df = clean_df[clean_df[COLUMN_COUNTRY] == country].dropna(
+                subset=COLUMN_COUNTRY
+            )
+            filtered_state = sorted(filtered_df[COLUMN_STATE].unique())
+            filtered_city = sorted(filtered_df[COLUMN_CITY].unique())
+        else:
+            filtered_df = filtered_df[filtered_df[COLUMN_COUNTRY] == country].dropna(
+                subset=[COLUMN_COUNTRY]
+            )
+            filtered_state = sorted(filtered_df[COLUMN_STATE].unique())
+            filtered_city = sorted(filtered_df[COLUMN_CITY].unique())
+
+    if state is not None:
+        if filtered_df is None:
+            filtered_df = clean_df[clean_df[COLUMN_STATE] == state].dropna(
+                subset=COLUMN_STATE
+            )
+            filtered_city = sorted(filtered_df[COLUMN_CITY].unique())
+        else:
+            filtered_df = filtered_df[filtered_df[COLUMN_STATE] == state].dropna(
+                subset=[COLUMN_STATE]
+            )
+            filtered_city = sorted(filtered_df[COLUMN_CITY].unique())
+
+    if city is not None:
+        if filtered_df is None:
+            filtered_df = clean_df[clean_df[COLUMN_CITY] == city].dropna(
+                subset=COLUMN_CITY
+            )
+        else:
+            filtered_df = filtered_df[filtered_df[COLUMN_CITY] == city].dropna(
+                subset=[COLUMN_CITY]
+            )
+
+    return filtered_df, filtered_subcategory, filtered_state, filtered_city
 
 
 def data_table_filters_callbacks(app: Any) -> None:
@@ -123,6 +207,7 @@ def data_table_filters_callbacks(app: Any) -> None:
         memory_data: Dict[str, Any],
     ) -> Tuple[str, bool, List[str], List[str], List[str]]:
         if clear_n_click is None:
+
             if (
                 segment
                 or ship_mode
@@ -136,40 +221,38 @@ def data_table_filters_callbacks(app: Any) -> None:
                 or state
                 or city
             ):
-                filters = [
-                    (COLUMN_SEGMENT, segment, "=="),
-                    (COLUMN_SHIP_MODE, ship_mode, "=="),
-                    (COLUMN_SHIP_DATE, ship_date_range_start, ">="),
-                    (COLUMN_SHIP_DATE, ship_date_range_end, "<="),
-                    (COLUMN_ORDER_DATE, order_date_range_start, ">="),
-                    (COLUMN_ORDER_DATE, order_date_range_end, "<="),
-                    (COLUMN_CATEGORY, category, "=="),
-                    (COLUMN_SUBCATEGORY, subcategory, "=="),
-                    (COLUMN_COUNTRY, country, "=="),
-                    (COLUMN_STATE, state, "=="),
-                    (COLUMN_CITY, city, "=="),
-                ]
-
-                filtered_df = filter_data(pd.DataFrame(memory_data), filters)
-
-                if not filtered_df.empty:
-                    count = len(filtered_df)
-                    if count == 0:
+                filtered_df, filtered_subcategory, filtered_state, filtered_city = (
+                    filter_data(
+                        pd.DataFrame(memory_data),
+                        segment,
+                        ship_mode,
+                        ship_date_range_start,
+                        ship_date_range_end,
+                        order_date_range_start,
+                        order_date_range_end,
+                        category,
+                        subcategory,
+                        country,
+                        state,
+                        city,
+                    )
+                )
+                if filtered_df is not None:
+                    if len(filtered_df) == 0:
                         return (
                             f"No data found!",
                             False,
-                            filtered_df[COLUMN_SUBCATEGORY].unique(),
-                            filtered_df[COLUMN_STATE].unique(),
-                            filtered_df[COLUMN_CITY].unique(),
+                            filtered_subcategory,
+                            filtered_state,
+                            filtered_city,
                         )
                     return (
-                        f"Show {count} data",
+                        f"Show {len(filtered_df)} data",
                         False,
-                        filtered_df[COLUMN_SUBCATEGORY].unique(),
-                        filtered_df[COLUMN_STATE].unique(),
-                        filtered_df[COLUMN_CITY].unique(),
+                        filtered_subcategory,
+                        filtered_state,
+                        filtered_city,
                     )
-
             else:
                 raise PreventUpdate
         else:
