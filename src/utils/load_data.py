@@ -3,14 +3,11 @@ import os
 from typing import Optional
 import logging
 
-
-SHEET_ORDER = "Orders"
-SHEET_RETURNS = "Returns"
+# Define constants for column names and messages
 COLUMN_SHIP_DATE = "Order Date"
 COLUMN_ORDER_DATE = "Ship Date"
 COLUMN_ORDER_ID = "Order ID"
 COLUMN_RETURNED = "Returned"
-COLUMN_COUNTRY = "Country"
 
 
 def load_dataset(url: Optional[str] = None) -> pd.DataFrame:
@@ -25,24 +22,20 @@ def load_dataset(url: Optional[str] = None) -> pd.DataFrame:
     """
     df_orders = None
     df_returns = None
-    local_filename = "Sample - Superstore.xlsx"
-    folder_name = "data"
     if url is None:
         current_dir = os.path.dirname(os.path.abspath(__file__))
-        data_dir = os.path.join(current_dir, "..", "..", folder_name)
-        excel_file_path = os.path.join(data_dir, local_filename)
+        data_dir = os.path.join(current_dir, "..", "..", "data")
+        excel_file_path = os.path.join(data_dir, "Sample - Superstore.xlsx")
 
-        df_orders = pd.read_excel(excel_file_path, sheet_name=SHEET_ORDER)
-        df_returns = pd.read_excel(excel_file_path, sheet_name=SHEET_RETURNS)
-        logging.info("******* Local Excel file used to load dataset! *******")
+        df_orders = pd.read_excel(excel_file_path, sheet_name="Orders")
+        df_returns = pd.read_excel(excel_file_path, sheet_name="Returns")
+        logging.info("***** Local Excel file used to load dataset! *****")
     else:
-        # download_dataset(url, local_filename, folder_name)
-        df_orders = pd.read_excel(url, sheet_name=SHEET_ORDER)
-        df_returns = pd.read_excel(url, sheet_name=SHEET_RETURNS)
-        logging.info("***** Downloaded Excel file used to load dataset! *****")
+        df_orders = pd.read_excel(url, sheet_name="Orders")
+        df_returns = pd.read_excel(url, sheet_name="Returns")
+        logging.info("***** Fetched the Excel file from GitHub successfully! *****")
 
     merged_df = pd.merge(df_orders, df_returns, on=COLUMN_ORDER_ID, how="outer")
-    merged_df.rename(columns={"Country/Region": COLUMN_COUNTRY}, inplace=True)
 
     merged_df[COLUMN_RETURNED] = merged_df[COLUMN_RETURNED].fillna("No")
 
