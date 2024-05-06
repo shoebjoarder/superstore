@@ -110,14 +110,10 @@ def create_data_table_filters() -> dbc.Accordion:
                                     ),
                                     dbc.Col(
                                         [
-                                            dcc.Loading(
-                                                [
-                                                    dbc.Button(
-                                                        children=["Apply Filters"],
-                                                        color="primary",
-                                                        id="submit-filter",
-                                                    ),
-                                                ]
+                                            dbc.Button(
+                                                children=["Apply Filters"],
+                                                color="primary",
+                                                id="submit-filter",
                                             )
                                         ],
                                         className="d-flex justify-content-end",
