@@ -30,8 +30,9 @@ server = app.server
 # Initialize the layout
 app.layout = dbc.Container(
     [
-        dcc.Store(id="memory-output", data=df_table.to_dict("records")),
-        dcc.Store(id="memory-copy", data=df_table.to_dict("records")),
+        dcc.Store(id="memory-table", data=df_table.to_dict("records")),
+        dcc.Store(id="memory-original", data=df_table.to_dict("records")),
+        dcc.Store(id="memory-filter", data=df_table.to_dict("records")),
         dbc.Row([components.navbar_component()]),
         dbc.Container(
             [

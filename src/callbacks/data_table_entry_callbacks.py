@@ -126,7 +126,7 @@ def data_table_entry_callbacks(app: Any) -> None:
     @app.callback(
         Output("input-ship-mode", "options"),
         Input("input-ship-mode", "options"),
-        Input("memory-output", "data"),
+        Input("memory-table", "data"),
     )
     def populate_ship_mode_options(
         ship_mode_options: List[str], memory_data: Dict[str, Any]
@@ -141,8 +141,8 @@ def data_table_entry_callbacks(app: Any) -> None:
         Output("data-entry-feedback-toast", "is_open"),
         Output("data-entry-feedback-toast", "header"),
         Output("data-entry-feedback-toast", "icon"),
-        Output("memory-output", "data", allow_duplicate=True),
-        Output("memory-copy", "data", allow_duplicate=True),
+        Output("memory-table", "data", allow_duplicate=True),
+        Output("memory-original", "data", allow_duplicate=True),
         Output("input-ship-mode", "value"),
         Output("input-order-id", "value"),
         Output("input-customer-id", "value"),
@@ -155,8 +155,8 @@ def data_table_entry_callbacks(app: Any) -> None:
         State("input-customer-id", "value"),
         State("input-product-id", "value"),
         State("input-quantity", "value"),
-        Input("memory-output", "data"),
-        Input("memory-copy", "data"),
+        Input("memory-table", "data"),
+        Input("memory-original", "data"),
         prevent_initial_call=True,
     )
     def add_data_on_submit_data(

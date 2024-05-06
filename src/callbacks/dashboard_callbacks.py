@@ -63,7 +63,7 @@ def dashboard_callbacks(app: Any) -> None:
         Output("profit-ratio", "children"),
         Output("dashboard-sales-graph", "figure"),
         Output("dashboard-profit-graph", "figure"),
-        Input("memory-output", "data"),
+        Input("memory-table", "data"),
     )
     def populate_dashboard(
         memory_data: Dict[str, Any]

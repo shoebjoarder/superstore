@@ -174,7 +174,7 @@ def insights_callbacks(app: Any) -> None:
         Output("insights-date-range", "max_date_allowed"),
         Output("insights-date-range", "initial_visible_month"),
         Input("dropdown-timeline-select-data", "options"),
-        Input("memory-copy", "data"),
+        Input("memory-original", "data"),
     )
     def populate_dropdown_options(
         timeline_options: Optional[List[str]], memory_data: Dict[str, Any]
@@ -211,7 +211,7 @@ def insights_callbacks(app: Any) -> None:
         Input("dropdown-timeline-select-interval", "value"),
         Input("insights-date-range", "start_date"),
         Input("insights-date-range", "end_date"),
-        Input("memory-copy", "data"),
+        Input("memory-original", "data"),
         prevent_initial_call=True,
     )
     def input_linegraph_data(
@@ -321,7 +321,7 @@ def insights_callbacks(app: Any) -> None:
         Input("dropdown-scatter-select-data", "value"),
         Input("insights-date-range", "start_date"),
         Input("insights-date-range", "end_date"),
-        Input("memory-output", "data"),
+        Input("memory-table", "data"),
         prevent_initial_call=True,
     )
     def input_scatterplot_graph(
