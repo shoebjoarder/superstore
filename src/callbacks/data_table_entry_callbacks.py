@@ -126,13 +126,13 @@ def data_table_entry_callbacks(app: Any) -> None:
     @app.callback(
         Output("input-ship-mode", "options"),
         Input("input-ship-mode", "options"),
-        Input("memory-table", "data"),
+        Input("memory-original", "data"),
     )
     def populate_ship_mode_options(
-        ship_mode_options: List[str], memory_data: Dict[str, Any]
+        ship_mode_options: List[str], memory_original: Dict[str, Any]
     ):
         if len(ship_mode_options) == 0:
-            return sorted(pd.DataFrame(memory_data)[COLUMN_SHIP_MODE].unique())
+            return sorted(pd.DataFrame(memory_original)[COLUMN_SHIP_MODE].unique())
         else:
             raise PreventUpdate
 
@@ -167,8 +167,8 @@ def data_table_entry_callbacks(app: Any) -> None:
         customer_id: str,
         product_id: str,
         quantity: str,
-        memory_data: Dict[str, Any],
-        memory_copy: Dict[str, Any],
+        memory_table: Dict[str, Any],
+        memory_original: Dict[str, Any],
     ) -> Tuple[
         str,
         bool,
@@ -182,8 +182,8 @@ def data_table_entry_callbacks(app: Any) -> None:
         Optional[str],
         Optional[str],
     ]:
-        df = pd.DataFrame(memory_data)
-        df_copy = pd.DataFrame(memory_copy)
+        df = pd.DataFrame(memory_table)
+        df_original = pd.DataFrame(memory_original)
         feedback_message = "Error: No data could be added"
 
         found_duplicate_product = df.loc[
@@ -198,8 +198,8 @@ def data_table_entry_callbacks(app: Any) -> None:
                 True,
                 "Error",
                 "danger",
-                memory_data,
-                memory_copy,
+                memory_table,
+                memory_original,
                 ship_mode,
                 order_id,
                 customer_id,
@@ -218,8 +218,8 @@ def data_table_entry_callbacks(app: Any) -> None:
             df = add_new_data_to_dataframe(
                 df, ship_mode, order_date, order_id, customer_id, product_id, quantity
             )
-            df_copy = add_new_data_to_dataframe(
-                df_copy,
+            df_original = add_new_data_to_dataframe(
+                df_original,
                 ship_mode,
                 order_date,
                 order_id,
@@ -234,7 +234,7 @@ def data_table_entry_callbacks(app: Any) -> None:
                 "Data added successfully!",
                 "success",
                 df.to_dict("records"),
-                df_copy.to_dict("records"),
+                df_original.to_dict("records"),
                 None,
                 None,
                 None,
