@@ -7,8 +7,8 @@ def data_table_callbacks(app: Any) -> None:
         Output("data-table", "data"),
         Input("memory-table", "data"),
     )
-    def populate_data_table(data: Dict[str, Any]) -> List[Dict[str, Any]]:
-        if data is None:
+    def populate_data_table(memory_table: Dict[str, Any]) -> List[Dict[str, Any]]:
+        if memory_table is None:
             return []
         else:
-            return data
+            return memory_table
