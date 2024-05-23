@@ -11,7 +11,7 @@ def create_layout() -> dbc.Container:
             dbc.Row(
                 [
                     html.H4("Data Table"),
-                    html.P("Preview and manipulate the Superstore data table below."),
+                    dbc.Label(["Preview and manipulate the Superstore data table below."], class_name="pb-3"),
                 ],
                 className="mt-4",
             ),

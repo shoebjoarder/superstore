@@ -9,7 +9,7 @@ def filter_dropdown(title: str) -> dbc.Row:
         [
             html.Div(
                 [
-                    html.Div([title]),
+                    dbc.Label(title),
                     dbc.Select(options=[], id=f"dropdown-filter-{title_hypen}"),
                 ]
             )
@@ -22,7 +22,7 @@ def date_range(title: str) -> dbc.Row:
     title_hypen = title.lower().replace(" ", "-")
     return dbc.Row(
         [
-            html.Div([title]),
+            dbc.Label(title),
             dcc.DatePickerRange(
                 id=f"filter-{title_hypen}-range",
                 min_date_allowed=date(
@@ -44,7 +44,10 @@ def create_data_table_filters() -> dbc.Accordion:
                 [
                     dbc.Container(
                         [
-                            html.P("Apply filters to the Superstore data table below"),
+                            dbc.Label(
+                                ["Apply filters to the Superstore data table below"],
+                                class_name="pb-3",
+                            ),
                             dbc.Row(
                                 [
                                     dbc.Col(

@@ -26,8 +26,8 @@ def create_layout() -> dbc.Container:
                     dbc.Col(
                         [
                             html.H4("Insights"),
-                            html.P(
-                                "Get in-depth insights using the interactive charts."
+                            dbc.Label(
+                                ["Get in-depth insights using the interactive charts."]
                             ),
                         ]
                     ),
@@ -36,7 +36,7 @@ def create_layout() -> dbc.Container:
             ),
             dbc.Row(
                 [
-                    html.Div(["Filter by date"]),
+                    dbc.Label("Filter by date"),
                     dcc.DatePickerRange(
                         id="insights-date-range",
                         # TODO: FIX required to help choose date easily

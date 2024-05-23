@@ -7,7 +7,7 @@ from typing import Any, List
 def create_input(title: str, type: str) -> List[Any]:
     title_hypen = title.lower().replace(" ", "-")
     return [
-        html.Div([title]),
+        dbc.Label(title),
         dbc.Input(
             id=f"input-{title_hypen}",
             type=type,
@@ -24,12 +24,12 @@ def create_data_table_entry() -> dbc.Accordion:
                         [
                             dbc.Container(
                                 [
-                                    html.P("Fill out the form below to add a new data"),
+                                    dbc.Label(["Fill out the form below to add a new data"], class_name="pb-3"),
                                     dbc.Row(
                                         [
                                             dbc.Col(
                                                 [
-                                                    html.Div(["Order date"]),
+                                                    dbc.Label("Order date"),
                                                     dcc.DatePickerSingle(
                                                         id="input-order-date",
                                                         max_date_allowed=date.today(),
@@ -43,7 +43,7 @@ def create_data_table_entry() -> dbc.Accordion:
                                             ),
                                             dbc.Col(
                                                 [
-                                                    html.Div(["Ship Mode"]),
+                                                    dbc.Label("Ship Mode"),
                                                     dbc.Select(
                                                         options=[],
                                                         id="input-ship-mode",

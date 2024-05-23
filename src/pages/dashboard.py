@@ -26,7 +26,7 @@ def create_card(card_title: str) -> dbc.Col:
                             dbc.Row(
                                 [
                                     dbc.Col(
-                                        html.P(card_title, className="card-title"),
+                                        dbc.Label([card_title]),
                                         style={"flex": "1"},
                                     ),
                                     dbc.Col(
@@ -78,10 +78,7 @@ def create_link_card(title: str, description: str, label: str, link: str) -> dbc
                                 title,
                                 className="card-title",
                             ),
-                            html.P(
-                                description,
-                                className="card-text",
-                            ),
+                            dbc.Label([description], class_name="pb-2"),
                             dbc.Button(
                                 [
                                     label,
@@ -108,9 +105,12 @@ def create_layout() -> dbc.Container:
                 [
                     dbc.Col(
                         [
-                            html.H4("Superstore Dashboard"),
-                            html.P(
-                                "An overview of the most recent data of the Superstore."
+                            html.H4("Dashboard"),
+                            dbc.Label(
+                                [
+                                    "An overview of the most recent data of the Superstore."
+                                ],
+                                class_name="pb-3",
                             ),
                         ]
                     ),
