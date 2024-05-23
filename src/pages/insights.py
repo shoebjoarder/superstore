@@ -8,12 +8,10 @@ def graph_dropdown(title: str, type: str, size: int) -> dbc.Col:
     title_hypen = title.lower().replace(" ", "-")
     return dbc.Col(
         [
-            html.Div([title]),
-            dcc.Dropdown(
+            dbc.Label(title),
+            dbc.Select(
                 options=[],
                 id=f"dropdown-{type}-{title_hypen}",
-                clearable=False,
-                searchable=False,
             ),
         ],
         xs=size,
