@@ -44,11 +44,11 @@ def create_data_table_entry() -> dbc.Accordion:
                                             dbc.Col(
                                                 [
                                                     html.Div(["Ship Mode"]),
-                                                    dcc.Dropdown(
+                                                    dbc.Select(
                                                         options=[],
                                                         id="input-ship-mode",
                                                         value=None,
-                                                        searchable=False,
+                                                        # searchable=False,
                                                         className="mb-2",
                                                     ),
                                                 ],
