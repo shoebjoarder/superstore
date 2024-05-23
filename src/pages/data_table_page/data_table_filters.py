@@ -7,10 +7,12 @@ def filter_dropdown(title: str) -> dbc.Row:
     title_hypen = title.lower().replace(" ", "-")
     return dbc.Row(
         [
-            html.Div([title]),
-            dcc.Dropdown(
-                options=[], id=f"dropdown-filter-{title_hypen}", searchable=False
-            ),
+            html.Div(
+                [
+                    html.Div([title]),
+                    dbc.Select(options=[], id=f"dropdown-filter-{title_hypen}"),
+                ]
+            )
         ],
         class_name="mb-3",
     )
