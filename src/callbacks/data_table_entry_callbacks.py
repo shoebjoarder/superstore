@@ -26,8 +26,19 @@ COLUMN_RETURNED: str = "Returned"
 def add_product_details_to_dataframe(
     df: pd.DataFrame, product_id: str
 ) -> Dict[str, Any]:
-    """Adds product details to the dataframe based on the ID of the product."""
-    # * Inferring the relevant product details based on the newest order
+    """
+    Adds product details to the dataframe based on the ID of the product.
+
+    Extracts and returns product details from a DataFrame based on the latest order associated with a given product ID.
+
+    Args:
+        df (pd.DataFrame): The DataFrame containing orders, expected to have columns for product IDs, categories, subcategories, and product names among others.
+        product_id (str): The ID of the product whose details are to be extracted.
+
+    Returns:
+        Dict[str, Any]: A dictionary containing the category, subcategory, and product name of the product associated with the latest order. If no matching product is found, an empty dictionary is returned.
+    """
+    # * Inferring the relevant product details based on the latest order
     found_product = df.loc[df[COLUMN_PRODUCT_ID] == product_id][:1].sort_values(
         by=[COLUMN_ORDER_DATE], ascending=False
     )
@@ -43,8 +54,17 @@ def add_product_details_to_dataframe(
 def add_customer_details_to_dataframe(
     df: pd.DataFrame, customer_id: str
 ) -> Dict[str, Any]:
-    """Adds customer details to the dataframe based on the ID of the customer"""
-    # ! Inferring the relevant customer details based on the newest order (Not recommended)
+    """
+    Adds customer details to the DataFrame based on the ID of the customer.
+
+    Args:
+        df (pd.DataFrame): The DataFrame containing orders, expected to have columns for customer IDs, customer names, segments, countries, cities, states, postal codes, regions, and order dates among others.
+        customer_id (str): The ID of the customer whose details are to be extracted.
+
+    Returns:
+        Dict[str, Any]: A dictionary containing the customer's name, segment, country, city, state, postal code, and region associated with the latest order. If no matching customer is found, an empty dictionary is returned.
+    """
+    # ! Inferring the relevant customer details based on the latest order (Not recommended)
     found_user = df.loc[df[COLUMN_CUSTOMER_ID] == customer_id][:1].sort_values(
         by=[COLUMN_ORDER_DATE], ascending=False
     )
@@ -70,7 +90,21 @@ def add_new_data_to_dataframe(
     product_id: str,
     quantity: int,
 ) -> pd.DataFrame:
-    """Adds new data to the dataframe"""
+    """
+    Adds new data to the DataFrame at the top of the list, including product and customer details.
+
+    Args:
+        dataframe (pd.DataFrame): The DataFrame to which the new data will be added.
+        ship_mode (str): The shipment mode for the new order.
+        order_date (str): The date of the new order.
+        order_id (str): The ID of the new order.
+        customer_id (str): The ID of the customer placing the new order.
+        product_id (str): The ID of the product ordered.
+        quantity (int): The quantity of the product ordered.
+
+    Returns:
+        pd.DataFrame: The original DataFrame with the new data at the top of the DataFrame
+    """
     df = dataframe
     new_data = {
         COLUMN_SHIP_MODE: ship_mode,
@@ -113,6 +147,23 @@ def data_table_entry_callbacks(app: Any) -> None:
         quantity: str,
         button_disabled: bool,
     ) -> bool:
+        """
+        Enables or disables the submit data entry button based on input fields.
+
+        Args:
+            order_date (str): The date of the order.
+            ship_mode (str): The shipping mode.
+            customer_id (str): The ID of the customer.
+            product_id (str): The ID of the product.
+            quantity (str): The quantity of the product.
+            button_disabled (bool): Whether the submit button is currently disabled.
+
+        Raises:
+            PreventUpdate: To prevent unnecessary updates if the submit button should remain disabled.
+
+        Returns:
+            bool: True if the submit button should be enabled, False otherwise.
+        """
         if order_date and ship_mode and customer_id and product_id and quantity:
             if button_disabled == True:
                 return False
@@ -131,6 +182,19 @@ def data_table_entry_callbacks(app: Any) -> None:
     def populate_ship_mode_options(
         ship_mode_options: List[Dict], memory_original: Dict[str, Any]
     ):
+        """
+        Populates the ship mode options dropdown based on the original memory data.
+
+        Args:
+            ship_mode_options (List[Dict]): Current options for the ship mode dropdown.
+            memory_original (Dict[str, Any]): Original memory data containing information about different ship modes.
+
+        Raises:
+            PreventUpdate: If the ship mode options dropdown already has populated options, preventing further updates.
+
+        Returns:
+            List[Dict]: Updated options for the ship mode dropdown, populated with unique ship modes from the original memory data if the dropdown was initially empty.
+        """
         if len(ship_mode_options) == 0:
             # return {
             #     item: item
@@ -188,6 +252,26 @@ def data_table_entry_callbacks(app: Any) -> None:
         Optional[str],
         Optional[str],
     ]:
+        """
+        Handles the submission of new data entries and provides feedback.
+
+        Args:
+            n_clicks (Optional[int]): Number of times the submit button was clicked. If None, indicates the initial call.
+            ship_mode (str): Shipping mode selected for the new order.
+            order_date (str): Date of the new order.
+            order_id (str): Unique identifier for the new order.
+            customer_id (str): Identifier for the customer placing the new order.
+            product_id (str): Identifier for the product being ordered.
+            quantity (str): Quantity of the product being ordered.
+            memory_table (Dict[str, Any]): Current data stored in the memory table.
+            memory_original (Dict[str, Any]): Original data set.
+
+        Raises:
+            PreventUpdate: If the form is submitted without filling out all required fields, preventing further updates.
+
+        Returns:
+            Tuple[str, bool, str, str, Dict[str, Any], Dict[str, Any], Optional[str], Optional[str], Optional[str], Optional[str], Optional[str]]: A tuple containing the feedback message, a boolean indicating if the toast should be open, the header and icon for the toast, the updated data for the memory table and original memory data, and the values of the input fields after submission.
+        """
         df = pd.DataFrame(memory_table)
         df_original = pd.DataFrame(memory_original)
         feedback_message = "Error: No data could be added"
