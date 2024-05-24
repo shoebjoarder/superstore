@@ -24,7 +24,10 @@ def create_data_table_entry() -> dbc.Accordion:
                         [
                             dbc.Container(
                                 [
-                                    dbc.Label(["Fill out the form below to add a new data"], class_name="pb-3"),
+                                    dbc.Label(
+                                        ["Fill out the form below to add a new data"],
+                                        class_name="pb-3",
+                                    ),
                                     dbc.Row(
                                         [
                                             dbc.Col(
@@ -32,6 +35,7 @@ def create_data_table_entry() -> dbc.Accordion:
                                                     dbc.Label("Order date"),
                                                     dcc.DatePickerSingle(
                                                         id="input-order-date",
+                                                        display_format="YYYY-MM-DD",
                                                         max_date_allowed=date.today(),
                                                         initial_visible_month=date.today(),
                                                         date=date.today(),
