@@ -338,7 +338,7 @@ def insights_callbacks(app: Any) -> None:
 
             if value == DAYS_TO_SHIP:
                 return px.line(
-                    graphs_shipping(df, date_key),
+                    graph_shipping(df, date_key),
                     x=COLUMN_ORDER_DATE,
                     y=DAYS_TO_SHIP,
                     title=f"{DAYS_TO_SHIP} Trend",
