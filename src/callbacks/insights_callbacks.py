@@ -188,13 +188,13 @@ def insights_callbacks(app: Any) -> None:
             sorted_axis_dropdown_list = sorted(AXIS_DROPDOWN_LIST)
             sorted_categorical_dropdown_list = sorted(CATEGORICAL_DROPDOWN_LIST)
             return (
-                {item: item for item in sorted_list},
-                {item: item for item in dropdown_date},
+                sorted_list,
+                dropdown_date,
                 sorted_list[1],
                 dropdown_date[1],
-                {item: item for item in sorted_axis_dropdown_list},
-                {item: item for item in sorted_axis_dropdown_list},
-                {item: item for item in sorted_categorical_dropdown_list},
+                sorted_axis_dropdown_list,
+                sorted_axis_dropdown_list,
+                sorted_categorical_dropdown_list,
                 sorted_axis_dropdown_list[4],
                 sorted_axis_dropdown_list[2],
                 sorted_categorical_dropdown_list[0],

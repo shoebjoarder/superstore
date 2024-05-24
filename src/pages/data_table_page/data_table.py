@@ -11,7 +11,10 @@ def create_layout() -> dbc.Container:
             dbc.Row(
                 [
                     html.H4("Data Table"),
-                    dbc.Label(["Preview and manipulate the Superstore data table below."], class_name="pb-3"),
+                    dbc.Label(
+                        ["Preview and manipulate the Superstore data table below."],
+                        class_name="pb-3",
+                    ),
                 ],
                 className="mt-4",
             ),
@@ -23,6 +26,7 @@ def create_layout() -> dbc.Container:
                             dash_table.DataTable(
                                 id="data-table",
                                 page_size=10,
+                                # virtualization=True,
                                 style_table={
                                     "maxWidth": "100%",
                                     "overflowX": "auto",

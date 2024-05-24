@@ -147,17 +147,17 @@ def data_table_filters_callbacks(app: Any) -> None:
         if len(segment) == 0:
             df = pd.DataFrame(memory_data).dropna()
             return (
-                {item: item for item in sorted(df[COLUMN_SEGMENT].unique())},
-                {item: item for item in sorted(df[COLUMN_SHIP_MODE].unique())},
+                sorted(df[COLUMN_SEGMENT].unique()),
+                sorted(df[COLUMN_SHIP_MODE].unique()),
                 df[COLUMN_SHIP_DATE].max(),
                 df[COLUMN_SHIP_DATE].max(),
                 df[COLUMN_ORDER_DATE].max(),
                 df[COLUMN_ORDER_DATE].max(),
-                {item: item for item in sorted(df[COLUMN_CATEGORY].unique())},
-                {item: item for item in sorted(df[COLUMN_SUBCATEGORY].unique())},
-                {item: item for item in sorted(df[COLUMN_COUNTRY].unique())},
-                {item: item for item in sorted(df[COLUMN_STATE].unique())},
-                {item: item for item in sorted(df[COLUMN_CITY].unique())},
+                sorted(df[COLUMN_CATEGORY].unique()),
+                sorted(df[COLUMN_SUBCATEGORY].unique()),
+                sorted(df[COLUMN_COUNTRY].unique()),
+                sorted(df[COLUMN_STATE].unique()),
+                sorted(df[COLUMN_CITY].unique()),
             )
         else:
             raise PreventUpdate

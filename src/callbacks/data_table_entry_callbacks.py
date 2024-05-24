@@ -132,12 +132,13 @@ def data_table_entry_callbacks(app: Any) -> None:
         ship_mode_options: List[Dict], memory_original: Dict[str, Any]
     ):
         if len(ship_mode_options) == 0:
-            return {
-                item: item
-                for item in sorted(
-                    pd.DataFrame(memory_original)[COLUMN_SHIP_MODE].unique()
-                )
-            }
+            # return {
+            #     item: item
+            #     for item in sorted(
+            #         pd.DataFrame(memory_original)[COLUMN_SHIP_MODE].unique()
+            #     )
+            # }
+            return sorted(pd.DataFrame(memory_original)[COLUMN_SHIP_MODE].unique())
         else:
             raise PreventUpdate
 
