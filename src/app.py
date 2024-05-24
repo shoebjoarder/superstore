@@ -22,7 +22,7 @@ df_table = load_dataset(url=dataset_url)
 # Initialize the app
 app = dash.Dash(
     __name__,
-    external_stylesheets=[dbc.themes.LITERA, dbc.icons.FONT_AWESOME],
+    external_stylesheets=[dbc.themes.BOOTSTRAP, dbc.icons.FONT_AWESOME],
     use_pages=True,
 )
 server = app.server
