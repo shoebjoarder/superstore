@@ -6,6 +6,7 @@ from dash.exceptions import PreventUpdate
 from typing import Any, Dict, List, Optional, Tuple
 
 COLUMN_ORDER_DATE: str = "Order Date"
+COLUMN_SHIP_DATE: str = "Ship Date"
 COLUMN_DISCOUNT: str = "Discount"
 COLUMN_PROFIT: str = "Profit"
 COLUMN_QUANTITY: str = "Quantity"
@@ -162,8 +163,8 @@ def graphs_shipping(df: pd.DataFrame, date_key: str = "ME") -> pd.DataFrame:
         pd.DataFrame: A DataFrame with the average days to ship per period, indexed by the date key.
     """
     # df['Order Date'] = pd.to_datetime(df['Order Date'])
-    df["Ship Date"] = pd.to_datetime(df["Ship Date"])
-    df[DAYS_TO_SHIP] = (df["Ship Date"] - df[COLUMN_ORDER_DATE]).dt.days
+    df[COLUMN_SHIP_DATE] = pd.to_datetime(df[COLUMN_SHIP_DATE])
+    df[DAYS_TO_SHIP] = (df[COLUMN_SHIP_DATE] - df[COLUMN_ORDER_DATE]).dt.days
 
     return (
         df.resample(date_key, on=COLUMN_ORDER_DATE)[DAYS_TO_SHIP].mean().reset_index()
@@ -399,9 +400,10 @@ def insights_callbacks(app: Any) -> None:
                 item for item in AXIS_DROPDOWN_LIST if item != x_axis_value
             ]
             df = pd.DataFrame(memory_data).dropna()
+            print(type(df[COLUMN_ORDER_DATE]))
             df[COLUMN_ORDER_DATE] = pd.to_datetime(df[COLUMN_ORDER_DATE])
-            df["Ship Date"] = pd.to_datetime(df["Ship Date"])
-            df[DAYS_TO_SHIP] = (df["Ship Date"] - df[COLUMN_ORDER_DATE]).dt.days
+            df[COLUMN_SHIP_DATE] = pd.to_datetime(df[COLUMN_SHIP_DATE])
+            df[DAYS_TO_SHIP] = (df[COLUMN_SHIP_DATE] - df[COLUMN_ORDER_DATE]).dt.days
             if (
                 insights_date_range_start is not None
                 and insights_date_range_end is not None
