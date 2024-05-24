@@ -10,7 +10,11 @@ def filter_dropdown(title: str) -> dbc.Row:
             html.Div(
                 [
                     dbc.Label(title),
-                    dbc.Select(options=[], id=f"dropdown-filter-{title_hypen}"),
+                    dcc.Dropdown(
+                        options=[],
+                        id=f"dropdown-filter-{title_hypen}",
+                        searchable=False,
+                    ),
                 ]
             )
         ],
@@ -23,14 +27,20 @@ def date_range(title: str) -> dbc.Row:
     return dbc.Row(
         [
             dbc.Label(title),
-            dcc.DatePickerRange(
-                id=f"filter-{title_hypen}-range",
-                min_date_allowed=date(
-                    1995,
-                    8,
-                    5,
-                ),
-                clearable=True,
+            html.Div(
+                [
+                    dcc.DatePickerRange(
+                        id=f"filter-{title_hypen}-range",
+                        min_date_allowed=date(
+                            1995,
+                            8,
+                            5,
+                        ),
+                        display_format="YYYY-MM-DD",
+                        clearable=True,
+                        className="date-picker-range"
+                    ),
+                ],
             ),
         ],
         className="mb-3",

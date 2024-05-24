@@ -1,0 +1,10 @@
+/* assets/style.css */
+.date-picker-range {
+    width: 100% !important;
+    font-size: 6px;
+    display: inline-block;
+    border-radius: 6px;
+    /* border: 1px solid #ccc; */
+    border: none;
+    color: #333;
+}
