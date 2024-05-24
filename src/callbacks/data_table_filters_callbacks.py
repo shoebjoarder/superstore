@@ -21,6 +21,18 @@ def filter_dataframe(
     column: str,
     value: str,
 ) -> pd.DataFrame:
+    """
+    Filters a DataFrame based on a specified column and value, updating the filtered DataFrame with the result.
+
+    Args:
+        clean_df (pd.DataFrame): The original DataFrame containing all data.
+        filtered_df (pd.DataFrame): A DataFrame that has been potentially pre-filtered and passed to this function for further refinement.
+        column (str): The name of the column to filter by.
+        value (str): The value to match in the specified column.
+
+    Returns:
+        pd.DataFrame: The filtered DataFrame, which reflects the rows matching the specified column and value, excluding rows with missing values in the specified column.
+    """
     if value is not None:
         if filtered_df.empty:
             filtered_df = clean_df[clean_df[column] == value].dropna(subset=column)
@@ -37,6 +49,18 @@ def filter_category_subcategory(
     category: str,
     subcategory: str,
 ) -> Tuple[pd.DataFrame, List[str]]:
+    """
+    Filters a DataFrame based on category and subcategory, returning both the filtered DataFrame and a list of unique subcategories.
+
+    Args:
+        clean_df (pd.DataFrame): The original DataFrame containing all categories and subcategories.
+        filtered_df (pd.DataFrame): A DataFrame that has been potentially pre-filtered and passed to this function for further refinement.
+        category (Optional[str]): The category to filter the DataFrame by. If None, no category-based filtering is applied.
+        subcategory (Optional[str]): The subcategory to filter the DataFrame by. If None, no subcategory-based filtering is applied.
+
+    Returns:
+        Tuple[pd.DataFrame, List[str]]: A tuple containing the final filtered DataFrame and a list of unique subcategories present in the filtered DataFrame.
+    """
     filtered_df_copy = filtered_df.copy(deep=True)
     filtered_subcategory_options: List[str] = []
     if category is not None:
@@ -67,6 +91,20 @@ def filter_country_state_city(
     state: str,
     city: str,
 ) -> Tuple[pd.DataFrame, List[str], List[str]]:
+    """
+    Filters a DataFrame based on country, state, and city, returning the filtered DataFrame along with lists of unique states and cities.
+
+    Args:
+        clean_df (pd.DataFrame): The original DataFrame containing all countries, states, and cities.
+        filtered_df (pd.DataFrame): A DataFrame that has been potentially pre-filtered and passed to this function for further refinement.
+        country (str): The country to filter the DataFrame by. If None, no country-based filtering is applied.
+        state (str): The state to filter the DataFrame by. If None, no state-based filtering is applied.
+        city (str): The city to filter the DataFrame by. If None, no city-based filtering is applied.
+
+    Returns:
+        Tuple[pd.DataFrame, List[str], List[str]]: A tuple containing the final filtered DataFrame and lists of unique states and cities present in the filtered DataFrame.
+    """
+
     filtered_df_copy = filtered_df.copy(deep=True)
     filtered_state_options: List[str] = sorted(clean_df[COLUMN_STATE].unique())
     filtered_city_options: List[str] = sorted(clean_df[COLUMN_CITY].unique())
@@ -100,6 +138,19 @@ def filter_country_state_city(
 def filter_date_range(
     clean_df: pd.DataFrame, filtered_df: pd.DataFrame, column: str, start: str, end: str
 ) -> pd.DataFrame:
+    """
+    Filters a DataFrame based on a specified date range within a given column, updating the filtered DataFrame with the result.
+
+    Args:
+        clean_df (pd.DataFrame): The original DataFrame containing all data.
+        filtered_df (pd.DataFrame): A DataFrame that has been potentially pre-filtered and passed to this function for further refinement.
+        column (str): The name of the column containing date values to filter by.
+        start (str): The starting date of the range to filter by.
+        end (str): The ending date of the range to filter by.
+
+    Returns:
+        pd.DataFrame: The filtered DataFrame, which reflects the rows where the specified column's date falls between the `start` and `end` dates.
+    """
     if start is not None and end is not None:
         if not filtered_df.empty:
             filtered_df = filtered_df[
@@ -143,6 +194,19 @@ def data_table_filters_callbacks(app: Any) -> None:
         List[str],
         List[str],
     ]:
+        """
+        Populates dropdowns and date ranges with dynamic options based on the selected segment.
+
+        Args:
+            memory_data (Dict[str, Any]): A dictionary containing the current memory data.
+            segment (List[str]): A list of currently selected segments.
+
+        Raises:
+            PreventUpdate: If a segment is selected, preventing the update to avoid unnecessary recalculations.
+
+        Returns:
+            Tuple[List[str], List[str], str, str, str, str, List[str], List[str], List[str], List[str], List[str]]: A tuple containing lists of unique options for each dropdown menu and the maximum dates for ship and order date ranges.
+        """
         if len(segment) == 0:
             df = pd.DataFrame(memory_data).dropna()
             return (
@@ -200,6 +264,30 @@ def data_table_filters_callbacks(app: Any) -> None:
         order_date_range_end: str,
         memory_original: Dict[str, Any],
     ) -> Tuple[str, bool, List[str], List[str], List[str]]:
+        """
+        Updates UI elements based on filter selections and applies filters to the data.
+
+        Args:
+            clear_n_click (int): Number of times the clear button was clicked.
+            segment (str): Selected segment value.
+            ship_mode (str): Selected shipping mode value.
+            category (str): Selected category value.
+            subcategory (str): Selected subcategory value.
+            country (str): Selected country value.
+            state (str): Selected state value.
+            city (str): Selected city value.
+            ship_date_range_start (str): Start date of the ship date range.
+            ship_date_range_end (str): End date of the ship date range.
+            order_date_range_start (str): Start date of the order date range.
+            order_date_range_end (str): End date of the order date range.
+            memory_original (Dict[str, Any]): Original memory data.
+
+        Raises:
+            PreventUpdate: If the clear button is clicked, preventing the update to reset the filters and clear the memory.
+
+        Returns:
+            Tuple[str, bool, List[str], List[str], List[str]]: A tuple containing the label for the submit button, whether the submit button is disabled, and lists of options/values for sub-category, state, and city dropdowns, and the filtered data records.
+        """
         filtered_df: pd.DataFrame = pd.DataFrame({})
         clean_df: pd.DataFrame = pd.DataFrame(memory_original).dropna()
         filtered_subcategory_options: List[str] = []
@@ -329,6 +417,19 @@ def data_table_filters_callbacks(app: Any) -> None:
         List[str],
         List[str],
     ]:
+        """
+        Clears all filters and resets the UI to its initial state.
+
+        Args:
+            n_clicks (Optional[int]): Number of times the clear button was clicked. If None, indicates the initial call.
+            memory_original (Dict[str, Any]): Original memory data.
+
+        Raises:
+            PreventUpdate: On the initial call to prevent unnecessary processing.
+
+        Returns:
+            Tuple[Dict[str, Any], Optional[str], Optional[str], Optional[str], Optional[str], Optional[str], Optional[str], Optional[str], Optional[str], Optional[str], Optional[str], Optional[int], str, bool, List[str], List[str], List[str]]: A tuple containing the original memory data, None for all filter values, "Apply Filters" as the submit button text, True for the clear button being disabled, and lists of unique subcategories, states, and cities from the original data.
+        """
         if n_clicks is None:
             raise PreventUpdate
         else:
@@ -365,6 +466,19 @@ def data_table_filters_callbacks(app: Any) -> None:
         n_clicks: Optional[int],
         memory_filter: Dict[str, Any],
     ) -> Tuple[Dict[str, Any], Optional[int]]:
+        """
+        Applies filters and updates the memory table with the filtered data.
+
+        Args:
+            n_clicks (Optional[int]): Number of times the submit filter button was clicked. If None, indicates the initial call.
+            memory_filter (Dict[str, Any]): Filtered data to be displayed in the memory table.
+
+        Raises:
+            PreventUpdate: If the memory filter data is empty, preventing the update to avoid displaying an empty table.
+
+        Returns:
+            Tuple[Dict[str, Any], Optional[int]]: A tuple containing the filtered data to be displayed in the memory table and None for the submit filter button click count, indicating that the filters have been successfully applied.
+        """
         if n_clicks is not None:
             if pd.DataFrame(memory_filter).empty:
                 raise PreventUpdate
