@@ -53,19 +53,6 @@ AXIS_DROPDOWN_LIST: List[str] = [
     COLUMN_SALES,
 ]
 
-"""
-Calculate the total sum of a given value over time.
-
-Parameters:
-- df: The DataFrame containing the data.
-- value: The column name to sum.
-- date_key: The key for resampling (default is "ME" for month-end).
-
-Returns:
-- A DataFrame with the total sum of the specified value over time.
-"""
-
-
 def graph_total(df: pd.DataFrame, value: str, date_key: str = "ME") -> pd.DataFrame:
     """
     Calculates the total sum of a specified column grouped by a date key.
@@ -151,7 +138,7 @@ def graph_returned(df: pd.DataFrame, date_key: str = "ME") -> pd.DataFrame:
     )
 
 
-def graphs_shipping(df: pd.DataFrame, date_key: str = "ME") -> pd.DataFrame:
+def graph_shipping(df: pd.DataFrame, date_key: str = "ME") -> pd.DataFrame:
     """
     Calculates the average days to ship per month.
 
@@ -168,6 +155,40 @@ def graphs_shipping(df: pd.DataFrame, date_key: str = "ME") -> pd.DataFrame:
 
     return (
         df.resample(date_key, on=COLUMN_ORDER_DATE)[DAYS_TO_SHIP].mean().reset_index()
+    )
+
+
+def plot_scatter(
+    df: pd.DataFrame,
+    x_axis_value: str,
+    y_axis_value: str,
+    categorical_value: str,
+    new_x_axis_dropdown_list: List[str],
+    new_y_axis_dropdown_list: List[str],
+) -> go.Figure:
+    """
+    Generates a scatter plot and updates the dropdown options for the x and y axes.
+
+    Args:
+        df (pd.DataFrame): The DataFrame containing the data to be plotted.
+        x_axis_value (str): The name of the column to use for the x-axis.
+        y_axis_value (str): The name of the column to use for the y-axis.
+        categorical_value (str): The name of the column to use for coloring the points in the scatter plot.
+        new_x_axis_dropdown_list (List[str]): The list of available options for the x-axis dropdown menu.
+        new_y_axis_dropdown_list (List[str]): The list of available options for the y-axis dropdown menu.
+
+    Returns:
+        go.Figure: A Plotly figure representing the scatter plot of the selected metrics.
+    """
+    return (
+        px.scatter(
+            df[[f"{x_axis_value}", f"{y_axis_value}", f"{categorical_value}"]],
+            x=f"{x_axis_value}",
+            y=f"{y_axis_value}",
+            color=f"{categorical_value}",
+        ),
+        sorted(new_x_axis_dropdown_list),
+        sorted(new_y_axis_dropdown_list),
     )
 
 
@@ -400,7 +421,6 @@ def insights_callbacks(app: Any) -> None:
                 item for item in AXIS_DROPDOWN_LIST if item != x_axis_value
             ]
             df = pd.DataFrame(memory_data).dropna()
-            print(type(df[COLUMN_ORDER_DATE]))
             df[COLUMN_ORDER_DATE] = pd.to_datetime(df[COLUMN_ORDER_DATE])
             df[COLUMN_SHIP_DATE] = pd.to_datetime(df[COLUMN_SHIP_DATE])
             df[DAYS_TO_SHIP] = (df[COLUMN_SHIP_DATE] - df[COLUMN_ORDER_DATE]).dt.days
@@ -414,57 +434,32 @@ def insights_callbacks(app: Any) -> None:
                 ]
             if x_axis_value == PROFIT_RATIO or y_axis_value == PROFIT_RATIO:
                 df[PROFIT_RATIO] = (df[COLUMN_PROFIT] / df[COLUMN_SALES]) * 100
-                return (
-                    px.scatter(
-                        df[
-                            [
-                                f"{x_axis_value}",
-                                f"{y_axis_value}",
-                                f"{categorical_value}",
-                            ]
-                        ],
-                        x=f"{x_axis_value}",
-                        y=f"{y_axis_value}",
-                        color=f"{categorical_value}",
-                    ),
-                    sorted(new_x_axis_dropdown_list),
-                    sorted(new_y_axis_dropdown_list),
+                return plot_scatter(
+                    df,
+                    x_axis_value,
+                    y_axis_value,
+                    categorical_value,
+                    new_x_axis_dropdown_list,
+                    new_y_axis_dropdown_list,
                 )
 
             if x_axis_value == DAYS_TO_SHIP or y_axis_value == DAYS_TO_SHIP:
-
-                return (
-                    px.scatter(
-                        df[
-                            [
-                                f"{x_axis_value}",
-                                f"{y_axis_value}",
-                                f"{categorical_value}",
-                            ]
-                        ],
-                        x=f"{x_axis_value}",
-                        y=f"{y_axis_value}",
-                        color=f"{categorical_value}",
-                    ),
-                    sorted(new_x_axis_dropdown_list),
-                    sorted(new_y_axis_dropdown_list),
+                return plot_scatter(
+                    df,
+                    x_axis_value,
+                    y_axis_value,
+                    categorical_value,
+                    new_x_axis_dropdown_list,
+                    new_y_axis_dropdown_list,
                 )
 
-            return (
-                px.scatter(
-                    df[
-                        [
-                            f"{x_axis_value}",
-                            f"{y_axis_value}",
-                            f"{categorical_value}",
-                        ]
-                    ],
-                    x=f"{x_axis_value}",
-                    y=f"{y_axis_value}",
-                    color=f"{categorical_value}",
-                ),
-                sorted(new_x_axis_dropdown_list),
-                sorted(new_y_axis_dropdown_list),
+            return plot_scatter(
+                df,
+                x_axis_value,
+                y_axis_value,
+                categorical_value,
+                new_x_axis_dropdown_list,
+                new_y_axis_dropdown_list,
             )
         else:
             raise PreventUpdate
