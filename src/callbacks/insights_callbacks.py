@@ -52,33 +52,45 @@ AXIS_DROPDOWN_LIST: List[str] = [
     COLUMN_SALES,
 ]
 
+"""
+Calculate the total sum of a given value over time.
+
+Parameters:
+- df: The DataFrame containing the data.
+- value: The column name to sum.
+- date_key: The key for resampling (default is "ME" for month-end).
+
+Returns:
+- A DataFrame with the total sum of the specified value over time.
+"""
+
 
 def graph_total(df: pd.DataFrame, value: str, date_key: str = "ME") -> pd.DataFrame:
     """
-    Calculate the total sum of a given value over time.
+    Calculates the total sum of a specified column grouped by a date key.
 
-    Parameters:
-    - df: The DataFrame containing the data.
-    - value: The column name to sum.
-    - date_key: The key for resampling (default is "ME" for month-end).
+    Args:
+        df (pd.DataFrame): The input DataFrame containing the data to be aggregated.
+        value (str): The name of the column whose total sum is to be calculated.
+        date_key (str, optional): The name of the column to use as the grouping key for aggregation. Defaults to "ME" (Monthly End).
 
     Returns:
-    - A DataFrame with the total sum of the specified value over time.
+        pd.DataFrame: A DataFrame with the total sum of the specified column, indexed by the date key.
     """
     return df.resample(date_key, on=COLUMN_ORDER_DATE)[value].sum().reset_index()
 
 
 def graph_average(df: pd.DataFrame, value: str, date_key: str = "ME") -> pd.DataFrame:
     """
-    Calculate the average of a given value over time.
+    Calculates the average percentage of a specified column grouped by a date key.
 
-    Parameters:
-    - df: The DataFrame containing the data.
-    - value: The column name to average.
-    - date_key: The key for resampling (default is "ME" for month-end).
+    Args:
+        df (pd.DataFrame): The input DataFrame containing the data to be averaged.
+        value (str): The name of the column whose average percentage is to be calculated.
+        date_key (str, optional): The name of the column to use as the grouping key for averaging. Defaults to "ME" (Monthly End).
 
     Returns:
-    - A DataFrame with the average of the specified value over time.
+        pd.DataFrame: A DataFrame with the average percentage of the specified column, indexed by the date key.
     """
     return (
         df.resample(date_key, on=COLUMN_ORDER_DATE)[value].mean().mul(100).reset_index()
@@ -87,14 +99,14 @@ def graph_average(df: pd.DataFrame, value: str, date_key: str = "ME") -> pd.Data
 
 def graph_profit_ratio(df: pd.DataFrame, date_key: str = "ME") -> pd.DataFrame:
     """
-    Calculate the profit ratio over time.
+    Calculates the profit ratio as a percentage of sales, monthly.
 
-    Parameters:
-    - df: The DataFrame containing the data.
-    - date_key: The key for resampling (default is "ME" for month-end).
+    Args:
+        df (pd.DataFrame): The input DataFrame containing the data to be analyzed.
+        date_key (str, optional): The name of the column to use as the grouping key for calculation. Defaults to "ME" (Monthly End).
 
     Returns:
-    - A DataFrame with the profit ratio over time.
+        pd.DataFrame: A DataFrame with the profit ratio as a percentage of sales, indexed by the date key.
     """
     grouped_profit_monthly = (
         df.resample(date_key, on=COLUMN_ORDER_DATE)[COLUMN_PROFIT].sum().reset_index()
@@ -116,14 +128,14 @@ def graph_profit_ratio(df: pd.DataFrame, date_key: str = "ME") -> pd.DataFrame:
 
 def graph_returned(df: pd.DataFrame, date_key: str = "ME") -> pd.DataFrame:
     """
-    Calculate the number of returned products over time.
+    Calculates the count of returned items per month.
 
-    Parameters:
-    - df: The DataFrame containing the data.
-    - date_key: The key for resampling (default is "ME" for month-end).
+    Args:
+        df (pd.DataFrame): The input DataFrame containing the data to be analyzed.
+        date_key (str, optional): The name of the column to use as the grouping key for calculation. Defaults to "ME" (Monthly End).
 
     Returns:
-    - A DataFrame with the number of returned products over time.
+        pd.DataFrame: A DataFrame with the count of returned items per period, indexed by the date key.
     """
     new_df = (
         df[df[COLUMN_RETURNED] == "Yes"]
@@ -140,14 +152,14 @@ def graph_returned(df: pd.DataFrame, date_key: str = "ME") -> pd.DataFrame:
 
 def graphs_shipping(df: pd.DataFrame, date_key: str = "ME") -> pd.DataFrame:
     """
-    Calculate the average number of days to ship over time.
+    Calculates the average days to ship per month.
 
-    Parameters:
-    - df: The DataFrame containing the data.
-    - date_key: The key for resampling (default is "ME" for month-end).
+    Args:
+        df (pd.DataFrame): The input DataFrame containing the data to be analyzed.
+        date_key (str, optional): The name of the column to use as the grouping key for calculation. Defaults to "ME" (Monthly End).
 
     Returns:
-    - A DataFrame with the average number of days to ship over time.
+        pd.DataFrame: A DataFrame with the average days to ship per period, indexed by the date key.
     """
     # df['Order Date'] = pd.to_datetime(df['Order Date'])
     df["Ship Date"] = pd.to_datetime(df["Ship Date"])
@@ -181,6 +193,19 @@ def insights_callbacks(app: Any) -> None:
     ) -> Tuple[
         List[str], List[str], str, str, List[str], List[str], List[str], str, str, str
     ]:
+        """
+        Populates various dropdown menus and date range inputs based on the original memory data.
+
+        Args:
+            timeline_options (Optional[List[str]]): Current options for the timeline select data dropdown.
+            memory_data (Dict[str, Any]): Original memory data containing information about different orders.
+
+        Raises:
+            PreventUpdate: If the timeline select data dropdown already has populated options, preventing further updates.
+
+        Returns:
+            Tuple[List[str], List[str], str, str, List[str], List[str], List[str], str, str, str, str, str, str]: A tuple containing the options and values for various dropdown menus and the minimum, maximum, and initial visible month for the insights date range.
+        """
         if len(timeline_options) == 0:
             df = pd.DataFrame(memory_data).dropna()
             sorted_list = sorted(DROPDOWN_LIST)
@@ -221,6 +246,23 @@ def insights_callbacks(app: Any) -> None:
         insights_date_range_end: Optional[str],
         memory_data: Dict[str, Any],
     ) -> go.Figure:
+        """
+        Generates a line graph based on the selected dropdown values and date range.
+
+        Args:
+            value (str): The selected metric for the line graph.
+            date_value (str): The selected interval for the line graph.
+            insights_date_range_start (Optional[str]): The start date of the date range filter.
+            insights_date_range_end (Optional[str]): The end date of the date range filter.
+            memory_data (Dict[str, Any]): The original memory data containing information about different orders.
+
+        Raises:
+            PreventUpdate: If either the selected metric or interval is not specified, preventing the generation of the line graph.
+
+        Returns:
+            go.Figure: A Plotly figure representing the line graph of the selected metric over time.
+        """
+
         if value is None or date_value is None:
             raise PreventUpdate
         else:
@@ -332,6 +374,23 @@ def insights_callbacks(app: Any) -> None:
         insights_date_range_end: Optional[str],
         memory_data: Dict[str, Any],
     ) -> go.Figure:
+        """
+        Generates a scatter plot based on the selected dropdown values and date range.
+
+        Args:
+            x_axis_value (str): The selected metric for the x-axis of the scatter plot.
+            y_axis_value (str): The selected metric for the y-axis of the scatter plot.
+            categorical_value (str): The selected categorical variable for coloring the scatter plot points.
+            insights_date_range_start (Optional[str]): The start date of the date range filter.
+            insights_date_range_end (Optional[str]): The end date of the date range filter.
+            memory_data (Dict[str, Any]): The original memory data containing information about different orders.
+
+        Raises:
+            PreventUpdate: If neither the x-axis nor y-axis values are specified, preventing the generation of the scatter plot.
+
+        Returns:
+            go.Figure: A Plotly figure representing the scatter plot of the selected metrics over time, colored by a categorical variable.
+        """
         if x_axis_value is not None and y_axis_value is not None:
             new_x_axis_dropdown_list = [
                 item for item in AXIS_DROPDOWN_LIST if item != y_axis_value
