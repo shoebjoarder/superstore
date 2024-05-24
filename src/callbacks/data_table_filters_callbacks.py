@@ -38,9 +38,7 @@ def filter_category_subcategory(
     subcategory: str,
 ) -> Tuple[pd.DataFrame, List[str]]:
     filtered_df_copy = filtered_df.copy(deep=True)
-    filtered_subcategory_options: List[str] = sorted(
-        clean_df[COLUMN_SUBCATEGORY].unique()
-    )
+    filtered_subcategory_options: List[str] = []
     if category is not None:
         filtered_df_copy = filter_dataframe(
             clean_df, filtered_df_copy, COLUMN_CATEGORY, category
@@ -50,7 +48,10 @@ def filter_category_subcategory(
         )
         if subcategory not in filtered_subcategory_options:
             subcategory = None
-
+    else:
+        filtered_subcategory_options: List[str] = sorted(
+            clean_df[COLUMN_SUBCATEGORY].unique()
+        )
     if subcategory is not None:
         filtered_df_copy = filter_dataframe(
             clean_df, filtered_df_copy, COLUMN_SUBCATEGORY, subcategory
@@ -76,10 +77,8 @@ def filter_country_state_city(
         filtered_state_options = sorted(filtered_df_copy[COLUMN_STATE].unique())
         filtered_city_options = sorted(filtered_df_copy[COLUMN_CITY].unique())
         if state not in filtered_state_options:
-            print("Woppla state")
             state = None
         if city not in filtered_city_options:
-            print("Woppla city")
             city = None
 
     if state is not None:
@@ -234,11 +233,6 @@ def data_table_filters_callbacks(app: Any) -> None:
                 for column, value in filters:
                     filtered_df = filter_dataframe(clean_df, filtered_df, column, value)
 
-                for column, start, end in filters_date_range:
-                    filtered_df = filter_date_range(
-                        clean_df, filtered_df, column, start, end
-                    )
-
                 filtered_df, filtered_subcategory_options = filter_category_subcategory(
                     clean_df, filtered_df, category, subcategory
                 )
@@ -250,6 +244,11 @@ def data_table_filters_callbacks(app: Any) -> None:
                     state,
                     city,
                 )
+
+                for column, start, end in filters_date_range:
+                    filtered_df = filter_date_range(
+                        clean_df, filtered_df, column, start, end
+                    )
 
                 if filtered_df.empty:
                     return (
@@ -277,10 +276,10 @@ def data_table_filters_callbacks(app: Any) -> None:
                     ["Apply Filters"],
                     True,
                     True,
-                    filtered_subcategory_options,
+                    sorted(clean_df[COLUMN_SUBCATEGORY].unique()),
                     subcategory,
-                    filtered_state,
-                    filtered_city,
+                    sorted(clean_df[COLUMN_STATE].unique()),
+                    sorted(clean_df[COLUMN_CITY].unique()),
                     filtered_df.to_dict("records"),
                 )
         else:
