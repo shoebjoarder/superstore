@@ -77,12 +77,7 @@ def create_data_table_filters() -> dbc.Accordion:
                                                     filter_dropdown("Category"),
                                                     filter_dropdown("Sub-Category"),
                                                 ],
-                                                style={
-                                                    "border": "solid 1px #CFCFCF",
-                                                    "borderRadius": "8px",
-                                                    "padding": "8px",
-                                                    "marginBottom": "16px",
-                                                },
+                                                className="filter-dropdown"
                                             ),
                                             dbc.Container(
                                                 [
@@ -90,12 +85,7 @@ def create_data_table_filters() -> dbc.Accordion:
                                                     filter_dropdown("State"),
                                                     filter_dropdown("City"),
                                                 ],
-                                                style={
-                                                    "border": "solid 1px #CFCFCF",
-                                                    "borderRadius": "8px",
-                                                    "padding": "8px",
-                                                    "marginBottom": "16px",
-                                                },
+                                                className="filter-dropdown"
                                             ),
                                         ],
                                         xs=12,
@@ -116,6 +106,7 @@ def create_data_table_filters() -> dbc.Accordion:
                                                     ),
                                                     " Clear all",
                                                 ],
+                                                outline=True,
                                                 color="primary",
                                                 id="clear-filter",
                                                 disabled=True,

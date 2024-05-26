@@ -8,3 +8,10 @@
     border: none;
     color: #333;
 }
+
+.filter-dropdown {
+    border: solid 1px #CFCFCF;
+    border-radius: 8px;
+    padding: 8px;
+    margin-bottom: 16px;
+}
