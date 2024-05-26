@@ -13,11 +13,11 @@ load_dotenv()
 dataset_url = os.getenv("DATASET_URL")
 
 # Configuration of logging
-logging.basicConfig(level=logging.INFO)
+logging.basicConfig(level=logging.DEBUG)
 log = logging.getLogger(__name__)
 
 # Load the dataset
-df_table = load_dataset(url=dataset_url)
+dataset_df = load_dataset(url=dataset_url)
 
 # Initialize the app
 app = dash.Dash(
@@ -30,9 +30,9 @@ server = app.server
 # Initialize the layout
 app.layout = dbc.Container(
     [
-        dcc.Store(id="memory-table", data=df_table.to_dict("records")),
-        dcc.Store(id="memory-original", data=df_table.to_dict("records")),
-        dcc.Store(id="memory-filter", data=df_table.to_dict("records")),
+        dcc.Store(id="memory-table", data=dataset_df.to_dict("records")),
+        dcc.Store(id="memory-original", data=dataset_df.to_dict("records")),
+        dcc.Store(id="memory-filter", data=dataset_df.to_dict("records")),
         dbc.Row([components.navbar_component()]),
         dbc.Container(
             [
