@@ -32,7 +32,10 @@ def create_data_table_entry() -> dbc.Accordion:
                                         [
                                             dbc.Col(
                                                 [
-                                                    dbc.Label("Order date"),
+                                                    dbc.Label(
+                                                        ["Order date"],
+                                                        style={"width": "100%"},
+                                                    ),
                                                     dcc.DatePickerSingle(
                                                         id="input-order-date",
                                                         display_format="YYYY-MM-DD",

@@ -44,9 +44,9 @@ def add_product_details_to_dataframe(
     )
     if not found_product.empty:
         return {
-            COLUMN_CATEGORY: found_product["Category"].values[0],
-            COLUMN_SUBCATEGORY: found_product["Sub-Category"].values[0],
-            COLUMN_PRODUCT_NAME: found_product["Product Name"].values[0],
+            COLUMN_CATEGORY: found_product[COLUMN_CATEGORY].values[0],
+            COLUMN_SUBCATEGORY: found_product[COLUMN_SUBCATEGORY].values[0],
+            COLUMN_PRODUCT_NAME: found_product[COLUMN_PRODUCT_NAME].values[0],
         }
     return {}
 
@@ -70,13 +70,13 @@ def add_customer_details_to_dataframe(
     )
     if not found_user.empty:
         return {
-            COLUMN_CUSTOMER_NAME: found_user["Customer Name"].values[0],
-            COLUMN_SEGMENT: found_user["Segment"].values[0],
-            COLUMN_COUNTRY: found_user["Country"].values[0],
-            COLUMN_CITY: found_user["City"].values[0],
-            COLUMN_STATE: found_user["State"].values[0],
-            COLUMN_POSTAL_CODE: found_user["Postal Code"].values[0],
-            COLUMN_REGION: found_user["Region"].values[0],
+            COLUMN_CUSTOMER_NAME: found_user[COLUMN_CUSTOMER_NAME].values[0],
+            COLUMN_SEGMENT: found_user[COLUMN_SEGMENT].values[0],
+            COLUMN_COUNTRY: found_user[COLUMN_COUNTRY].values[0],
+            COLUMN_CITY: found_user[COLUMN_CITY].values[0],
+            COLUMN_STATE: found_user[COLUMN_STATE].values[0],
+            COLUMN_POSTAL_CODE: found_user[COLUMN_POSTAL_CODE].values[0],
+            COLUMN_REGION: found_user[COLUMN_REGION].values[0],
         }
     return {}
 
