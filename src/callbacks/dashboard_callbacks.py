@@ -5,6 +5,8 @@ import plotly.express as px
 import plotly.graph_objects as go
 from typing import Any, Dict, Tuple
 
+from utils import get_clean_df
+
 
 MONTHS: int = 12
 
@@ -19,7 +21,7 @@ def prepare_dataframe(memory_data: Dict[str, Any]) -> pd.DataFrame:
     Returns:
         pd.DataFrame: A prepared DataFrame ready for further analysis, with missing values dropped and the "Order Date" column converted to datetime format.
     """
-    df = pd.DataFrame(memory_data).dropna()
+    df = get_clean_df(memory_data)
     df["Order Date"] = pd.to_datetime(df["Order Date"])
     return df
 

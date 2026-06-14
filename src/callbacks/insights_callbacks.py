@@ -1,9 +1,11 @@
-from dash import Input, Output
+from dash import Input, Output, State
 import plotly.express as px
 import plotly.graph_objects as go
 import pandas as pd
 from dash.exceptions import PreventUpdate
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any, Callable, Dict, List, Optional, Tuple
+
+from utils import get_clean_df
 
 COLUMN_ORDER_DATE: str = "Order Date"
 COLUMN_SHIP_DATE: str = "Ship Date"
@@ -149,7 +151,6 @@ def graph_shipping(df: pd.DataFrame, date_key: str = "ME") -> pd.DataFrame:
     Returns:
         pd.DataFrame: A DataFrame with the average days to ship per period, indexed by the date key.
     """
-    # df['Order Date'] = pd.to_datetime(df['Order Date'])
     df[COLUMN_SHIP_DATE] = pd.to_datetime(df[COLUMN_SHIP_DATE])
     df[DAYS_TO_SHIP] = (df[COLUMN_SHIP_DATE] - df[COLUMN_ORDER_DATE]).dt.days
 
@@ -165,7 +166,7 @@ def plot_scatter(
     categorical_value: str,
     new_x_axis_dropdown_list: List[str],
     new_y_axis_dropdown_list: List[str],
-) -> go.Figure:
+) -> Tuple[go.Figure, List[str], List[str]]:
     """
     Generates a scatter plot and updates the dropdown options for the x and y axes.
 
@@ -192,6 +193,20 @@ def plot_scatter(
     )
 
 
+# Maps a selected metric to (builder, y-column, axis-label suffix). The builder
+# takes the prepared DataFrame and a resample key and returns the plot-ready
+# frame. This replaces a long if/elif ladder of near-identical px.line calls.
+LINEGRAPH_CONFIG: Dict[str, Tuple[Callable[[pd.DataFrame, str], pd.DataFrame], str, str]] = {
+    COLUMN_DISCOUNT: (lambda df, dk: graph_average(df, COLUMN_DISCOUNT, dk), COLUMN_DISCOUNT, f"{COLUMN_DISCOUNT} (Avg %)"),
+    COLUMN_RETURNED: (lambda df, dk: graph_returned(df, dk), COLUMN_RETURNED, f"{COLUMN_RETURNED} (Total)"),
+    PROFIT_RATIO: (lambda df, dk: graph_profit_ratio(df, dk), PROFIT_RATIO, f"{PROFIT_RATIO} (%)"),
+    DAYS_TO_SHIP: (lambda df, dk: graph_shipping(df, dk), DAYS_TO_SHIP, f"{DAYS_TO_SHIP} (Avg)"),
+    COLUMN_PROFIT: (lambda df, dk: graph_total(df, COLUMN_PROFIT, dk), COLUMN_PROFIT, f"{COLUMN_PROFIT} (Total)"),
+    COLUMN_QUANTITY: (lambda df, dk: graph_total(df, COLUMN_QUANTITY, dk), COLUMN_QUANTITY, f"{COLUMN_QUANTITY} (Total)"),
+    COLUMN_SALES: (lambda df, dk: graph_total(df, COLUMN_SALES, dk), COLUMN_SALES, f"{COLUMN_SALES} (Total)"),
+}
+
+
 def insights_callbacks(app: Any) -> None:
     @app.callback(
         Output("dropdown-timeline-select-data", "options"),
@@ -208,7 +223,7 @@ def insights_callbacks(app: Any) -> None:
         Output("insights-date-range", "max_date_allowed"),
         Output("insights-date-range", "initial_visible_month"),
         Input("dropdown-timeline-select-data", "options"),
-        Input("memory-original", "data"),
+        State("memory-original", "data"),
     )
     def populate_dropdown_options(
         timeline_options: Optional[List[str]], memory_data: Dict[str, Any]
@@ -228,8 +243,10 @@ def insights_callbacks(app: Any) -> None:
         Returns:
             Tuple[List[str], List[str], str, str, List[str], List[str], List[str], str, str, str, str, str, str]: A tuple containing the options and values for various dropdown menus and the minimum, maximum, and initial visible month for the insights date range.
         """
+        if not memory_data:
+            raise PreventUpdate
         if len(timeline_options) == 0:
-            df = pd.DataFrame(memory_data).dropna()
+            df = get_clean_df(memory_data)
             sorted_list = sorted(DROPDOWN_LIST)
             dropdown_date = ["Week", "Month", "Quarter", "Year"]
             sorted_axis_dropdown_list = sorted(AXIS_DROPDOWN_LIST)
@@ -258,7 +275,7 @@ def insights_callbacks(app: Any) -> None:
         Input("dropdown-timeline-select-interval", "value"),
         Input("insights-date-range", "start_date"),
         Input("insights-date-range", "end_date"),
-        Input("memory-original", "data"),
+        State("memory-original", "data"),
         prevent_initial_call=True,
     )
     def input_linegraph_data(
@@ -296,7 +313,7 @@ def insights_callbacks(app: Any) -> None:
             }
             date_key = dropdown_date[date_value]
 
-            df = pd.DataFrame(memory_data).dropna()
+            df = get_clean_df(memory_data)
             df[COLUMN_ORDER_DATE] = pd.to_datetime(df[COLUMN_ORDER_DATE])
             if (
                 insights_date_range_start is not None
@@ -306,75 +323,19 @@ def insights_callbacks(app: Any) -> None:
                     (df[COLUMN_ORDER_DATE] >= insights_date_range_start)
                     & (df[COLUMN_ORDER_DATE] <= insights_date_range_end)
                 ]
-            if value == COLUMN_DISCOUNT:
-                return px.line(
-                    graph_average(df, value, date_key),
-                    x=COLUMN_ORDER_DATE,
-                    y=COLUMN_DISCOUNT,
-                    title=f"{COLUMN_DISCOUNT} Trend",
-                    markers=True,
-                    labels={COLUMN_DISCOUNT: f"{COLUMN_DISCOUNT} (Avg %)"},
-                )
 
-            if value == COLUMN_RETURNED:
-                return px.line(
-                    graph_returned(df, date_key),
-                    x=COLUMN_ORDER_DATE,
-                    y=COLUMN_RETURNED,
-                    title=f"{COLUMN_RETURNED} Trend",
-                    markers=True,
-                    labels={COLUMN_RETURNED: f"{COLUMN_RETURNED} (Total)"},
-                )
+            if value not in LINEGRAPH_CONFIG:
+                raise PreventUpdate
 
-            if value == PROFIT_RATIO:
-                return px.line(
-                    graph_profit_ratio(df, date_key),
-                    x=COLUMN_ORDER_DATE,
-                    y=PROFIT_RATIO,
-                    title=f"{PROFIT_RATIO} Trend",
-                    markers=True,
-                    labels={PROFIT_RATIO: f"{PROFIT_RATIO} (%)"},
-                )
-
-            if value == DAYS_TO_SHIP:
-                return px.line(
-                    graph_shipping(df, date_key),
-                    x=COLUMN_ORDER_DATE,
-                    y=DAYS_TO_SHIP,
-                    title=f"{DAYS_TO_SHIP} Trend",
-                    markers=True,
-                    labels={DAYS_TO_SHIP: f"{DAYS_TO_SHIP} (Avg)"},
-                )
-
-            if value == COLUMN_PROFIT:
-                return px.line(
-                    graph_total(df, value, date_key),
-                    x=COLUMN_ORDER_DATE,
-                    y=COLUMN_PROFIT,
-                    title=f"{COLUMN_PROFIT} Trend",
-                    markers=True,
-                    labels={COLUMN_PROFIT: f"{COLUMN_PROFIT} (Total)"},
-                )
-
-            if value == COLUMN_QUANTITY:
-                return px.line(
-                    graph_total(df, value, date_key),
-                    x=COLUMN_ORDER_DATE,
-                    y=COLUMN_QUANTITY,
-                    title=f"{COLUMN_QUANTITY} Trend",
-                    markers=True,
-                    labels={COLUMN_QUANTITY: f"{COLUMN_QUANTITY} (Total)"},
-                )
-
-            if value == COLUMN_SALES:
-                return px.line(
-                    graph_total(df, value, date_key),
-                    x=COLUMN_ORDER_DATE,
-                    y=COLUMN_SALES,
-                    title=f"{COLUMN_SALES} Trend",
-                    markers=True,
-                    labels={COLUMN_SALES: f"{COLUMN_SALES} (Total)"},
-                )
+            builder, y_column, label_suffix = LINEGRAPH_CONFIG[value]
+            return px.line(
+                builder(df, date_key),
+                x=COLUMN_ORDER_DATE,
+                y=y_column,
+                title=f"{y_column} Trend",
+                markers=True,
+                labels={y_column: label_suffix},
+            )
 
     @app.callback(
         Output("insights-scatterplot-graph", "figure"),
@@ -420,7 +381,7 @@ def insights_callbacks(app: Any) -> None:
             new_y_axis_dropdown_list = [
                 item for item in AXIS_DROPDOWN_LIST if item != x_axis_value
             ]
-            df = pd.DataFrame(memory_data).dropna()
+            df = get_clean_df(memory_data)
             df[COLUMN_ORDER_DATE] = pd.to_datetime(df[COLUMN_ORDER_DATE])
             df[COLUMN_SHIP_DATE] = pd.to_datetime(df[COLUMN_SHIP_DATE])
             df[DAYS_TO_SHIP] = (df[COLUMN_SHIP_DATE] - df[COLUMN_ORDER_DATE]).dt.days

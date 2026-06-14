@@ -6,8 +6,8 @@ import logging
 
 SHEET_ORDER = "Orders"
 SHEET_RETURNS = "Returns"
-COLUMN_SHIP_DATE = "Order Date"
-COLUMN_ORDER_DATE = "Ship Date"
+COLUMN_ORDER_DATE = "Order Date"
+COLUMN_SHIP_DATE = "Ship Date"
 COLUMN_ORDER_ID = "Order ID"
 COLUMN_RETURNED = "Returned"
 COLUMN_COUNTRY = "Country"

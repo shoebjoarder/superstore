@@ -3,6 +3,8 @@ import pandas as pd
 from dash.exceptions import PreventUpdate
 from typing import Any, Dict, List, Tuple, Optional
 
+from utils import get_clean_df
+
 
 COLUMN_ORDER_DATE: str = "Order Date"
 COLUMN_SHIP_DATE: str = "Ship Date"
@@ -176,11 +178,13 @@ def data_table_filters_callbacks(app: Any) -> None:
         Output("dropdown-filter-country", "options"),
         Output("dropdown-filter-state", "options"),
         Output("dropdown-filter-city", "options"),
-        Input("memory-original", "data"),
-        State("dropdown-filter-segment", "options"),
+        # Triggered when the (table-page) controls mount; reads the data store as
+        # State so a store update never fires this on a different page.
+        Input("dropdown-filter-segment", "options"),
+        State("memory-original", "data"),
     )
     def populate_filter_options(
-        memory_data: Dict[str, Any], segment: List[str]
+        segment: List[str], memory_data: Dict[str, Any]
     ) -> Tuple[
         List[str],
         List[str],
@@ -207,8 +211,10 @@ def data_table_filters_callbacks(app: Any) -> None:
         Returns:
             Tuple[List[str], List[str], str, str, str, str, List[str], List[str], List[str], List[str], List[str]]: A tuple containing lists of unique options for each dropdown menu and the maximum dates for ship and order date ranges.
         """
+        if not memory_data:
+            raise PreventUpdate
         if len(segment) == 0:
-            df = pd.DataFrame(memory_data).dropna()
+            df = get_clean_df(memory_data)
             return (
                 sorted(df[COLUMN_SEGMENT].unique()),
                 sorted(df[COLUMN_SHIP_MODE].unique()),
@@ -246,7 +252,7 @@ def data_table_filters_callbacks(app: Any) -> None:
         Input("filter-ship-date-range", "end_date"),
         Input("filter-order-date-range", "start_date"),
         Input("filter-order-date-range", "end_date"),
-        Input("memory-original", "data"),
+        State("memory-original", "data"),
         prevent_initial_call=True,
     )
     def select_filters(
@@ -289,7 +295,7 @@ def data_table_filters_callbacks(app: Any) -> None:
             Tuple[str, bool, List[str], List[str], List[str]]: A tuple containing the label for the submit button, whether the submit button is disabled, and lists of options/values for sub-category, state, and city dropdowns, and the filtered data records.
         """
         filtered_df: pd.DataFrame = pd.DataFrame({})
-        clean_df: pd.DataFrame = pd.DataFrame(memory_original).dropna()
+        clean_df: pd.DataFrame = get_clean_df(memory_original)
         filtered_subcategory_options: List[str] = []
         filtered_state: List[str] = []
         filtered_city: List[str] = []
@@ -340,7 +346,7 @@ def data_table_filters_callbacks(app: Any) -> None:
 
                 if filtered_df.empty:
                     return (
-                        [f"No data found!"],
+                        ["No data found!"],
                         True,
                         False,
                         filtered_subcategory_options,
@@ -393,7 +399,7 @@ def data_table_filters_callbacks(app: Any) -> None:
         Output("dropdown-filter-state", "options", allow_duplicate=True),
         Output("dropdown-filter-city", "options", allow_duplicate=True),
         Input("clear-filter", "n_clicks"),
-        Input("memory-original", "data"),
+        State("memory-original", "data"),
         prevent_initial_call=True,
     )
     def clear_filters(
@@ -433,7 +439,7 @@ def data_table_filters_callbacks(app: Any) -> None:
         if n_clicks is None:
             raise PreventUpdate
         else:
-            original_df = pd.DataFrame(memory_original)
+            original_df = get_clean_df(memory_original)
             return (
                 memory_original,
                 None,

@@ -3,6 +3,8 @@ import pandas as pd
 from typing import Any, Dict, List, Optional, Tuple
 from dash.exceptions import PreventUpdate
 
+from utils import get_clean_df
+
 
 COLUMN_ORDER_ID: str = "Order ID"
 COLUMN_ORDER_DATE: str = "Order Date"
@@ -106,7 +108,7 @@ def add_new_data_to_dataframe(
         pd.DataFrame: The original DataFrame with the new data at the top of the DataFrame
     """
     df = dataframe
-    new_data = {
+    new_data: Dict[str, Any] = {
         COLUMN_SHIP_MODE: ship_mode,
         COLUMN_ORDER_DATE: order_date,
         COLUMN_ORDER_ID: order_id,
@@ -177,7 +179,7 @@ def data_table_entry_callbacks(app: Any) -> None:
     @app.callback(
         Output("input-ship-mode", "options"),
         Input("input-ship-mode", "options"),
-        Input("memory-original", "data"),
+        State("memory-original", "data"),
     )
     def populate_ship_mode_options(
         ship_mode_options: List[Dict], memory_original: Dict[str, Any]
@@ -195,14 +197,10 @@ def data_table_entry_callbacks(app: Any) -> None:
         Returns:
             List[Dict]: Updated options for the ship mode dropdown, populated with unique ship modes from the original memory data if the dropdown was initially empty.
         """
+        if not memory_original:
+            raise PreventUpdate
         if len(ship_mode_options) == 0:
-            # return {
-            #     item: item
-            #     for item in sorted(
-            #         pd.DataFrame(memory_original)[COLUMN_SHIP_MODE].unique()
-            #     )
-            # }
-            return sorted(pd.DataFrame(memory_original)[COLUMN_SHIP_MODE].unique())
+            return sorted(get_clean_df(memory_original)[COLUMN_SHIP_MODE].unique())
         else:
             raise PreventUpdate
 
@@ -225,8 +223,8 @@ def data_table_entry_callbacks(app: Any) -> None:
         State("input-customer-id", "value"),
         State("input-product-id", "value"),
         State("input-quantity", "value"),
-        Input("memory-table", "data"),
-        Input("memory-original", "data"),
+        State("memory-table", "data"),
+        State("memory-original", "data"),
         prevent_initial_call=True,
     )
     def add_data_on_submit_data(
@@ -335,9 +333,5 @@ def data_table_entry_callbacks(app: Any) -> None:
             raise PreventUpdate
 
 
-# TODO: Enhance the data table with Download file feature
-# file_name = "updated_data.xlsx"
-
-# with pd.ExcelWriter(file_name) as writer:
-#     dataframe_table.to_excel(writer, sheet_name="Orders", index=False)
-# print("Exported to an excel sheet")
+# TODO: Enhance the data table with a "Download as Excel" feature
+#       (pd.ExcelWriter -> Orders sheet).
